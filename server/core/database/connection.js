@@ -9,11 +9,6 @@ const MYSQL_HOST = process.env.MYSQL_HOST;
 const MYSQL_DATABASE = process.env.MYSQL_DATABASE;
 const MYSQL_USER = process.env.MYSQL_USER;
 
-console.log("Password", MYSQL_PASSWORD);
-console.log("Host", MYSQL_HOST);
-console.log("Database", MYSQL_DATABASE);
-console.log("User", MYSQL_USER);
-
 const connection = mysql2.createConnection({
   host: MYSQL_HOST,
   user: MYSQL_USER,
