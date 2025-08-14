@@ -1,10 +1,14 @@
 
 import React, { useState } from 'react'
 import axios from 'axios';
+import { useAuth } from '../../context/AuthContext.jsx';
 
 // gray: 495867, HardBlue: 577399, SoftBlue: BDD5EA, White: FFFFFF, SoftRed: F7B1AB
 
 const LoginPage = () => {
+
+  const { setUser } = useAuth();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -32,6 +36,8 @@ const LoginPage = () => {
       setMessage(response.data.message);
 
       console.log(response);
+
+      setUser(response.data.user);
 
       setFormData({
         email: '',

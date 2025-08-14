@@ -1,7 +1,7 @@
 import connection from "../../core/database/connection.js";
 
 export function getProfile(req, res) {
-  res.json({ user: req.user });
+  return res.json({ user: req.user });
 }
 
 export function updateProfile(req, res) {
