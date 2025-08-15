@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const TaskChart = ({ title, description, status: initialStatus, priority, dueDate, craetedAt, id, fetchTasks }) => {
+const TaskChart = ({ title, description, status: initialStatus, priority, dueDate, createdAt, id, fetchTasks }) => {
 
 
   const [status, setStatus] = useState(initialStatus);
@@ -36,7 +36,7 @@ const TaskChart = ({ title, description, status: initialStatus, priority, dueDat
     <div className='border-gray-400 shadow-[4px_4px_4px_4px_rgba(0,0,0,0.2)] p-2 
       w-full h-full rounded-[20px] flex flex-col justify-around items-center box-border hover:border-2 hover:border-[#577399]'>
 
-      <p className="text-gray-500 text-xl">Created at: {craetedAt}</p>
+      <p className="text-gray-500 text-xl">Created at: {createdAt}</p>
       <p className="font-bold text-2xl">{title}</p>
       <p className="text-[#577399] font-bold text-xl">{description}</p>
       <p className="font-bold text-xl" style={{ color: priorityColors[priority] }}>

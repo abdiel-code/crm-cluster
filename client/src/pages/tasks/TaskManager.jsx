@@ -1,65 +1,98 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useAuth } from "../../context/AuthContext.jsx";
 import TaskChart from "../../components/tasks/TaskChart.jsx";
+import useTaskFilters from "../../hooks/tasks/useTaskFilters.js";
+import useTaskFetcher from "../../hooks/tasks/useTaskFetcher.js";
+import FilterPanel from "../../components/tasks/FilterPanel.jsx";
 
 const TaskManager = () => {
-  const [taskList, setTaskList] = useState([]);
   const [search, setSearch] = useState("");
   const { user } = useAuth();
+  const { filters, handleAddFilter } = useTaskFilters();
+  const { taskList, fetchTasks } = useTaskFetcher(user, filters, search);
+
+  const availableFilters = ["pending", "in_progress", "completed", "cancelled", "low", "medium", "high", "urgent"];
+  const fullDate = new Date();
+  const date = fullDate.toISOString().split("T")[0];
+  const day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][fullDate.getDay()];
 
 
-  const fetchTasks = async (filters = {}) => {
-    if (!user) return;
-    try {
-      const response = await axios.get(`http://localhost:3030/api/tasks`, {
-        params: {
-          user_id: user.id, ...filters
-        }
-      });
-      setTaskList(response.data);
-    } catch (error) {
-      console.error(error);
-    }
+  const handleSearch = (e) => setSearch(e.target.value);
+
+  const handleCreateTask = () => {
+    // Aquí va la lógica para crear tarea
   };
+
+
 
   useEffect(() => {
 
     fetchTasks();
   }, [user]);
 
-  const handleSearch = (e) => {
-    setSearch(e.target.value);
-  };
+  useEffect(() => {
+    fetchTasks(filters);
+  }, [filters]);
 
-  const handleCreateTask = () => {
-    // Aquí va la lógica para crear tarea
-  };
+  useEffect(() => {
+    fetchTasks({ ...filters, search });
+  }, [filters, search]);
+
+
 
   return (
-    <div className="w-full h-full flex flex-col p-4">
+    <div className="w-full h-full flex flex-col p-2 items-center">
 
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Task Manager</h1>
-        <input
-          type="text"
-          name="search"
-          value={search}
-          placeholder="Search task by title"
-          onChange={handleSearch}
-          className="border border-gray-300 rounded px-3 py-1"
-        />
+      <div className="flex items-center justify-around w-full mb-4">
+        <div>
+
+          <h1 className="text-2xl font-bold">Task Manager</h1>
+        </div>
+
+        <div className="flex items-center justify-center gap-2 ">
+          <input
+            type="text"
+            name="search"
+            value={search}
+            placeholder="Search task by title or description"
+            onChange={handleSearch}
+            className="border border-gray-500 rounded-md px-2 py-1 w-full"
+          />
+          <button type="submit" className="bg-[#577399] text-white rounded-md px-3 py-1 cursor-pointer hover:bg-[#455a7c]">Search</button>
+        </div>
       </div>
 
-      <div className="bg-[#BDD5EA] w-[90%] h-64 flex mb-4">
-        {/* Component to show day */}
+      <div className="bg-[#BDD5EA] w-[90%] h-64 flex items-center justify-around rounded-3xl">
+
+        <div className="flex flex-col items-center gap-2">
+          {
+            <p className="text-3xl font-bold">{day}</p>
+          }
+          {
+            <p className="text-xl">{date}</p>
+          }
+
+        </div>
+
         <div className="w-[2px] h-[90%] bg-white"></div>
-        {/* Component to show tasks left */}
+
+        <div className="flex items-center justify-around">
+          <div className="flex flex-col items-center gap-2 text-lg">
+            <p>Today you have</p>
+            <p>{taskList.length} tasks left</p>
+          </div>
+
+          <img src="" alt="calendar image" className="w-[50%] h-[50%]" />
+        </div>
+
       </div>
 
-      <div className="grid grid-cols-3 gap-2 mb-4">
-        {/* Component for filters*/}
-      </div>
+      <FilterPanel
+        availableFilters={availableFilters}
+        filters={filters}
+        handleAddFilter={handleAddFilter}
+      />
+
 
       <div className="grid gap-2">
 
@@ -72,12 +105,16 @@ const TaskManager = () => {
             status={task.status}
             priority={task.priority}
             dueDate={task.due_date}
-            craetedAt={task.created_at}
+            createdAt={task.created_at}
             id={task.id}
             fetchTasks={fetchTasks}
           />
 
         ))}
+
+        {taskList.length === 0 && (
+          <p>No tasks found</p>
+        )}
       </div>
 
       <button
