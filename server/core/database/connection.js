@@ -1,13 +1,10 @@
 import mysql2 from 'mysql2';
-import dotenv from "dotenv";
-import path from "path";
+import envData from "../../core/config/envData.js";
 
-dotenv.config({ path: path.resolve(process.cwd(), ".env") });
-
-const MYSQL_PASSWORD = process.env.MYSQL_PASSWORD;
-const MYSQL_HOST = process.env.MYSQL_HOST;
-const MYSQL_DATABASE = process.env.MYSQL_DATABASE;
-const MYSQL_USER = process.env.MYSQL_USER;
+const MYSQL_PASSWORD = envData.db.password;
+const MYSQL_HOST = envData.db.host;
+const MYSQL_DATABASE = envData.db.database;
+const MYSQL_USER = envData.db.user;
 
 const connection = mysql2.createConnection({
   host: MYSQL_HOST,

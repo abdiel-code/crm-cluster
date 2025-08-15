@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+import envData from "../../core/config/envData.js";
 
-dotenv.config();
+const secret = envData.jwt.secret;
 
 const validateToken = (req, res, next) => {
 
@@ -12,7 +12,7 @@ const validateToken = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, secret);
     req.user = decoded;
     next();
   }

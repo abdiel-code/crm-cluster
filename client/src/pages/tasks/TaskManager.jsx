@@ -12,7 +12,7 @@ const TaskManager = () => {
   const fetchTasks = async (filters = {}) => {
     if (!user) return;
     try {
-      const response = await axios.get(`http://localhost:3000/tasks`, {
+      const response = await axios.get(`http://localhost:3030/api/tasks`, {
         params: {
           user_id: user.id, ...filters
         }
@@ -58,6 +58,11 @@ const TaskManager = () => {
       </div>
 
       <div className="grid grid-cols-3 gap-2 mb-4">
+        {/* Component for filters*/}
+      </div>
+
+      <div className="grid gap-2">
+
         {taskList && taskList.map((task) => (
 
           <TaskChart
@@ -72,16 +77,6 @@ const TaskManager = () => {
             fetchTasks={fetchTasks}
           />
 
-        ))}
-      </div>
-
-      <div className="grid gap-2">
-        {taskList && taskList.map((task) => (
-          // Aquí va el componente o UI para cada task
-          <div key={task.id} className="p-2 border rounded shadow">
-            <h3 className="font-semibold">{task.title}</h3>
-            <p>{task.description}</p>
-          </div>
         ))}
       </div>
 
