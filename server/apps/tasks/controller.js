@@ -1,19 +1,29 @@
 import connection from "../../core/database/connection.js"
+import { buildTaskQuery } from "./service.js"
+import isValid from "../../core/validation/tasks/validators.js"
 
 // Get all tasks
 export const getTasks = async (req, res) => {
-  const userId = req.params.userId
+  const userId = req.params.userId;
+  const { status, priority, dueDate, search } = req.query
+
+  const isInvalidInformation = isValid({ status, priority, dueDate })
+
+  if (isInvalidInformation) return res.status(400).json(isInvalidInformation);
 
   try {
-    if (!userId) res.status(400).json({ message: "User id is required" })
 
-    const [tasks] = await connection.query("SELECT * FROM tasks WHERE user_id = ?", [userId])
+    if (!userId) return res.status(400).json({ message: "User id is required" })
 
-    if (tasks.length === 0) res.status(200).json({ message: "You have no tasks" })
+    const { query, params } = buildTaskQuery({ userId, status, priority, dueDate, search })
 
+
+    const [tasks] = await connection.query(query, params);
+    if (tasks.length === 0) {
+      return res.status(200).json({ message: "Tasks not found" });
+    }
 
     return res.status(200).json(tasks)
-
 
   } catch (error) {
     console.error(error);
@@ -25,8 +35,9 @@ export const getTasks = async (req, res) => {
 export const createTask = async (req, res) => {
   const userId = req.params.userId
   const { title, description, status, priority, due_date } = req.body
+  const isInvalidInformation = isValid({ status, priority, due_date, title }, { requiredTitle: true })
 
-  if (!title) res.status(400).json({ message: "Title is required" })
+  if (isInvalidInformation) return res.status(400).json(isInvalidInformation);
 
   try {
 

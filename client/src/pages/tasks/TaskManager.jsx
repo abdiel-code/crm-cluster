@@ -1,20 +1,32 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext.jsx";
+import TaskChart from "../../components/tasks/TaskChart.jsx";
 
 const TaskManager = () => {
   const [taskList, setTaskList] = useState([]);
   const [search, setSearch] = useState("");
+  const { user } = useAuth();
+
+
+  const fetchTasks = async (filters = {}) => {
+    if (!user) return;
+    try {
+      const response = await axios.get(`http://localhost:3000/tasks`, {
+        params: {
+          user_id: user.id, ...filters
+        }
+      });
+      setTaskList(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    axios.get("http://localhost:3030/api/tasks")
-      .then((response) => {
-        setTaskList(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching tasks:", error);
-      });
-  }, []);
+
+    fetchTasks();
+  }, [user]);
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
@@ -45,8 +57,22 @@ const TaskManager = () => {
         {/* Component to show tasks left */}
       </div>
 
-      <div className="grid grid-cols-5 gap-2 mb-4">
-        {/* Components to filter tasks */}
+      <div className="grid grid-cols-3 gap-2 mb-4">
+        {taskList && taskList.map((task) => (
+
+          <TaskChart
+            key={task.id}
+            title={task.title}
+            description={task.description}
+            status={task.status}
+            priority={task.priority}
+            dueDate={task.due_date}
+            craetedAt={task.created_at}
+            id={task.id}
+            fetchTasks={fetchTasks}
+          />
+
+        ))}
       </div>
 
       <div className="grid gap-2">

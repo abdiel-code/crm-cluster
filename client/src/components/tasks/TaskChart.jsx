@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const TaskChart = ({ title, description, status: initialStatus, priority, dueDate, craetedAt, id }) => {
+const TaskChart = ({ title, description, status: initialStatus, priority, dueDate, craetedAt, id, fetchTasks }) => {
 
 
   const [status, setStatus] = useState(initialStatus);
