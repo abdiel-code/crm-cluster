@@ -4,6 +4,14 @@ import TaskChart from "../../components/tasks/TaskChart.jsx";
 import useTaskFilters from "../../hooks/tasks/useTaskFilters.js";
 import useTaskFetcher from "../../hooks/tasks/useTaskFetcher.js";
 import FilterPanel from "../../components/tasks/FilterPanel.jsx";
+import AddTaskButton from "../../components/tasks/AddTaskButton.jsx";
+import AddTaskForm from "../../components/tasks/AddTaskForm.jsx";
+import { FaPaw } from "react-icons/fa";
+import { createTask } from "../../services/taskService.js";
+import formatDate from "../../hooks/global/formatDate.js";
+
+const IconExample = () => <FaPaw color="#577399" />;
+
 
 const TaskManager = () => {
   const [search, setSearch] = useState("");
@@ -13,19 +21,27 @@ const TaskManager = () => {
 
   const availableFilters = ["pending", "in_progress", "completed", "cancelled", "low", "medium", "high", "urgent"];
   const fullDate = new Date();
-  const date = fullDate.toISOString().split("T")[0];
+  const date = formatDate(fullDate);
   const day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][fullDate.getDay()];
-
+  //initialized in true to test
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSearch = (e) => setSearch(e.target.value);
 
-  const handleCreateTask = () => {
-    // Aquí va la lógica para crear tarea
+  const handleCreateTask = (formData) => {
+    createTask(formData, user.id);
+    fetchTasks();
   };
 
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  }
 
 
   useEffect(() => {
+    if (!user) {
+      return;
+    }
 
     fetchTasks();
   }, [user]);
@@ -82,7 +98,7 @@ const TaskManager = () => {
             <p>{taskList.length} tasks left</p>
           </div>
 
-          <img src="" alt="calendar image" className="w-[50%] h-[50%]" />
+          <img src={IconExample()} alt="calendar image" className="w-[50%] h-[50%]" />
         </div>
 
       </div>
@@ -94,9 +110,9 @@ const TaskManager = () => {
       />
 
 
-      <div className="grid gap-2">
+      <div className="grid grid-cols-3 gap-4">
 
-        {taskList && taskList.map((task) => (
+        {taskList.length > 0 && taskList.map((task) => (
 
           <TaskChart
             key={task.id}
@@ -117,14 +133,12 @@ const TaskManager = () => {
         )}
       </div>
 
-      <button
-        className="fixed bottom-8 right-8 bg-[#577399] rounded-full w-12 h-12 text-white text-3xl flex items-center justify-center shadow-lg hover:bg-[#455a7c] transition"
-        onClick={handleCreateTask}
-      >
-        +
-      </button>
+      <AddTaskButton handleAddTask={toggleModal} />
+
+      <AddTaskForm handleCreateTask={handleCreateTask} isActive={isModalOpen} userId={1} />
 
     </div>
+
   );
 };
 

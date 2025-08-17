@@ -12,9 +12,9 @@ import {
 const router = express.Router()
 
 router.use(validateToken)
-router.get("/users/:userId/tasks", validateRole("user"), getTasks)
-router.post("/users/:userId/tasks", validateRole("user"), createTask)
-router.put("/users/:userId/tasks/:taskId", validateRole("user"), updateTask)
-router.delete("/users/:userId/tasks/:taskId", validateRole("admin"), deleteTask)
+router.get("/:userId/tasks", validateRole("agent"), getTasks)
+router.post("/:userId/tasks", validateRole("agent"), createTask)
+router.put("/:userId/tasks/:taskId", validateRole("agent"), updateTask)
+router.delete("/:userId/tasks/:taskId", validateRole("admin"), deleteTask)
 
 export default router

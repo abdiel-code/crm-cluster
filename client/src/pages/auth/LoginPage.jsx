@@ -37,6 +37,8 @@ const LoginPage = () => {
 
       console.log(response);
 
+      console.log(response.data.user);
+
       setUser(response.data.user);
 
       setFormData({

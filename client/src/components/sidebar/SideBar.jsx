@@ -1,4 +1,7 @@
 import SideBarItem from "./SideBarItem.jsx";
+import { FaPaw } from "react-icons/fa";
+
+const IconExample = () => <FaPaw color="#577399" />;
 
 const items = [
   { alt: "profile", label: "Profile" },
@@ -20,7 +23,7 @@ const SideBar = () => {
     <div className="flex flex-col gap-4 justify-center items-center rounded-r-md w-[15%] h-full pt-4 border-r-2 border-[#495867]">
       <div className="flex items-center gap-3 w-full px-4 pb-4">
         <img
-          src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+          src={IconExample()}
           alt="logo"
           className="w-10 h-10"
         />
@@ -30,7 +33,7 @@ const SideBar = () => {
       {items.map((item) => (
         <SideBarItem
           key={item.alt}
-          icon={`https://cdn-icons-png.flaticon.com/512/${item.alt}/${item.alt}.png`}
+          icon={IconExample()}
           label={item.label}
           to={`/${item.alt}`}
         />
@@ -39,7 +42,7 @@ const SideBar = () => {
       {settingItems.map((item) => (
         <SideBarItem
           key={item.alt}
-          icon={`https://cdn-icons-png.flaticon.com/512/${item.alt}/${item.alt}.png`}
+          icon={IconExample()}
           label={item.label}
           to={`/${item.alt}`}
         />

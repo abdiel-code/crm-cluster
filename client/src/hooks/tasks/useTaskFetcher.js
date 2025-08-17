@@ -1,28 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
-const useTaskFetcher = (user, filters, search) => {
+const API_URL = "http://localhost:3030/api/users/";
+
+const useTaskFetcher = (user, filters = {}, search = "") => {
   const [taskList, setTaskList] = useState([]);
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async (overrideFilters = {}, overrideSearch = "") => {
     if (!user) return;
+
     try {
-      const response = await axios.get("http://localhost:3030/api/tasks", {
+      const response = await axios.get(`${API_URL}${user.id}/tasks`, {
         params: {
-          user_id: user.id,
           ...filters,
-          search
-        }
+          ...overrideFilters,
+          search: overrideSearch || search
+        },
+        withCredentials: true
       });
-      setTaskList(response.data);
+      setTaskList(response.data || []);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching tasks:", error);
     }
-  };
+  }, [user, filters, search]);
 
   useEffect(() => {
     fetchTasks();
-  }, [user, filters, search]);
+  }, [fetchTasks]);
 
   return { taskList, fetchTasks };
 };
