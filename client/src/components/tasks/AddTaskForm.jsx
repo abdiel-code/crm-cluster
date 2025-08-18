@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const AddTaskForm = ({ handleCreateTask, isActive, userId }) => {
+const AddTaskForm = ({ handleCreateTask, isActive, userId, toggleModal }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -13,9 +13,6 @@ const AddTaskForm = ({ handleCreateTask, isActive, userId }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    console.log("name", name);
-    console.log("value", value);
-
     setFormData({
       ...formData,
       [name]: value,
@@ -25,12 +22,25 @@ const AddTaskForm = ({ handleCreateTask, isActive, userId }) => {
   const onSubmit = (e) => {
     e.preventDefault();
     handleCreateTask(formData);
+    setFormData({
+      title: '',
+      description: '',
+      status: 'pending',
+      priority: 'low',
+      due_date: "",
+      user_id: userId
+    })
+    toggleModal();
   };
 
+
+
   return (
-    <div className={isActive
-      ? 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-lg shadow-[4px_4px_4px_4px_rgba(0,0,0,0.2)]  '
-      : 'hidden'}>
+    <div
+      className={`fixed left-1/2 transform -translate-x-1/2 bg-white p-4 rounded-lg shadow-[4px_4px_4px_4px_rgba(0,0,0,0.2)] transition-all duration-500 ease-out
+    ${isActive ? 'bottom-1/2 opacity-100 translate-y-1/2' : 'bottom-0 opacity-0 translate-y-0 pointer-events-none'}
+  `}
+    >
 
       <form onSubmit={onSubmit} className="flex flex-col gap-4 py-6">
 
@@ -91,9 +101,20 @@ const AddTaskForm = ({ handleCreateTask, isActive, userId }) => {
           />
         </div>
 
-        <button type="submit" className="py-2 px-3 rounded-xl bg-[#577399] text-white cursor-pointer hover:bg-[#495867]">
-          Add Task
-        </button>
+        <div className="flex justify-around gap-4">
+          <button type="submit" className="py-2 px-3 rounded-xl bg-[#577399] text-white cursor-pointer hover:bg-[#495867]">
+            Add Task
+          </button>
+
+          <button
+            type="button"
+            className="py-2 px-3 rounded-xl bg-[#FF847E] text-white cursor-pointer hover:bg-[#F7B1AB]"
+            onClick={toggleModal}
+          >
+            Cancel
+          </button>
+
+        </div>
       </form>
 
       <div className="absolute bottom-0 left-0 w-full h-4 bg-[#577399] rounded-b-lg"></div>

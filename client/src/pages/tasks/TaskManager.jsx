@@ -3,12 +3,15 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import TaskChart from "../../components/tasks/TaskChart.jsx";
 import useTaskFilters from "../../hooks/tasks/useTaskFilters.js";
 import useTaskFetcher from "../../hooks/tasks/useTaskFetcher.js";
+import useTaskActions from "../../hooks/tasks/useTaskActions.js";
 import FilterPanel from "../../components/tasks/FilterPanel.jsx";
 import AddTaskButton from "../../components/tasks/AddTaskButton.jsx";
 import AddTaskForm from "../../components/tasks/AddTaskForm.jsx";
 import { FaPaw } from "react-icons/fa";
-import { createTask } from "../../services/taskService.js";
+
 import formatDate from "../../hooks/global/formatDate.js";
+import UpdateTaskForm from "../../components/tasks/UpdateTaskForm.jsx";
+
 
 const IconExample = () => <FaPaw color="#577399" />;
 
@@ -23,21 +26,37 @@ const TaskManager = () => {
   const fullDate = new Date();
   const date = formatDate(fullDate);
   const day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][fullDate.getDay()];
-  //initialized in true to test
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState({
+    isOpen: false,
+    taskId: null
+  });
+
+
 
   const handleSearch = (e) => setSearch(e.target.value);
 
-  const handleCreateTask = (formData) => {
-    createTask(formData, user.id);
-    fetchTasks();
-  };
-
   const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
+    setIsModalOpen(prev => !prev);
   }
 
+  const toggleUpdateModal = (task = null) => {
+    if (isUpdateModalOpen.isOpen) {
+      setIsUpdateModalOpen({ isOpen: false, task: null });
+      return;
+    }
 
+    if (task) {
+      setIsUpdateModalOpen({ isOpen: true, task });
+    } else {
+      setIsUpdateModalOpen({ isOpen: false, task: null });
+    }
+
+  };
+
+
+  const { handleCreateTask, handleUpdateTask } = useTaskActions(user, fetchTasks, toggleUpdateModal);
   useEffect(() => {
     if (!user) {
       return;
@@ -116,14 +135,9 @@ const TaskManager = () => {
 
           <TaskChart
             key={task.id}
-            title={task.title}
-            description={task.description}
-            status={task.status}
-            priority={task.priority}
-            dueDate={task.due_date}
-            createdAt={task.created_at}
-            id={task.id}
+            task={task}
             fetchTasks={fetchTasks}
+            toggleUpdateModal={toggleUpdateModal}
           />
 
         ))}
@@ -133,9 +147,31 @@ const TaskManager = () => {
         )}
       </div>
 
-      <AddTaskButton handleAddTask={toggleModal} />
 
-      <AddTaskForm handleCreateTask={handleCreateTask} isActive={isModalOpen} userId={1} />
+      <AddTaskButton toggleModal={toggleModal} />
+
+      {isModalOpen &&
+
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+
+          <AddTaskForm handleCreateTask={handleCreateTask} isActive={isModalOpen} toggleModal={toggleModal} userId={user.id} />
+
+        </div>}
+
+
+      {isUpdateModalOpen.isOpen &&
+
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+
+          <UpdateTaskForm
+            task={isUpdateModalOpen.task}
+            isUpdateModalOpen={isUpdateModalOpen}
+            toggleUpdateModal={toggleUpdateModal}
+            handleUpdate={handleUpdateTask}
+          />
+        </div>
+
+      }
 
     </div>
 

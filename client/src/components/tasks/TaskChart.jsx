@@ -3,10 +3,11 @@ import formatDate from "../../hooks/global/formatDate.js";
 
 const userLocale = navigator.language || "en-US";
 
-const TaskChart = ({ title, description, status: initialStatus, priority, dueDate, createdAt, id, fetchTasks }) => {
+const TaskChart = ({ task, fetchTasks, toggleUpdateModal }) => {
 
-  const formattedDueDate = formatDate(dueDate, userLocale);
-  const formattedCreatedAt = formatDate(createdAt);
+  const { id, title, description, due_date, priority, status: initialStatus } = task;
+
+  const formattedDueDate = formatDate(due_date, userLocale);
 
   const [status, setStatus] = useState(initialStatus);
   const statusColors = {
@@ -30,11 +31,6 @@ const TaskChart = ({ title, description, status: initialStatus, priority, dueDat
   const handleDelete = () => {
     // axios.delete(`/api/tasks/${id}`)
   }
-
-  const handleModalEdit = () => {
-
-  }
-
 
 
   return (
@@ -68,7 +64,11 @@ const TaskChart = ({ title, description, status: initialStatus, priority, dueDat
       <div className="w-[90%] h-[1px] bg-[#495867] my-2"></div>
 
       <div className="flex items-center gap-1">
-        <button className="bg-[#bdd5ea] py-1 px-4 text-white rounded-[10px] font-medium text-[1.1rem] hover:bg-[#577399] cursor-pointer">
+        <button
+          type="button"
+          className="bg-[#bdd5ea] py-1 px-4 text-white rounded-[10px] font-medium text-[1.1rem] hover:bg-[#577399] cursor-pointer"
+          onClick={() => toggleUpdateModal(task)}
+        >
           Edit
         </button>
 
