@@ -7,6 +7,8 @@ import useTaskActions from "../../hooks/tasks/useTaskActions.js";
 import FilterPanel from "../../components/tasks/FilterPanel.jsx";
 import AddTaskButton from "../../components/tasks/AddTaskButton.jsx";
 import AddTaskForm from "../../components/tasks/AddTaskForm.jsx";
+import DeleteConfirmModal from "../../components/tasks/DeleteConfirmModal.jsx";
+
 import { FaPaw } from "react-icons/fa";
 
 import formatDate from "../../hooks/global/formatDate.js";
@@ -30,15 +32,31 @@ const TaskManager = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState({
     isOpen: false,
-    taskId: null
+    task: null
   });
-
+  const [deleteConfirm, setDeleteConfirm] = useState({
+    isOpen: false,
+    task: null
+  });
 
 
   const handleSearch = (e) => setSearch(e.target.value);
 
   const toggleModal = () => {
     setIsModalOpen(prev => !prev);
+  }
+
+  const toggleDeleteModal = (task = null) => {
+    if (deleteConfirm.isOpen) {
+      setDeleteConfirm({ isOpen: false, task: null });
+      return;
+    }
+
+    if (task) {
+      setDeleteConfirm({ isOpen: true, task });
+    } else {
+      setDeleteConfirm({ isOpen: false, task: null });
+    }
   }
 
   const toggleUpdateModal = (task = null) => {
@@ -56,7 +74,7 @@ const TaskManager = () => {
   };
 
 
-  const { handleCreateTask, handleUpdateTask } = useTaskActions(user, fetchTasks, toggleUpdateModal);
+  const { handleCreateTask, handleUpdateTask, handleDeleteTask } = useTaskActions(user, fetchTasks, toggleUpdateModal);
   useEffect(() => {
     if (!user) {
       return;
@@ -138,6 +156,7 @@ const TaskManager = () => {
             task={task}
             fetchTasks={fetchTasks}
             toggleUpdateModal={toggleUpdateModal}
+            toggleDeleteModal={toggleDeleteModal}
           />
 
         ))}
@@ -171,6 +190,18 @@ const TaskManager = () => {
           />
         </div>
 
+      }
+
+      {deleteConfirm.isOpen &&
+        <div className="fixed inset-0 bg-gray-700 bg-opacity-50 z-40 flex items-center justify-center">
+          <DeleteConfirmModal
+            task={deleteConfirm.task}
+            deleteConfirm={deleteConfirm}
+            toggleDeleteModal={toggleDeleteModal}
+            handleDelete={handleDeleteTask}
+
+          />
+        </div>
       }
 
     </div>

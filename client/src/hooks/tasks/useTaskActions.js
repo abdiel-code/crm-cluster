@@ -1,6 +1,6 @@
-import { createTask, updateTask } from "../../services/taskService.js";
+import { createTask, updateTask, deleteTask } from "../../services/taskService.js";
 
-const useTaskActions = (user, fetchTasks, toggleUpdateModal) => {
+const useTaskActions = (user, fetchTasks) => {
   const handleCreateTask = async (formData) => {
     await createTask(formData, user.id);
     await fetchTasks();
@@ -9,10 +9,16 @@ const useTaskActions = (user, fetchTasks, toggleUpdateModal) => {
   const handleUpdateTask = async (formData, taskId) => {
     await updateTask(taskId, formData, user.id);
     await fetchTasks();
-    toggleUpdateModal();
   };
+  const handleDeleteTask = async (taskId) => {
+    await deleteTask(taskId, user.id);
+    await fetchTasks();
+  }
 
-  return { handleCreateTask, handleUpdateTask };
+
+  return { handleCreateTask, handleUpdateTask, handleDeleteTask };
+
 };
+
 
 export default useTaskActions;

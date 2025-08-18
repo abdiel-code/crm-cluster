@@ -3,7 +3,7 @@ import formatDate from "../../hooks/global/formatDate.js";
 
 const userLocale = navigator.language || "en-US";
 
-const TaskChart = ({ task, fetchTasks, toggleUpdateModal }) => {
+const TaskChart = ({ task, toggleUpdateModal, toggleDeleteModal }) => {
 
   const { id, title, description, due_date, priority, status: initialStatus } = task;
 
@@ -27,11 +27,6 @@ const TaskChart = ({ task, fetchTasks, toggleUpdateModal }) => {
     setStatus(e.target.value);
     // axios.put(`/api/tasks/${id}`, { status: e.target.value })
   }
-
-  const handleDelete = () => {
-    // axios.delete(`/api/tasks/${id}`)
-  }
-
 
   return (
     <div className='border-gray-400 shadow-[4px_4px_4px_4px_rgba(0,0,0,0.2)] p-2 
@@ -86,6 +81,8 @@ const TaskChart = ({ task, fetchTasks, toggleUpdateModal }) => {
         </select>
 
         <button
+          type="button"
+          onClick={() => toggleDeleteModal(task)}
           className="bg-[#F7B1AB] w-10 h-10 text-white rounded-full font-bold text-[1.1rem] 
           hover:bg-[#FF847E] cursor-pointer flex justify-center items-center">
           <div className="w-6 h-1 bg-white rounded">

@@ -11,6 +11,7 @@ const UpdateTaskForm = ({ task, isUpdateModalOpen, toggleUpdateModal, handleUpda
   const onSubmit = (e) => {
     e.preventDefault();
     handleUpdate(formData, task.id);
+    toggleUpdateModal();
   };
 
   const statusColors = {

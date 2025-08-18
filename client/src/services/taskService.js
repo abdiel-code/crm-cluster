@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = "http://localhost:3030/api/users/";
 
-// Create tasks
+// Create task
 export const createTask = async (taskData, user) => {
 
   if (!user) {
@@ -20,7 +20,7 @@ export const createTask = async (taskData, user) => {
 
 }
 
-// Update tasks
+// Update task
 export const updateTask = async (taskId, taskData, user) => {
 
   if (!user) {
@@ -36,3 +36,24 @@ export const updateTask = async (taskId, taskData, user) => {
     throw error;
   }
 }
+
+// Delete task
+
+export const deleteTask = async (taskId, user) => {
+
+  if (!user) {
+    return;
+  }
+
+  try {
+    const response = await axios.delete(API_URL + user + "/tasks/" + taskId, { withCredentials: true });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    throw error;
+  }
+
+}
+
+
