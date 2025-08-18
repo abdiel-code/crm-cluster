@@ -3,13 +3,15 @@ import formatDate from "../../hooks/global/formatDate.js";
 
 const userLocale = navigator.language || "en-US";
 
-const TaskChart = ({ task, toggleUpdateModal, toggleDeleteModal }) => {
+const TaskChart = ({ task, fetchTasks, toggleUpdateModal, toggleDeleteModal, handleUpdateTask }) => {
 
   const { id, title, description, due_date, priority, status: initialStatus } = task;
 
   const formattedDueDate = formatDate(due_date, userLocale);
 
   const [status, setStatus] = useState(initialStatus);
+  const [taskData, setTaskData] = useState(task);
+
   const statusColors = {
     pending: '#577399',
     in_progress: '#ffb347',
@@ -23,10 +25,19 @@ const TaskChart = ({ task, toggleUpdateModal, toggleDeleteModal }) => {
     urgent: '#ff0000',
   }
 
+
   const handleOption = (e) => {
-    setStatus(e.target.value);
-    // axios.put(`/api/tasks/${id}`, { status: e.target.value })
-  }
+    const newStatus = e.target.value;
+    setStatus(newStatus);
+
+    // Excluir due_date del objeto enviado
+    const { due_date, ...rest } = taskData;
+    const updatedTask = { ...rest, status: newStatus };
+
+    setTaskData(updatedTask);
+    handleUpdateTask(updatedTask, id);
+    fetchTasks();
+  };
 
   return (
     <div className='border-gray-400 shadow-[4px_4px_4px_4px_rgba(0,0,0,0.2)] p-2 

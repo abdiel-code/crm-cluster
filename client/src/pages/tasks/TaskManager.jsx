@@ -157,6 +157,7 @@ const TaskManager = () => {
             fetchTasks={fetchTasks}
             toggleUpdateModal={toggleUpdateModal}
             toggleDeleteModal={toggleDeleteModal}
+            handleUpdateTask={handleUpdateTask}
           />
 
         ))}
