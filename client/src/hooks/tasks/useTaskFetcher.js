@@ -4,6 +4,7 @@ import axios from "axios";
 const API_URL = "http://localhost:3030/api/users/";
 
 const useTaskFetcher = (user, filters = {}, search = "") => {
+
   const [taskList, setTaskList] = useState([]);
 
   const fetchTasks = useCallback(async (overrideFilters = {}, overrideSearch = "") => {
@@ -28,6 +29,7 @@ const useTaskFetcher = (user, filters = {}, search = "") => {
     fetchTasks();
   }, [fetchTasks]);
 
+  console.log("fetchet", taskList);
   return { taskList, fetchTasks };
 };
 

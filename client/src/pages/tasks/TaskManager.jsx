@@ -24,6 +24,8 @@ const TaskManager = () => {
   const { filters, handleAddFilter } = useTaskFilters();
   const { taskList, fetchTasks } = useTaskFetcher(user, filters, search);
 
+  console.log("taskList", taskList);
+
   const availableFilters = ["pending", "in_progress", "completed", "cancelled", "low", "medium", "high", "urgent"];
   const fullDate = new Date();
   const date = formatDate(fullDate);
@@ -75,6 +77,7 @@ const TaskManager = () => {
 
 
   const { handleCreateTask, handleUpdateTask, handleDeleteTask } = useTaskActions(user, fetchTasks, toggleUpdateModal);
+
   useEffect(() => {
     if (!user) {
       return;
@@ -170,13 +173,13 @@ const TaskManager = () => {
 
       <AddTaskButton toggleModal={toggleModal} />
 
-      {isModalOpen &&
 
-        <div className="fixed inset-0 flex items-center justify-center z-50">
 
-          <AddTaskForm handleCreateTask={handleCreateTask} isActive={isModalOpen} toggleModal={toggleModal} userId={user.id} />
+      <div className="z-60">
 
-        </div>}
+        <AddTaskForm handleCreateTask={handleCreateTask} isActive={isModalOpen} toggleModal={toggleModal} userId={user.id} />
+
+      </div>
 
 
       {isUpdateModalOpen.isOpen &&

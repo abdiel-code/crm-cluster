@@ -65,6 +65,7 @@ export const createTask = async (req, res) => {
 export const updateTask = async (req, res) => {
   const taskId = req.params.taskId
   const userId = req.params.userId
+
   const { title, description, status, priority, due_date } = req.body
   let query = "UPDATE tasks SET title = ?, description = ?";
   const params = [title, description];

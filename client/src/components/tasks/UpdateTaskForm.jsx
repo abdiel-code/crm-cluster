@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 const UpdateTaskForm = ({ task, isUpdateModalOpen, toggleUpdateModal, handleUpdate }) => {
   const [formData, setFormData] = useState({ ...task });
 
-  const hanleChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    console.log(formData);
   };
 
   const onSubmit = (e) => {
@@ -28,22 +29,21 @@ const UpdateTaskForm = ({ task, isUpdateModalOpen, toggleUpdateModal, handleUpda
   }
 
   return (
-
     <div
       className={`fixed left-1/2 transform -translate-x-1/2 bg-white p-6 rounded-lg shadow-lg transition-all duration-500 ease-out w-[90%] max-w-xl
-    ${isUpdateModalOpen.isOpen ? 'bottom-1/2 opacity-100 translate-y-1/2' : 'bottom-0 opacity-0 translate-y-0 pointer-events-none'}
-  `}
+      ${isUpdateModalOpen.isOpen ? 'bottom-1/2 opacity-100 translate-y-1/2' : 'bottom-0 opacity-0 translate-y-0 pointer-events-none'}
+    `}
     >
       <h1 className="font-bold text-2xl text-center mb-4">Update Task</h1>
 
-      <div className="space-y-4">
+      <form onSubmit={onSubmit} className="space-y-4">
         <div className="flex flex-col">
           <label htmlFor="title" className="font-bold text-lg mb-1">Title</label>
           <input
             type="text"
             name="title"
             value={formData.title}
-            onChange={hanleChange}
+            onChange={handleChange}
             className="border rounded px-3 py-2"
           />
         </div>
@@ -53,7 +53,7 @@ const UpdateTaskForm = ({ task, isUpdateModalOpen, toggleUpdateModal, handleUpda
           <textarea
             name="description"
             value={formData.description}
-            onChange={hanleChange}
+            onChange={handleChange}
             className="border rounded px-3 py-2 resize-none"
           />
         </div>
@@ -63,7 +63,7 @@ const UpdateTaskForm = ({ task, isUpdateModalOpen, toggleUpdateModal, handleUpda
           <select
             name="priority"
             value={formData.priority}
-            onChange={hanleChange}
+            onChange={handleChange}
             className="border rounded px-3 py-2"
             style={{ color: priorityColors[formData.priority] }}
           >
@@ -80,7 +80,7 @@ const UpdateTaskForm = ({ task, isUpdateModalOpen, toggleUpdateModal, handleUpda
             type="date"
             name="due_date"
             value={formData.due_date}
-            onChange={hanleChange}
+            onChange={handleChange}
             className="border rounded px-3 py-2"
           />
         </div>
@@ -90,7 +90,7 @@ const UpdateTaskForm = ({ task, isUpdateModalOpen, toggleUpdateModal, handleUpda
           <select
             name="status"
             value={formData.status}
-            onChange={hanleChange}
+            onChange={handleChange}
             className="border rounded px-3 py-2 text-white"
             style={{ backgroundColor: statusColors[formData.status] }}
           >
@@ -100,28 +100,26 @@ const UpdateTaskForm = ({ task, isUpdateModalOpen, toggleUpdateModal, handleUpda
             <option value="cancelled">Cancelled</option>
           </select>
         </div>
-      </div>
 
-      <div className="flex justify-end gap-2 mt-6">
-        <button
-          type="submit"
-          onClick={onSubmit}
-          className="bg-[#577399] text-white px-4 py-2 rounded hover:bg-[#455a7c]"
-        >
-          Update
-        </button>
-        <button
-          type="button"
-          onClick={toggleUpdateModal}
-          className="bg-[#FF847E] text-white px-4 py-2 rounded hover:bg-[#F7B1AB]"
-        >
-          Cancel
-        </button>
-      </div>
+        <div className="flex justify-end gap-2 mt-6">
+          <button
+            type="submit"
+            className="bg-[#577399] text-white px-4 py-2 rounded hover:bg-[#455a7c] cursor-pointer"
+          >
+            Update
+          </button>
+          <button
+            type="button"
+            onClick={toggleUpdateModal}
+            className="bg-[#FF847E] text-white px-4 py-2 rounded hover:bg-[#F7B1AB] cursor-pointer"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
     </div>
-  )
+  );
 
+}
 
-};
-
-export default UpdateTaskForm;
+export default UpdateTaskForm

@@ -5,12 +5,11 @@ const userLocale = navigator.language || "en-US";
 
 const TaskChart = ({ task, fetchTasks, toggleUpdateModal, toggleDeleteModal, handleUpdateTask }) => {
 
-  const { id, title, description, due_date, priority, status: initialStatus } = task;
+
+  const { id, title, description, due_date, priority, status = "pending" } = task;
 
   const formattedDueDate = formatDate(due_date, userLocale);
 
-  const [status, setStatus] = useState(initialStatus);
-  const [taskData, setTaskData] = useState(task);
 
   const statusColors = {
     pending: '#577399',
@@ -28,13 +27,10 @@ const TaskChart = ({ task, fetchTasks, toggleUpdateModal, toggleDeleteModal, han
 
   const handleOption = (e) => {
     const newStatus = e.target.value;
-    setStatus(newStatus);
 
-    // Excluir due_date del objeto enviado
-    const { due_date, ...rest } = taskData;
+    const { due_date, ...rest } = task;
     const updatedTask = { ...rest, status: newStatus };
 
-    setTaskData(updatedTask);
     handleUpdateTask(updatedTask, id);
     fetchTasks();
   };
@@ -80,6 +76,7 @@ const TaskChart = ({ task, fetchTasks, toggleUpdateModal, toggleDeleteModal, han
 
         <select
           value={status}
+          name="status"
           onChange={handleOption}
           className="py-1 px-3 text-white text-[1.1rem] font-medium rounded-lg border border-gray-300 cursor-pointer
           focus:outline-none focus:ring-2 transition duration-200"

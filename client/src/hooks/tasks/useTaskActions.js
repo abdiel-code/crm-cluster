@@ -8,6 +8,7 @@ const useTaskActions = (user, fetchTasks) => {
 
   const handleUpdateTask = async (formData, taskId) => {
     await updateTask(taskId, formData, user.id);
+    console.log("Data that is updated", formData);
     await fetchTasks();
   };
   const handleDeleteTask = async (taskId) => {
