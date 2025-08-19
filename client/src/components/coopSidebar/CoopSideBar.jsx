@@ -1,4 +1,4 @@
-import SideBarItem from "./SideBarItem.jsx";
+import CoopSideBarItem from "./CoopSideBarItem.jsx";
 import { FaPaw } from "react-icons/fa";
 
 const IconExample = () => <FaPaw color="#577399" />;
@@ -19,7 +19,7 @@ const settingItems = [
   //{ alt: "logout", label: "Logout" },
 ]
 
-const SideBar = () => {
+const CoopSideBar = () => {
   return (
     <div className="flex flex-col gap-4 justify-center items-center rounded-r-md w-[15%] h-full pt-4 border-r-2 border-[#495867]">
       <div className="flex items-center gap-3 w-full px-4 pb-4">
@@ -32,24 +32,24 @@ const SideBar = () => {
 
       </div>
       {items.map((item) => (
-        <SideBarItem
+        <CoopSideBarItem
           key={item.alt}
           icon={IconExample()}
           label={item.label}
-          to={`/${item.alt}`}
+          to={`/coop/${item.alt}`}
         />
       ))}
       <div className="h-[1px] w-[80%] bg-[#495867] my-4"></div>
       {settingItems.map((item) => (
-        <SideBarItem
+        <CoopSideBarItem
           key={item.alt}
           icon={IconExample()}
           label={item.label}
-          to={`/${item.alt}`}
+          to={`/coop/${item.alt}`}
         />
       ))}
     </div>
   );
 };
 
-export default SideBar;
+export default CoopSideBar;
