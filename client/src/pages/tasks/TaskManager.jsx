@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import TaskChart from "../../components/tasks/TaskChart.jsx";
 import useTaskFilters from "../../hooks/tasks/useTaskFilters.js";
@@ -24,8 +24,6 @@ const TaskManager = () => {
   const { filters, handleAddFilter } = useTaskFilters();
   const { taskList, fetchTasks } = useTaskFetcher(user, filters, search);
 
-  console.log("taskList", taskList);
-
   const availableFilters = ["pending", "in_progress", "completed", "cancelled", "low", "medium", "high", "urgent"];
   const fullDate = new Date();
   const date = formatDate(fullDate);
@@ -40,7 +38,9 @@ const TaskManager = () => {
     isOpen: false,
     task: null
   });
+  const [isAnimating, setIsAnimating] = useState(false);
 
+  const [showModal, setShowModal] = useState(false);
 
   const handleSearch = (e) => setSearch(e.target.value);
 
@@ -78,23 +78,23 @@ const TaskManager = () => {
 
   const { handleCreateTask, handleUpdateTask, handleDeleteTask } = useTaskActions(user, fetchTasks, toggleUpdateModal);
 
-  useEffect(() => {
-    if (!user) {
-      return;
-    }
+useEffect(() => {
+  if (!user) return;
 
-    fetchTasks();
-  }, [user]);
-
-  useEffect(() => {
-    fetchTasks(filters);
-  }, [filters]);
-
-  useEffect(() => {
-    fetchTasks({ ...filters, search });
-  }, [filters, search]);
+  fetchTasks({ ...filters, search });
+}, [user, filters, search]);
 
 
+useEffect(() => {
+  if (isUpdateModalOpen.isOpen) {
+    setShowModal(true);
+    setTimeout(() => setIsAnimating(true), 10);
+  } else {
+    setIsAnimating(false);
+    const timer = setTimeout(() => setShowModal(false), 500);
+    return () => clearTimeout(timer);
+  }
+}, [isUpdateModalOpen.isOpen]);
 
   return (
     <div className="w-full h-full flex flex-col p-2 items-center">
@@ -174,6 +174,10 @@ const TaskManager = () => {
       <AddTaskButton toggleModal={toggleModal} />
 
 
+{isModalOpen && (
+    <div className="fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-500">
+      </div>
+)}
 
       <div className="z-60">
 
@@ -182,34 +186,34 @@ const TaskManager = () => {
       </div>
 
 
-      {isUpdateModalOpen.isOpen &&
-
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-
-          <UpdateTaskForm
-            task={isUpdateModalOpen.task}
-            isUpdateModalOpen={isUpdateModalOpen}
-            toggleUpdateModal={toggleUpdateModal}
-            handleUpdate={handleUpdateTask}
-          />
-        </div>
-
-      }
+      {showModal && (
+  <div className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-500
+      ${isAnimating ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+  >
+    <UpdateTaskForm
+      task={isUpdateModalOpen.task}
+      isUpdateModalOpen={isUpdateModalOpen}
+      toggleUpdateModal={toggleUpdateModal}
+      handleUpdate={handleUpdateTask}
+    />
+  </div>
+)}
 
       {deleteConfirm.isOpen &&
         <div className="fixed inset-0 bg-gray-700 bg-opacity-50 z-40 flex items-center justify-center">
-          <DeleteConfirmModal
-            task={deleteConfirm.task}
-            deleteConfirm={deleteConfirm}
-            toggleDeleteModal={toggleDeleteModal}
-            handleDelete={handleDeleteTask}
 
+          <DeleteConfirmModal
+          task={deleteConfirm.task}
+          deleteConfirm={deleteConfirm}
+          toggleDeleteModal={toggleDeleteModal}
+          handleDelete={handleDeleteTask}
+          
           />
         </div>
       }
 
     </div>
-
+ 
   );
 };
 

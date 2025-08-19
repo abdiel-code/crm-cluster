@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const UpdateTaskForm = ({ task, isUpdateModalOpen, toggleUpdateModal, handleUpdate }) => {
-  const [formData, setFormData] = useState({ ...task });
+  const [formData, setFormData] = useState({
+    ...task,
+    due_date: task?.due_date ? task.due_date.split('T')[0] : ''
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    console.log(formData);
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const onSubmit = (e) => {
@@ -15,84 +20,48 @@ const UpdateTaskForm = ({ task, isUpdateModalOpen, toggleUpdateModal, handleUpda
     toggleUpdateModal();
   };
 
-  const statusColors = {
-    pending: '#577399',
-    in_progress: '#ffb347',
-    completed: '#38A169',
-    cancelled: '#F7B1AB',
-  }
-  const priorityColors = {
-    low: '#577399',
-    medium: '#ffb347',
-    high: '#F7B1AB',
-    urgent: '#ff0000',
-  }
-
   return (
-    <div
-      className={`fixed left-1/2 transform -translate-x-1/2 bg-white p-6 rounded-lg shadow-lg transition-all duration-500 ease-out w-[90%] max-w-xl
-      ${isUpdateModalOpen.isOpen ? 'bottom-1/2 opacity-100 translate-y-1/2' : 'bottom-0 opacity-0 translate-y-0 pointer-events-none'}
-    `}
-    >
-      <h1 className="font-bold text-2xl text-center mb-4">Update Task</h1>
-
-      <form onSubmit={onSubmit} className="space-y-4">
-        <div className="flex flex-col">
-          <label htmlFor="title" className="font-bold text-lg mb-1">Title</label>
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            className="border rounded px-3 py-2"
+    <div className={`fixed left-1/2 transform -translate-x-1/2 bg-white p-4 rounded-lg shadow-[4px_4px_4px_4px_rgba(0,0,0,0.2)] transition-all duration-500 ease-out ${
+      isUpdateModalOpen.isOpen 
+        ? 'bottom-1/2 opacity-100 translate-y-1/2' 
+        : 'bottom-0 opacity-0 translate-y-0 pointer-events-none'
+    }`}>
+      <h1 className='text-xl text-center font-bold'>Update Task</h1>
+      <form onSubmit={onSubmit} className="flex flex-col gap-4 py-6">
+        
+        <div className="absolute top-0 left-0 w-full h-4 bg-[#577399] rounded-t-lg"></div>
+        
+        <div>
+          <label htmlFor="title" className="block mb-2 text-[1.2rem]">Title</label>
+          <input 
+            id="title" 
+            type="text" 
+            name="title" 
+            value={formData.title} 
+            onChange={handleChange} 
+            className='rounded-2xl bg-gray-300 focus:outline-none transition-transform duration-300 ease-in-out focus:scale-105 px-5 py-1 text-[1rem] focus:border-1 focus:border-[#577399]' 
+          />
+        </div>
+        
+        <div>
+          <label htmlFor="description" className="block mb-2 text-[1.2rem]">Description</label>
+          <textarea 
+            id="description" 
+            name="description" 
+            value={formData.description} 
+            onChange={handleChange} 
+            className='rounded-2xl bg-gray-300 focus:outline-none transition-transform duration-300 ease-in-out focus:scale-105 px-5 py-2 text-[1rem] focus:border-1 focus:border-[#577399] resize-none h-20' 
           />
         </div>
 
-        <div className="flex flex-col">
-          <label htmlFor="description" className="font-bold text-lg mb-1">Description</label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            className="border rounded px-3 py-2 resize-none"
-          />
-        </div>
-
-        <div className="flex flex-col">
-          <label htmlFor="priority" className="font-bold text-lg mb-1">Priority</label>
-          <select
-            name="priority"
-            value={formData.priority}
-            onChange={handleChange}
-            className="border rounded px-3 py-2"
-            style={{ color: priorityColors[formData.priority] }}
-          >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-            <option value="urgent">Urgent</option>
-          </select>
-        </div>
-
-        <div className="flex flex-col">
-          <label htmlFor="due_date" className="font-bold text-lg mb-1">Due Date</label>
-          <input
-            type="date"
-            name="due_date"
-            value={formData.due_date}
-            onChange={handleChange}
-            className="border rounded px-3 py-2"
-          />
-        </div>
-
-        <div className="flex flex-col">
-          <label htmlFor="status" className="font-bold text-lg mb-1">Status</label>
-          <select
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            className="border rounded px-3 py-2 text-white"
-            style={{ backgroundColor: statusColors[formData.status] }}
+        <div>
+          <label htmlFor="status" className="block mb-2 text-[1.2rem]">Status</label>
+          <select 
+            id="status"
+            name="status" 
+            value={formData.status} 
+            onChange={handleChange} 
+            className='rounded-2xl bg-gray-300 focus:outline-none transition-transform duration-300 ease-in-out focus:scale-105 px-5 py-1 text-[1rem] focus:border-1 focus:border-[#577399] w-full'
           >
             <option value="pending">Pending</option>
             <option value="in_progress">In Progress</option>
@@ -101,25 +70,54 @@ const UpdateTaskForm = ({ task, isUpdateModalOpen, toggleUpdateModal, handleUpda
           </select>
         </div>
 
-        <div className="flex justify-end gap-2 mt-6">
-          <button
-            type="submit"
-            className="bg-[#577399] text-white px-4 py-2 rounded hover:bg-[#455a7c] cursor-pointer"
+        <div>
+          <label htmlFor="priority" className="block mb-2 text-[1.2rem]">Priority</label>
+          <select 
+            id="priority"
+            name="priority" 
+            value={formData.priority} 
+            onChange={handleChange} 
+            className='rounded-2xl bg-gray-300 focus:outline-none transition-transform duration-300 ease-in-out focus:scale-105 px-5 py-1 text-[1rem] focus:border-1 focus:border-[#577399] w-full'
           >
-            Update
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="due_date" className="block mb-2 text-[1.2rem]">Due Date</label>
+          <input 
+            id="due_date" 
+            type="date" 
+            name="due_date" 
+            value={formData.due_date} 
+            onChange={handleChange} 
+            className='rounded-2xl bg-gray-300 focus:outline-none transition-transform duration-300 ease-in-out focus:scale-105 px-5 py-1 text-[1rem] focus:border-1 focus:border-[#577399] w-full'
+          />
+        </div>
+
+        <div className="flex justify-around gap-4">
+          <button 
+            type="submit" 
+            className="py-2 px-3 rounded-xl bg-[#577399] text-white cursor-pointer hover:bg-[#495867]"
+          >
+            Update Task
           </button>
-          <button
-            type="button"
+          <button 
+            type="button" 
+            className="py-2 px-3 rounded-xl bg-[#FF847E] text-white cursor-pointer hover:bg-[#F7B1AB]"
             onClick={toggleUpdateModal}
-            className="bg-[#FF847E] text-white px-4 py-2 rounded hover:bg-[#F7B1AB] cursor-pointer"
           >
             Cancel
           </button>
         </div>
+
+        <div className="absolute bottom-0 left-0 w-full h-4 bg-[#577399] rounded-b-lg"></div>
       </form>
     </div>
   );
-
 }
 
-export default UpdateTaskForm
+export default UpdateTaskForm;

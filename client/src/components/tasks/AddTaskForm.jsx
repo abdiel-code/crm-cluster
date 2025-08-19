@@ -42,6 +42,8 @@ const AddTaskForm = ({ handleCreateTask, isActive, userId, toggleModal }) => {
   `}
     >
 
+      <h1 className='text-xl text-center font-bold'>Add Task</h1>
+
       <form onSubmit={onSubmit} className="flex flex-col gap-4 py-6">
 
         <div className="absolute top-0 left-0 w-full h-4 bg-[#577399] rounded-t-lg"></div>
@@ -58,46 +60,59 @@ const AddTaskForm = ({ handleCreateTask, isActive, userId, toggleModal }) => {
           />
         </div>
 
-        <div>
+<div>
           <label htmlFor="description" className="block mb-2 text-[1.2rem]">Description</label>
-          <input
-            id="description"
-            type="text"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            className='rounded-2xl bg-gray-300 focus:outline-none transition-transform duration-300 ease-in-out focus:scale-105 px-5 py-1 text-[1rem] focus:border-1 focus:border-[#577399]'
-
+          <textarea 
+            id="description" 
+            name="description" 
+            value={formData.description} 
+            onChange={handleChange} 
+            className='rounded-2xl bg-gray-300 focus:outline-none transition-transform duration-300 ease-in-out focus:scale-105 px-5 py-2 text-[1rem] focus:border-1 focus:border-[#577399] resize-none h-20' 
           />
         </div>
 
-        {/* Status selector*/}
+        <div>
+          <label htmlFor="status" className="block mb-2 text-[1.2rem]">Status</label>
+          <select 
+            id="status"
+            name="status" 
+            value={formData.status} 
+            onChange={handleChange} 
+            className='rounded-2xl bg-gray-300 focus:outline-none transition-transform duration-300 ease-in-out focus:scale-105 px-5 py-1 text-[1rem] focus:border-1 focus:border-[#577399] w-full'
+          >
+            <option value="pending">Pending</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
 
-        <select name="status" value={formData.status} onChange={handleChange} className='text-[1.2rem]'>
-          <option value="pending">Pending</option>
-          <option value="in_progress">In Progress</option>
-          <option value="completed">Completed</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
-
-        {/* Priority selector*/}
-
-        <select name="priority" value={formData.priority} onChange={handleChange} className='text-[1.2rem]'>
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-          <option value="urgent">Urgent</option>
-        </select>
+                <div>
+          <label htmlFor="priority" className="block mb-2 text-[1.2rem]">Priority</label>
+          <select 
+            id="priority"
+            name="priority" 
+            value={formData.priority} 
+            onChange={handleChange} 
+            className='rounded-2xl bg-gray-300 focus:outline-none transition-transform duration-300 ease-in-out focus:scale-105 px-5 py-1 text-[1rem] focus:border-1 focus:border-[#577399] w-full'
+          >
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
+          </select>
+        </div>
 
 
         <div>
           <label htmlFor="due_date" className="block mb-2 text-[1.2rem]">Due Date</label>
-          <input
-            id="due_date"
-            type="date"
-            name="due_date"
-            value={formData.due_date}
-            onChange={handleChange}
+          <input 
+            id="due_date" 
+            type="date" 
+            name="due_date" 
+            value={formData.due_date} 
+            onChange={handleChange} 
+            className='rounded-2xl bg-gray-300 focus:outline-none transition-transform duration-300 ease-in-out focus:scale-105 px-5 py-1 text-[1rem] focus:border-1 focus:border-[#577399] w-full'
           />
         </div>
 

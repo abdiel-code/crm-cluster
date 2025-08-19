@@ -21,7 +21,6 @@ const useTaskFetcher = (user, filters = {}, search = "") => {
       });
       setTaskList(response.data || []);
     } catch (error) {
-      console.error("Error fetching tasks:", error);
     }
   }, [user, filters, search]);
 
@@ -29,7 +28,6 @@ const useTaskFetcher = (user, filters = {}, search = "") => {
     fetchTasks();
   }, [fetchTasks]);
 
-  console.log("fetchet", taskList);
   return { taskList, fetchTasks };
 };
 
