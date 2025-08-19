@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const AddTaskForm = ({ handleCreateTask, isActive, userId, toggleModal }) => {
+const AddTaskForm = ({ handleCreateTask, isActive, userId, toggleModal, handleMessage }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -19,9 +19,10 @@ const AddTaskForm = ({ handleCreateTask, isActive, userId, toggleModal }) => {
     });
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    handleCreateTask(formData);
+    const response = await handleCreateTask(formData);
+    handleMessage(response.message);
     setFormData({
       title: '',
       description: '',

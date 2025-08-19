@@ -1,8 +1,9 @@
-const DeleteConfirmModal = ({ task, deleteConfirm, toggleDeleteModal, handleDelete }) => {
+const DeleteConfirmModal = ({ task, deleteConfirm, toggleDeleteModal, handleDelete, handleMessage }) => {
 
 
-  const onDelete = () => {
-    handleDelete(task.id);
+  const onDelete = async () => {
+    const response = await handleDelete(task.id);
+    handleMessage(response.message);
     toggleDeleteModal();
   };
 

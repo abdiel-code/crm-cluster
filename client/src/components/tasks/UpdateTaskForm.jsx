@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const UpdateTaskForm = ({ task, isUpdateModalOpen, toggleUpdateModal, handleUpdate }) => {
+const UpdateTaskForm = ({ task, isUpdateModalOpen, toggleUpdateModal, handleUpdate, handleMessage }) => {
   const [formData, setFormData] = useState({
     ...task,
     due_date: task?.due_date ? task.due_date.split('T')[0] : ''
@@ -14,9 +14,10 @@ const UpdateTaskForm = ({ task, isUpdateModalOpen, toggleUpdateModal, handleUpda
     }));
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    handleUpdate(formData, task.id);
+    const response = await handleUpdate(formData, task.id);
+    handleMessage(response.message)
     toggleUpdateModal();
   };
 

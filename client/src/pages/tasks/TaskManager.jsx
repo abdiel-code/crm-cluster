@@ -8,6 +8,7 @@ import FilterPanel from "../../components/tasks/FilterPanel.jsx";
 import AddTaskButton from "../../components/tasks/AddTaskButton.jsx";
 import AddTaskForm from "../../components/tasks/AddTaskForm.jsx";
 import DeleteConfirmModal from "../../components/tasks/DeleteConfirmModal.jsx";
+import NotificationBar from "../../components/core/NotificationBar.jsx";
 
 import { FaPaw } from "react-icons/fa";
 
@@ -44,6 +45,9 @@ const TaskManager = () => {
 
   const handleSearch = (e) => setSearch(e.target.value);
 
+  const [message, setMessage] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
+
   const toggleModal = () => {
     setIsModalOpen(prev => !prev);
   }
@@ -75,14 +79,17 @@ const TaskManager = () => {
 
   };
 
-
   const { handleCreateTask, handleUpdateTask, handleDeleteTask } = useTaskActions(user, fetchTasks, toggleUpdateModal);
+
+  const handleMessage = (msg) => {
+    setMessage(msg);
+  }
 
 useEffect(() => {
   if (!user) return;
 
   fetchTasks({ ...filters, search });
-}, [user, filters, search]);
+}, [user, filters, search, fetchTasks]);
 
 
 useEffect(() => {
@@ -96,8 +103,22 @@ useEffect(() => {
   }
 }, [isUpdateModalOpen.isOpen]);
 
+useEffect(() => {
+  if (message) {
+    setIsVisible(true);
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+      setMessage("");
+    }, 3000);
+    return () => clearTimeout(timer);
+  }
+}, [message]);
+
   return (
     <div className="w-full h-full flex flex-col p-2 items-center">
+
+
+      <NotificationBar message={message} isVisible={isVisible}/>
 
       <div className="flex items-center justify-around w-full mb-4">
         <div>
@@ -161,6 +182,7 @@ useEffect(() => {
             toggleUpdateModal={toggleUpdateModal}
             toggleDeleteModal={toggleDeleteModal}
             handleUpdateTask={handleUpdateTask}
+            handleMessage={handleMessage}
           />
 
         ))}
@@ -181,7 +203,12 @@ useEffect(() => {
 
       <div className="z-60">
 
-        <AddTaskForm handleCreateTask={handleCreateTask} isActive={isModalOpen} toggleModal={toggleModal} userId={user.id} />
+        <AddTaskForm 
+        handleCreateTask={handleCreateTask} 
+        handleMessage={handleMessage}
+        isActive={isModalOpen} 
+        toggleModal={toggleModal} 
+        userId={user.id} />
 
       </div>
 
@@ -195,6 +222,7 @@ useEffect(() => {
       isUpdateModalOpen={isUpdateModalOpen}
       toggleUpdateModal={toggleUpdateModal}
       handleUpdate={handleUpdateTask}
+      handleMessage={handleMessage}
     />
   </div>
 )}
@@ -207,7 +235,7 @@ useEffect(() => {
           deleteConfirm={deleteConfirm}
           toggleDeleteModal={toggleDeleteModal}
           handleDelete={handleDeleteTask}
-          
+          handleMessage={handleMessage}          
           />
         </div>
       }

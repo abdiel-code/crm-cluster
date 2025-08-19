@@ -2,17 +2,20 @@ import { createTask, updateTask, deleteTask } from "../../services/taskService.j
 
 const useTaskActions = (user, fetchTasks) => {
   const handleCreateTask = async (formData) => {
-    await createTask(formData, user.id);
+    const response = await createTask(formData, user.id);
     await fetchTasks();
+    return response;
   };
 
   const handleUpdateTask = async (formData, taskId) => {
-    await updateTask(taskId, formData, user.id);
+    const response = await updateTask(taskId, formData, user.id);
     await fetchTasks();
+    return response;
   };
   const handleDeleteTask = async (taskId) => {
-    await deleteTask(taskId, user.id);
+    const response = await deleteTask(taskId, user.id);
     await fetchTasks();
+    return response;
   }
 
 

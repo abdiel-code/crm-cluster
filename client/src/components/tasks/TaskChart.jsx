@@ -1,9 +1,8 @@
-import React, { useState } from "react";
 import formatDate from "../../hooks/global/formatDate.js";
 
 const userLocale = navigator.language || "en-US";
 
-const TaskChart = ({ task, fetchTasks, toggleUpdateModal, toggleDeleteModal, handleUpdateTask }) => {
+const TaskChart = ({ task, fetchTasks, toggleUpdateModal, toggleDeleteModal, handleUpdateTask, handleMessage }) => {
 
 
   const { id, title, description, due_date, priority, status = "pending" } = task;
@@ -25,13 +24,15 @@ const TaskChart = ({ task, fetchTasks, toggleUpdateModal, toggleDeleteModal, han
   }
 
 
-  const handleOption = (e) => {
+  const handleOption = async (e) => {
     const newStatus = e.target.value;
 
     const { due_date, ...rest } = task;
     const updatedTask = { ...rest, status: newStatus };
 
-    handleUpdateTask(updatedTask, id);
+    const response = await handleUpdateTask(updatedTask, id);
+    handleMessage(response.message);
+
     fetchTasks();
   };
 
