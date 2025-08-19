@@ -139,7 +139,7 @@ useEffect(() => {
         </div>
       </div>
 
-      <div className="bg-[#BDD5EA] w-[90%] h-64 flex items-center justify-around rounded-3xl">
+      <div className="bg-[#BDD5EA] w-[90%] h-[20%] flex items-center justify-around rounded-3xl">
 
         <div className="flex flex-col items-center gap-2">
           {
