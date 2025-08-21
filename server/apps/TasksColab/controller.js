@@ -1,6 +1,5 @@
-import validateSocketRole from "../../core/middleware/validateSocketRole";
-import { createTask, deleteTask, updateTask } from "./taskService";
-import withRole from "./withRole";
+import { createTask, deleteTask, updateTask } from "./taskService.js";
+import withRole from "./withRole.js";
 
 const registerTaskEvents = (socket) => {
   socket.on("createTask", async (taskData) => {

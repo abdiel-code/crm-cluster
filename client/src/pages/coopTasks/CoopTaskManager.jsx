@@ -1,15 +1,15 @@
 import { useAuth } from "../../context/AuthContext.jsx";
-import useCoopTasksFilters from "../../hooks/coopTasks/useCoopTasksFilters.js";
-import useCoopTaskFetcher from "../../hooks/coopTasks/useCoopTaskFetcher.js";
+import useCoopTaskFilters from "../../hooks/coopTasks/useCoopTaskFilters.js";
 import useCoopTaskActions from "../../hooks/coopTasks/useCoopTaskActions.js";
+import useCoopTaskFetcher from "../../hooks/coopTasks/useCoopTaskFetcher.js";
 import TaskManagerBase from "../../components/tasks/TaskManagerBase.jsx";
-
 
 
 const CoopTaskManager = () => {
   const { user } = useAuth();
-  const { filters, handleAddFilter } = useCoopTasksFilters();
-  const { taskList, fetchTasks, handleCreateTask, handleUpdateTask, handleDeleteTask } = useCoopTaskActions(user, filters);
+  const { filters, handleAddFilter } = useCoopTaskFilters();
+  const { taskList, fetchTasks } = useCoopTaskFetcher(filters);
+  const { handleCreateTask, handleUpdateTask, handleDeleteTask } = useCoopTaskActions(user, fetchTasks);
 
   return (
     <TaskManagerBase

@@ -1,4 +1,4 @@
-import validateSocketRole from "../../core/middleware/validateSocketRole";
+import validateSocketRole from "../../core/middleware/validateSocketRole.js";
 
 const withRole = (roles, socket, handler) => {
   validateSocketRole(...roles)(socket, async (err) => {

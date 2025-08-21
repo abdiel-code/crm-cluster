@@ -1,5 +1,5 @@
+import { socket } from "../../core/socketInstance.js";
 import { useAuth } from "../../context/AuthContext.jsx";
-import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 
 const ConnectPage = () => {
@@ -13,9 +13,8 @@ const ConnectPage = () => {
     }
 
     try {
-      const socket = io("http://localhost:3030", {
-        withCredentials: true,
-      });
+      socket.auth = { userId: user.id };
+      socket.connect();
 
       socket.on("connect", () => {
         console.log("✅ Connected to server with ID:", socket.id);

@@ -1,5 +1,5 @@
 import validateSocketToken from "../../core/middleware/validateSocketToken.js";
-import handleSocketConnection from "../connections/controller/socketConnection.js";
+import { handleSocketConnection } from "../connections/controller.js";
 
 const setupSocket = (io) => {
   io.use(validateSocketToken);
