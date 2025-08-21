@@ -11,6 +11,7 @@ const items = [
   //{ alt: "projects", label: "Projects" },
   //{ alt: "reports", label: "Reports" },
   //{ alt: "dashboard", label: "Dashboard" },
+  { alt: "teams", label: "Teams" },
   { alt: "connect", label: "Connect" },
 ];
 
