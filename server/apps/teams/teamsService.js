@@ -46,17 +46,53 @@ export const createTeam = async (teamData) => {
 
 }
 
-export const deleteTeam = async (teamData) => {
-  const { id, userId } = teamData;
+export const getMyTeams = async (userId) => {
 
-  if (!id) throw new Error("Team id is required");
   if (!userId) throw new Error("Unauthorized: userId missing");
 
-  const [result] = await connection.query("DELETE FROM teams WHERE id = ? AND created_by = ?", [id, userId]);
+  try {
+
+    const [result] = await connection.query("SELECT * FROM teams WHERE created_by = ?", [userId]);
+
+    if (result.length === 0) return { found: false, teams: null };
+
+    return {
+      success: true,
+      message: "Teams found successfully",
+      data: result
+    }
+
+  } catch (error) {
+
+    throw error
+  }
+}
+
+export const deleteTeam = async (teamId, userId) => {
+
+  console.log("deleteTeam teamId", teamId)
+  console.log("deleteTeam userId", userId)
+
+  if (!teamId) throw new Error("Team id is required");
+  if (!userId) throw new Error("Unauthorized: userId missing");
+
+  const [findTeam] = await connection.query("SELECT * FROM teams WHERE created_by = ?", [userId]);
+
+  console.log("findTeams where created_by", findTeam)
+
+  if (findTeam.length === 0) throw new Error("Team not found or unauthorized");
+
+  console.log("find team success")
+
+  const [result] = await connection.query("DELETE FROM teams WHERE id = ? AND created_by = ?", [teamId, userId]);
+
+  console.log("deleteTeam result", result)
 
   if (result.affectedRows === 0) throw new Error("Team could not be deleted");
 
-  return { deleted: true, teamId: id };
+  console.log("deleteTeam success")
+
+  return { success: true, message: "Team deleted successfully", data: result };
 }
 
 export const updateTeam = async (teamData) => {

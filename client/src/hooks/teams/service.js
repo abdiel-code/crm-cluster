@@ -13,3 +13,35 @@ export const createTeam = (teamData) => {
     })
   })
 }
+
+export const getMyTeams = (userId) => {
+
+  return new Promise((resolve, reject) => {
+    socket.emit("getMyTeams", userId, (response) => {
+      if (response.success) {
+        console.log("response", response);
+        resolve(response.data);
+      } else {
+        reject(response.error);
+      }
+
+    })
+  })
+}
+
+export const deleteTeam = (teamId) => {
+  console.log("deleteTeam teamId", teamId);
+
+  return new Promise((resolve, reject) => {
+    console.log("deleteTeam frontend teamId", teamId);
+    socket.emit("deleteTeam", teamId, (response) => {
+      if (response.success) {
+        console.log("response", response);
+        resolve(response.data);
+      } else {
+        reject(response.error);
+      }
+    })
+
+  })
+}

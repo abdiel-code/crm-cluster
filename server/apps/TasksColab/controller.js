@@ -1,5 +1,5 @@
 import { createTask, deleteTask, updateTask } from "./taskService.js";
-import withRole from "./withRole.js";
+import withGlobalRole from "../../core/middleware/withGlobalRole.js";
 
 const registerTaskEvents = (socket) => {
   socket.on("createTask", async (taskData) => {
@@ -12,7 +12,7 @@ const registerTaskEvents = (socket) => {
       return;
     }
 
-    withRole(["admin", "editor"], socket, async () => {
+    withGlobalRole(["admin", "editor"], socket, async () => {
       try {
         const task = await createTask(taskData);
         socket.emit("taskCreated", task);
@@ -38,7 +38,7 @@ const registerTaskEvents = (socket) => {
       });
       return;
     }
-    withRole(["admin", "editor"], socket, async () => {
+    withGlobalRole(["admin", "editor"], socket, async () => {
       try {
         const task = await deleteTask(taskData);
         socket.emit("taskDeleted", task);
@@ -63,7 +63,7 @@ const registerTaskEvents = (socket) => {
       });
       return;
     }
-    withRole(["admin", "editor"], socket, async () => {
+    withGlobalRole(["admin", "editor"], socket, async () => {
 
       try {
         const task = await updateTask(taskData);

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const CreateTeamForm = ({ id, handleCreateTeam }) => {
+const CreateTeamForm = ({ id, handleCreateTeam, toggleCreateTeamModal, refreshTeams }) => {
 
   const [formData, setFormData] = useState({
     name: "",
@@ -21,6 +21,8 @@ const CreateTeamForm = ({ id, handleCreateTeam }) => {
       <form onSubmit={(e) => {
         e.preventDefault();
         handleCreateTeam(formData);
+        refreshTeams();
+        toggleCreateTeamModal();
       }}>
 
         <div className="flex flex-col">
