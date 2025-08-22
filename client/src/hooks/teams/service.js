@@ -1,17 +1,15 @@
 import { socket } from "../../core/socketInstance.js";
 
-export const createTeam = async (formData) => {
+export const createTeam = (teamData) => {
 
-    console.log("createTeam called with formData:", formData);
+  return new Promise((resolve, reject) => {
+    socket.emit("createTeam", teamData, (response) => {
+      if (response.success) {
+        resolve(response.data);
+      } else {
+        reject(response.error);
+      }
 
-    const response = socket.emit("createTeam", formData);
-    return new Promise((resolve, reject) => {
-        response.on("teamCreated", (data) => {
-            if (data.success) {
-                resolve(data.team);
-            } else {
-                reject(data.error);
-            }
-        });
-    });
-};
+    })
+  })
+}

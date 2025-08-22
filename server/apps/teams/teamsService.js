@@ -1,34 +1,47 @@
 import connection from "../../core/database/connection.js";
 
 export const createTeam = async (teamData) => {
-  const { name, description, userId } = teamData;
+  const { name, description, id: userId } = teamData;
 
   if (!name?.trim()) throw new Error("Name is required and cannot be empty");
   if (!userId) throw new Error("Unauthorized: userId missing");
 
-  const [result] = await connection.query(
-    "INSERT INTO teams (name, description, created_by) VALUES (?, ?, ?)",
-    [name, description, userId]
-  );
+  await connection.beginTransaction();
 
-  if (result.affectedRows === 0) throw new Error("Team could not be created");
+  try {
+    const [result] = await connection.query(
+      "INSERT INTO teams (name, description, created_by) VALUES (?, ?, ?)",
+      [name, description, userId]
+    );
+    if (result.affectedRows === 0) throw new Error("Team could not be created");
 
-  const [userTeam] = await connection.query(
-    "INSERT INTO user_teams (user_id, team_id, role, status) VALUES (?, ?, ?)",
-    [userId, result.insertId, "admin", "active"]
-  );
+    const [userTeam] = await connection.query(
+      "INSERT INTO user_teams (user_id, team_id, role, status) VALUES (?, ?, ?, ?)",
+      [userId, result.insertId, "admin", "active"]
+    );
 
-  if (userTeam.affectedRows === 0) {
-    await connection.query("DELETE FROM teams WHERE id = ?", [result.insertId]);
-    throw new Error("Team creation failed: user could not be assigned");
-  }
+    if (userTeam.affectedRows === 0) {
+      throw new Error("Team creation failed: user could not be assigned");
+    }
 
-  return {
-    id: result.insertId,
-    name,
-    description,
-    created_by: userId,
-    created: true
+    await connection.commit();
+
+    return {
+      success: true,
+      message: "Team created successfully",
+      data: {
+        id: result.insertId,
+        name,
+        description,
+        created_by: userId,
+        role: "admin",
+        status: "active"
+      }
+    }
+
+  } catch (error) {
+    await connection.rollback();
+    throw error;
   }
 
 }
