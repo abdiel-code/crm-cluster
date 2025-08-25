@@ -33,10 +33,6 @@ const { getClient, emitAndAwait } = setupSocketTest({
   createTeam: async (data) => {
     const { name, description, userId } = data;
 
-    console.log("createTeam data", data);
-
-    console.log("createTeam userId", userId);
-
     if (!userId)
       return {
         success: false,
@@ -44,15 +40,12 @@ const { getClient, emitAndAwait } = setupSocketTest({
         data: null,
       };
 
-    console.log("UserId is valid");
     if (!name?.trim())
       return {
         success: false,
         message: "Name is required and cannot be empty",
         data: null,
       };
-
-    console.log("Name is valid");
 
     const findUser = async (userId) => {
       const [user] = await db.query("SELECT * FROM users WHERE id = ?", [
@@ -63,16 +56,12 @@ const { getClient, emitAndAwait } = setupSocketTest({
 
     const user = await findUser(userId);
 
-    console.log("user found???", user);
-
     if (user.length === 0)
       return {
         success: false,
         message: "Unauthorized: User does not exist",
         data: null,
       };
-
-    console.log("User is valid");
 
     return {
       success: true,
