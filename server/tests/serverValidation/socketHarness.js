@@ -16,9 +16,17 @@ export function setupSocketTest(eventHandlers = {}) {
       });
       ioServer.on("connection", (socket) => {
         for (const [event, handler] of Object.entries(eventHandlers)) {
-          socket.on(event, (data) => {
-            const response = handler(data);
-            socket.emit(`${event}Response`, response);
+          socket.on(event, async (data) => {
+            try {
+              const response = await handler(data);
+              socket.emit(`${event}Response`, response);
+            } catch (error) {
+              socket.emit(`${event}Response`, {
+                success: false,
+                message: error.message || "Something went wrong",
+                data: null,
+              });
+            }
           });
         }
       });
