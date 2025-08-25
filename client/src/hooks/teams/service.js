@@ -56,3 +56,18 @@ export const updateTeam = (teamData) => {
     });
   });
 };
+
+export const getTeam = (teamId) => {
+  console.log("getTeam", teamId);
+
+  return new Promise((resolve, reject) => {
+    socket.emit("getTeam", teamId, (response) => {
+      if (response.success) {
+        console.log("response", response);
+        resolve(response.data);
+      } else {
+        reject(response.error);
+      }
+    });
+  });
+};

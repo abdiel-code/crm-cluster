@@ -1,4 +1,10 @@
-import { createTeam, getMyTeams, deleteTeam, updateTeam } from "./service.js";
+import {
+  createTeam,
+  getMyTeams,
+  deleteTeam,
+  updateTeam,
+  getTeam,
+} from "./service.js";
 
 export const handleCreateTeam = async (formData) => {
   try {
@@ -46,5 +52,19 @@ export const handleUpdateTeam = async (teamData) => {
   } catch (error) {
     console.error("Error updating team:", error);
     throw new Error("Failed to update team please try again later.");
+  }
+};
+
+export const handleGetTeam = async (teamId) => {
+  if (!teamId) throw new Error("Team id is required");
+
+  try {
+    console.log("handleGet teamId", teamId);
+    const team = await getTeam(teamId);
+    console.log("Team:", team);
+    return team;
+  } catch (error) {
+    console.error("Error getting team:", error);
+    throw new Error("Failed to get team please try again later.");
   }
 };

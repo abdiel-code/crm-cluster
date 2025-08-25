@@ -148,18 +148,24 @@ export const updateTeam = async (teamData, userId) => {
   return { success: true, message: "Team updated successfully", data: result };
 };
 
-export const getTeam = async (teamData) => {
-  const { id, userId } = teamData;
+export const getTeam = async (teamData, userId) => {
+  console.log("getTeam has data?", teamData);
+  const teamId = teamData;
 
-  if (!id || !userId) throw new Error("Missing team id or userId");
+  console.log("getTeam id and userId", teamId, userId);
+
+  if (!teamId || !userId) throw new Error("Missing team id or userId");
+  console.log("Team id and user id are valid");
 
   const [result] = await connection.query("SELECT * FROM teams WHERE id = ?", [
-    id,
+    teamId,
   ]);
 
-  if (result.length === 0) return { found: false, team: null };
+  console.log("Team found?", result);
 
-  return { found: true, team: result[0] };
+  if (result.length === 0) return { success: false, message: "Team not found" };
+
+  return { success: true, message: "Team found successfully", data: result };
 };
 
 export const getTeamUsers = async (teamData) => {

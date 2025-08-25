@@ -1,14 +1,8 @@
+import { useRef, useEffect, useState } from "react";
 import formatDate from "../../hooks/global/formatDate.js";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaChevronDown } from "react-icons/fa";
-import { useState, useEffect, useRef } from "react";
 
-const MyTeamsChart = ({
-  team,
-  toggleDeleteModal,
-  handleFetchMembers,
-  toggleUpdateModal,
-}) => {
+const MyTeamsChart = ({ team, handleJoinRequest }) => {
   const { id, name, description, created_at } = team;
   const [showMenu, setShowMenu] = useState(false);
 
@@ -45,21 +39,14 @@ const MyTeamsChart = ({
         <h1 className="font-medium text-xl">{name}</h1>
         <h1 className="text-xl">{description}</h1>
         <h1 className="text-xl text-gray-600">{formattedDate}</h1>
+
         <div className="flex items-center gap-4">
           <button
             type="button"
-            className="bg-[#F7B1AB] w-[30px] h-[30px] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#FF847E]"
-            onClick={() => toggleDeleteModal(id)}
+            className="bg-[#BDD5EA] text-[#495867] px-3 py-1 rounded-md hover:bg-[#AFCDE7] font-medium"
+            onClick={() => handleJoinRequest(id)}
           >
-            <div className="w-[80%] h-1 bg-white rounded-full"></div>
-          </button>
-
-          <button
-            type="button"
-            className="text-[#495867] hover:text-[#577399] cursor-pointer"
-            onClick={() => handleFetchMembers(id)}
-          >
-            <FaChevronDown size={25} />
+            Send Join Request
           </button>
 
           <div className="relative">
@@ -83,19 +70,10 @@ const MyTeamsChart = ({
                   className="absolute top-[35px] right-0 bg-white shadow-md rounded-md p-2 z-10 flex flex-col gap-2 text-sm min-w-[100px] whitespace-nowrap"
                 >
                   <button
-                    onClick={() => {
-                      toggleUpdateModal(id);
-                      setShowMenu(false);
-                    }}
-                    className="text-left hover:bg-[#BDD5EA] cursor-pointer text-lg"
-                  >
-                    Edit
-                  </button>
-                  <button
                     onClick={handleCopyId}
                     className="text-left hover:bg-[#BDD5EA] cursor-pointer text-lg"
                   >
-                    Copy ID
+                    Copy ID 📋
                   </button>
                 </motion.div>
               )}

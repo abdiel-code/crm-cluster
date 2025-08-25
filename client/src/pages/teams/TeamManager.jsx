@@ -4,6 +4,7 @@ import {
   handleCreateTeam,
   handleDeleteTeam,
   handleUpdateTeam,
+  handleGetTeam,
 } from "../../hooks/teams/useTeamActions.js";
 import { useTeamManager } from "../../hooks/teams/useTeamManager.js";
 import CreateTeamForm from "../../components/teams/CreateTeamForm.jsx";
@@ -11,6 +12,7 @@ import AddTeamButton from "../../components/teams/AddTeamButton.jsx";
 import MyTeamsChart from "../../components/teams/MyTeamsChart.jsx";
 import DeleteTeamModal from "../../components/teams/DeleteTeamModal.jsx";
 import UpdateTeamForm from "../../components/teams/UpdateTeamForm.jsx";
+import TeamChart from "../../components/teams/TeamChart.jsx";
 import useModal from "../../hooks/teams/modalHook.js";
 
 const TeamManager = () => {
@@ -20,8 +22,21 @@ const TeamManager = () => {
   const [isCreateTeamModalOpen, setIsCreateTeamModalOpen] = useState(false);
   const [deleteModal, toggleDeleteModal] = useModal();
   const [updateModal, toggleUpdateModal] = useModal();
+  const [searchId, setSearchId] = useState("");
+  const [foundTeam, setFoundTeam] = useState(null);
 
   const toggleCreateTeamModal = () => setIsCreateTeamModalOpen((prev) => !prev);
+
+  const handleSearch = async () => {
+    setFoundTeam(null);
+
+    try {
+      const team = await handleGetTeam(searchId);
+      setFoundTeam(team);
+    } catch (error) {
+      console.error("Error searching for team:", error);
+    }
+  };
 
   return (
     <div className="w-full h-full flex flex-col p-2 items-center">
@@ -31,10 +46,36 @@ const TeamManager = () => {
           <input
             type="text"
             name="search"
-            placeholder="Search teams"
+            placeholder="Search team by ID"
+            value={searchId}
+            onChange={(e) => setSearchId(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch();
+              }
+            }}
             className="border border-gray-500 rounded-md px-2 py-1"
           />
+
+          <button
+            className="ml-2 px-3 py-1 bg-[#577399] text-white rounded-md hover:bg-[#495867] cursor-pointer"
+            disabled={!searchId.trim()}
+            onClick={handleSearch}
+          >
+            Search
+          </button>
         </div>
+      </div>
+      <div className="w-full grid grid-cols-1 gap-4">
+        <h1 className="text-2xl font-bold text-center">Found Team</h1>
+        {foundTeam && (
+          <TeamChart
+            key={foundTeam.id}
+            team={foundTeam[0]}
+            toggleDeleteModal={toggleDeleteModal}
+            toggleUpdateModal={toggleUpdateModal}
+          />
+        )}
       </div>
 
       <div className="w-full grid grid-cols-1 gap-4">

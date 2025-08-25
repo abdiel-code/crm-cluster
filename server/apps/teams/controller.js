@@ -3,6 +3,7 @@ import {
   getMyTeams,
   deleteTeam,
   updateTeam,
+  getTeam,
 } from "./teamsService.js";
 import withTeamRole from "../../core/middleware/withTeamRole.js";
 import withGlobalRole from "../../core/middleware/withGlobalRole.js";
@@ -121,6 +122,41 @@ const registerTeamEvents = (socket) => {
         callback(result);
 
         socket.broadcast.emit("team:updated", result);
+      } catch (error) {
+        callback({
+          success: false,
+          error: {
+            message: error.message,
+            code: "SERVER_ERROR",
+          },
+        });
+      }
+    });
+  });
+
+  socket.on("getTeam", async (teamId, callback) => {
+    console.log("getTeam backend", teamId);
+
+    if (!teamId) {
+      return callback({
+        success: false,
+        error: {
+          message: "Team id is required",
+          code: "INVALID_DATA",
+        },
+      });
+    }
+
+    console.log("team id accepted backend");
+
+    withGlobalRole(["admin", "editor", "agent", "viewer"], socket, async () => {
+      console.log("Backend role accepted for getTeam");
+      try {
+        console.log("Backend trying to get team");
+        const result = await getTeam(teamId, socket.user.id);
+        callback(result);
+
+        socket.broadcast.emit("team:found", result);
       } catch (error) {
         callback({
           success: false,
