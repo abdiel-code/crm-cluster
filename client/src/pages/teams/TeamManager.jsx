@@ -1,35 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext.jsx";
-import { socket } from "../../core/socketInstance.js";
-import { handleCreateTeam, handleDeleteTeam } from "../../hooks/teams/useTeamActions.js";
-import { useTeamManager } from "../../hooks/teams/useTeamManager.js"
+import {
+  handleCreateTeam,
+  handleDeleteTeam,
+  handleUpdateTeam,
+} from "../../hooks/teams/useTeamActions.js";
+import { useTeamManager } from "../../hooks/teams/useTeamManager.js";
 import CreateTeamForm from "../../components/teams/CreateTeamForm.jsx";
 import AddTeamButton from "../../components/teams/AddTeamButton.jsx";
 import MyTeamsChart from "../../components/teams/MyTeamsChart.jsx";
 import DeleteTeamModal from "../../components/teams/DeleteTeamModal.jsx";
-
+import UpdateTeamForm from "../../components/teams/UpdateTeamForm.jsx";
+import useModal from "../../hooks/teams/modalHook.js";
 
 const TeamManager = () => {
   const { user } = useAuth();
   const { teams: myTeams, loading, refreshTeams } = useTeamManager(user?.id);
 
   const [isCreateTeamModalOpen, setIsCreateTeamModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState({
-    isOpen: false,
-    teamId: null
-  });
-  const toggleCreateTeamModal = () => setIsCreateTeamModalOpen(prev => !prev);
-  const handleDeleteTeamModal = (id) => {
-    if (isDeleteModalOpen.isOpen) {
-      setIsDeleteModalOpen({ isOpen: false, teamId: null });
-    } else {
-      setIsDeleteModalOpen({ isOpen: true, teamId: id });
-    }
-  }
+  const [deleteModal, toggleDeleteModal] = useModal();
+  const [updateModal, toggleUpdateModal] = useModal();
+
+  const toggleCreateTeamModal = () => setIsCreateTeamModalOpen((prev) => !prev);
 
   return (
     <div className="w-full h-full flex flex-col p-2 items-center">
-
       <div className="flex items-center justify-around w-full mb-4">
         <h1 className="text-2xl font-bold">Team Manager</h1>
         <div>
@@ -49,7 +44,8 @@ const TeamManager = () => {
             <MyTeamsChart
               key={team.id}
               team={team}
-              handleDeleteTeamModal={handleDeleteTeamModal}
+              toggleDeleteModal={toggleDeleteModal}
+              toggleUpdateModal={toggleUpdateModal}
             />
           ))
         ) : (
@@ -57,32 +53,42 @@ const TeamManager = () => {
         )}
       </div>
 
-
       {loading && <p>Loading...</p>}
       {isCreateTeamModalOpen && (
-        <CreateTeamForm
-          id={user.id}
-          handleCreateTeam={handleCreateTeam}
-          toggleCreateTeamModal={toggleCreateTeamModal}
-          refreshTeams={refreshTeams}
-        />
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-[rgba(0,0,0,0.5)]">
+          <CreateTeamForm
+            id={user.id}
+            handleCreateTeam={handleCreateTeam}
+            toggleCreateTeamModal={toggleCreateTeamModal}
+            refreshTeams={refreshTeams}
+          />
+        </div>
       )}
       <AddTeamButton toggleCreateTeamModal={toggleCreateTeamModal} />
 
-      {isDeleteModalOpen.isOpen && (
+      {deleteModal.isOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-[rgba(0,0,0,0.5)]">
           <DeleteTeamModal
-            teamId={isDeleteModalOpen.teamId}
-            handleDeleteTeamModal={handleDeleteTeamModal}
+            teamId={deleteModal.id}
+            toggleDeleteModal={toggleDeleteModal}
             handleDeleteTeam={handleDeleteTeam}
             refreshTeams={refreshTeams}
           />
-
         </div>
       )}
 
+      {updateModal.isOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-[rgba(0,0,0,0.5)]">
+          <UpdateTeamForm
+            id={updateModal.id}
+            handleUpdateTeam={handleUpdateTeam}
+            toggleUpdateTeamModal={toggleUpdateModal}
+            refreshTeams={refreshTeams}
+          />
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default TeamManager;

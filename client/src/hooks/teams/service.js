@@ -1,7 +1,6 @@
 import { socket } from "../../core/socketInstance.js";
 
 export const createTeam = (teamData) => {
-
   return new Promise((resolve, reject) => {
     socket.emit("createTeam", teamData, (response) => {
       if (response.success) {
@@ -9,13 +8,11 @@ export const createTeam = (teamData) => {
       } else {
         reject(response.error);
       }
-
-    })
-  })
-}
+    });
+  });
+};
 
 export const getMyTeams = (userId) => {
-
   return new Promise((resolve, reject) => {
     socket.emit("getMyTeams", userId, (response) => {
       if (response.success) {
@@ -24,10 +21,9 @@ export const getMyTeams = (userId) => {
       } else {
         reject(response.error);
       }
-
-    })
-  })
-}
+    });
+  });
+};
 
 export const deleteTeam = (teamId) => {
   console.log("deleteTeam teamId", teamId);
@@ -41,7 +37,22 @@ export const deleteTeam = (teamId) => {
       } else {
         reject(response.error);
       }
-    })
+    });
+  });
+};
 
-  })
-}
+export const updateTeam = (teamData) => {
+  console.log("updateTeam service teamData", teamData);
+
+  return new Promise((resolve, reject) => {
+    console.log("updateTeam frontend teamId", teamData);
+    socket.emit("updateTeam", teamData, (response) => {
+      if (response.success) {
+        console.log("response", response);
+        resolve(response.data);
+      } else {
+        reject(response.error);
+      }
+    });
+  });
+};

@@ -1,6 +1,19 @@
-const DeleteTeamModal = ({ teamId, handleDeleteTeamModal, handleDeleteTeam, refreshTeams }) => {
-
+const DeleteTeamModal = ({
+  teamId,
+  toggleDeleteModal,
+  handleDeleteTeam,
+  refreshTeams,
+}) => {
   console.log("teamId", teamId);
+  const handleClick = async () => {
+    try {
+      await handleDeleteTeam(teamId);
+      refreshTeams();
+      toggleDeleteModal();
+    } catch (error) {
+      console.error("Error deleting team:", error);
+    }
+  };
 
   return (
     <div className="w-full max-w-md mx-auto bg-white rounded-lg shadow-[4px_4px_4px_rgba(0,0,0,0.20)] p-6 flex flex-col items-center space-y-6">
@@ -11,18 +24,14 @@ const DeleteTeamModal = ({ teamId, handleDeleteTeamModal, handleDeleteTeam, refr
         <button
           type="button"
           className="px-4 py-2 bg-[#F7B1AB] text-white rounded-md hover:bg-[#FF847E] transition-colors cursor-pointer"
-          onClick={() => {
-            handleDeleteTeam(teamId);
-            refreshTeams();
-            handleDeleteTeamModal();
-          }}
+          onClick={handleClick}
         >
           Yes
         </button>
         <button
           type="button"
           className="px-4 py-2 bg-[#577399] text-white rounded-md hover:bg-[#495867] transition-colors cursor-pointer"
-          onClick={handleDeleteTeamModal}
+          onClick={toggleDeleteModal}
         >
           No
         </button>
@@ -31,4 +40,4 @@ const DeleteTeamModal = ({ teamId, handleDeleteTeamModal, handleDeleteTeam, refr
   );
 };
 
-export default DeleteTeamModal
+export default DeleteTeamModal;

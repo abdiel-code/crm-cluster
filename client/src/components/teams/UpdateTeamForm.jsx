@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
-const CreateTeamForm = ({
+const UpdateTeamForm = ({
   id,
-  handleCreateTeam,
-  toggleCreateTeamModal,
+  handleUpdateTeam,
+  toggleUpdateTeamModal,
   refreshTeams,
 }) => {
   const [formData, setFormData] = useState({
@@ -21,10 +21,14 @@ const CreateTeamForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("formData", formData);
+
     try {
-      await handleCreateTeam(formData);
+      console.log("processing update team");
+      await handleUpdateTeam(formData);
+      console.log("Processing refresh");
       refreshTeams();
-      toggleCreateTeamModal();
+      toggleUpdateTeamModal();
     } catch (error) {
       console.error("Error creating team:", error);
     }
@@ -32,7 +36,7 @@ const CreateTeamForm = ({
 
   return (
     <div className="w-[25%] h-[45%] flex flex-col items-center shadow-[4px_4px_0px_rgba(0,0,0,0.20)] bg-white rounded-md p-4">
-      <h2 className="text-2xl font-bold">Create Team</h2>
+      <h2 className="text-2xl font-bold">Update Team</h2>
 
       <form
         className="w-full h-full flex flex-col gap-4 items-center justify-around"
@@ -69,11 +73,11 @@ const CreateTeamForm = ({
             type="submit"
             className="bg-[#577399] text-white px-4 py-2 rounded-md hover:bg-[#495867] transition-colors cursor-pointer"
           >
-            Create Team
+            Update Team
           </button>
           <button
             type="button"
-            onClick={toggleCreateTeamModal}
+            onClick={toggleUpdateTeamModal}
             className="bg-[#F7B1AB] text-white px-4 py-2 rounded-md hover:bg-[#FF847E] transition-colors cursor-pointer"
           >
             Cancel
@@ -84,4 +88,4 @@ const CreateTeamForm = ({
   );
 };
 
-export default CreateTeamForm;
+export default UpdateTeamForm;
