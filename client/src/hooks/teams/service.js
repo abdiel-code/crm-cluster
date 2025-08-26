@@ -71,3 +71,34 @@ export const getTeam = (teamId) => {
     });
   });
 };
+
+export const sendJoinRequest = (teamId, userId) => {
+  console.log("sendJoinRequest", teamId, userId);
+
+  return new Promise((resolve, reject) => {
+    console.log("sendJoinRequest frontend teamId", teamId, userId);
+    socket.emit("joinRequest", teamId, userId, (response) => {
+      if (response.success) {
+        console.log("response", response);
+        resolve(response.data);
+      } else {
+        reject(response.error);
+      }
+    });
+  });
+};
+
+export const getRequests = (userId) => {
+  console.log("get requests have userId?", userId);
+
+  return new Promise((resolve, reject) => {
+    socket.emit("getRequests", userId, (response) => {
+      if (response.success) {
+        console.log("response", response);
+        resolve(response.data);
+      } else {
+        reject(response.error);
+      }
+    });
+  });
+};

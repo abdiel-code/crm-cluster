@@ -5,6 +5,7 @@ import {
   handleDeleteTeam,
   handleUpdateTeam,
   handleGetTeam,
+  handleJoinRequest,
 } from "../../hooks/teams/useTeamActions.js";
 import { useTeamManager } from "../../hooks/teams/useTeamManager.js";
 import CreateTeamForm from "../../components/teams/CreateTeamForm.jsx";
@@ -14,14 +15,22 @@ import DeleteTeamModal from "../../components/teams/DeleteTeamModal.jsx";
 import UpdateTeamForm from "../../components/teams/UpdateTeamForm.jsx";
 import TeamChart from "../../components/teams/TeamChart.jsx";
 import useModal from "../../hooks/teams/modalHook.js";
+import NotificationButton from "../../components/teams/NotificationButton.jsx";
+import NotificationModal from "../../components/teams/NotificationModal.jsx";
 
 const TeamManager = () => {
   const { user } = useAuth();
-  const { teams: myTeams, loading, refreshTeams } = useTeamManager(user?.id);
-
+  const {
+    teams: myTeams,
+    requests,
+    loading,
+    refreshTeams,
+    refreshRequests,
+  } = useTeamManager(user?.id);
   const [isCreateTeamModalOpen, setIsCreateTeamModalOpen] = useState(false);
   const [deleteModal, toggleDeleteModal] = useModal();
   const [updateModal, toggleUpdateModal] = useModal();
+  const [notificationModal, toggleNotificationModal] = useModal();
   const [searchId, setSearchId] = useState("");
   const [foundTeam, setFoundTeam] = useState(null);
 
@@ -72,8 +81,8 @@ const TeamManager = () => {
           <TeamChart
             key={foundTeam.id}
             team={foundTeam[0]}
-            toggleDeleteModal={toggleDeleteModal}
-            toggleUpdateModal={toggleUpdateModal}
+            userId={user.id}
+            handleJoinRequest={handleJoinRequest}
           />
         )}
       </div>
@@ -105,7 +114,6 @@ const TeamManager = () => {
           />
         </div>
       )}
-      <AddTeamButton toggleCreateTeamModal={toggleCreateTeamModal} />
 
       {deleteModal.isOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-[rgba(0,0,0,0.5)]">
@@ -128,6 +136,23 @@ const TeamManager = () => {
           />
         </div>
       )}
+
+      {notificationModal.isOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-[rgba(0,0,0,0.5)]">
+          <NotificationModal
+            requests={requests}
+            toggleNotificationModal={toggleNotificationModal}
+          />
+        </div>
+      )}
+
+      <div className="fixed right-6 bottom-6 flex flex-col items-center gap-4 z-50">
+        <NotificationButton
+          toggleNotificationModal={toggleNotificationModal}
+          requests={requests}
+        />
+        <AddTeamButton toggleCreateTeamModal={toggleCreateTeamModal} />
+      </div>
     </div>
   );
 };

@@ -4,6 +4,8 @@ import {
   deleteTeam,
   updateTeam,
   getTeam,
+  sendJoinRequest,
+  getRequests,
 } from "./service.js";
 
 export const handleCreateTeam = async (formData) => {
@@ -66,5 +68,37 @@ export const handleGetTeam = async (teamId) => {
   } catch (error) {
     console.error("Error getting team:", error);
     throw new Error("Failed to get team please try again later.");
+  }
+};
+
+export const handleJoinRequest = async (teamId, userId) => {
+  if (!teamId) throw new Error("Team id is required");
+
+  console.log("handleJoinRequest teamId accepted");
+
+  if (!userId) throw new Error("Unauthorized: userId missing");
+
+  console.log("handleJoinRequest userId accepted");
+
+  try {
+    console.log("Sending join request");
+    const team = await sendJoinRequest(teamId, userId);
+    console.log("Team:", team);
+    return team;
+  } catch (error) {
+    console.error("Error sending join request:", error);
+    throw new Error("Failed to send join request please try again later.");
+  }
+};
+
+export const handleGetRequests = async (userId) => {
+  if (!userId) throw new Error("Unauthorized: userId missing");
+  try {
+    const requests = await getRequests(userId);
+    console.log("Requests:", requests);
+    return requests;
+  } catch (error) {
+    console.error("Error getting requests:", error);
+    throw new Error("Failed to get requests please try again later.");
   }
 };

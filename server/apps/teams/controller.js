@@ -4,6 +4,8 @@ import {
   deleteTeam,
   updateTeam,
   getTeam,
+  joinRequest,
+  getRequests,
 } from "./teamsService.js";
 import withTeamRole from "../../core/middleware/withTeamRole.js";
 import withGlobalRole from "../../core/middleware/withGlobalRole.js";
@@ -157,6 +159,112 @@ const registerTeamEvents = (socket) => {
         callback(result);
 
         socket.broadcast.emit("team:found", result);
+      } catch (error) {
+        callback({
+          success: false,
+          error: {
+            message: error.message,
+            code: "SERVER_ERROR",
+          },
+        });
+      }
+    });
+  });
+
+  socket.on("joinRequest", async (teamId, userId, callback) => {
+    if (!teamId) {
+      return callback({
+        success: false,
+        error: {
+          message: "Team id is required",
+          code: "INVALID_DATA",
+        },
+      });
+    }
+
+    console.log("team id accepted backend");
+
+    if (!userId || userId !== socket.user.id) {
+      return callback({
+        success: false,
+        error: {
+          message: "Unauthorized: userId missing",
+          code: "UNAUTHORIZED",
+        },
+      });
+    }
+
+    console.log("user id accepted backend");
+    withGlobalRole(
+      ["admin", "editor", "agent", "viewer"],
+      teamId,
+      userId,
+      async () => {
+        console.log("Backend role accepted for joinTeam");
+        try {
+          console.log("Backend trying to join team");
+          const result = await joinRequest(teamId, userId);
+          callback(result);
+
+          socket.broadcast.emit("team:requestSent", result);
+        } catch (error) {
+          callback({
+            success: false,
+            error: {
+              message: error.message,
+              code: "SERVER_ERROR",
+            },
+          });
+        }
+      }
+    );
+  });
+
+  socket.on("getRequests", async (userId, callback) => {
+    if (!userId || userId !== socket.user.id) {
+      return callback({
+        success: false,
+        error: {
+          message: "Unauthorized: userId missing",
+          code: "UNAUTHORIZED",
+        },
+      });
+    }
+
+    console.log("user id accepted backend for getRequests");
+
+    withGlobalRole(["admin", "editor", "agent", "viewer"], socket, async () => {
+      console.log("Backend role accepted for getRequests");
+      try {
+        console.log("Backend trying to get teams for getRequests");
+        const teams = await getMyTeams(userId);
+        console.log("teams get for getRequests", teams);
+        const results = [];
+
+        for (const team of teams.data) {
+          await new Promise((resolve) => {
+            withTeamRole(["admin"], team.id, socket, async () => {
+              const reqs = await getRequests(team.id, userId);
+              console.log("reqs for getRequests", reqs);
+              if (reqs.success) {
+                results.push({
+                  teamName: team.name,
+                  requests: reqs.data,
+                });
+              }
+              resolve();
+            });
+          });
+        }
+
+        console.log("results for getRequests", results);
+
+        callback({
+          success: true,
+          data: results,
+        });
+
+        socket.broadcast.emit("team:requests", results);
       } catch (error) {
         callback({
           success: false,

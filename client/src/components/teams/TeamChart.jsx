@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import formatDate from "../../hooks/global/formatDate.js";
 import { motion, AnimatePresence } from "framer-motion";
 
-const MyTeamsChart = ({ team, handleJoinRequest }) => {
+const MyTeamsChart = ({ team, userId, handleJoinRequest }) => {
   const { id, name, description, created_at } = team;
   const [showMenu, setShowMenu] = useState(false);
 
@@ -44,7 +44,7 @@ const MyTeamsChart = ({ team, handleJoinRequest }) => {
           <button
             type="button"
             className="bg-[#BDD5EA] text-[#495867] px-3 py-1 rounded-md hover:bg-[#AFCDE7] font-medium"
-            onClick={() => handleJoinRequest(id)}
+            onClick={() => handleJoinRequest(id, userId)}
           >
             Send Join Request
           </button>

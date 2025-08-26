@@ -232,3 +232,79 @@ export const updateTeamUser = async (teamData) => {
 
   return { updated: true, userId };
 };
+
+export const joinRequest = async (teamId, userId) => {
+  if (!teamId) throw new Error("Team id is required");
+  if (!userId) throw new Error("Unauthorized: userId missing");
+
+  console.log("User and team id received");
+
+  const [userInTeam] = await connection.query(
+    "SELECT * FROM user_teams WHERE team_id = ? AND user_id = ?",
+    [teamId, userId]
+  );
+
+  console.log("user is in the team", userInTeam);
+
+  //Check if user is already in the team
+  if (userInTeam.length > 0) {
+    if (userInTeam[0].status === "active") {
+      return {
+        success: false,
+        message: "User is already in the team",
+        data: userInTeam,
+      };
+    }
+
+    if (userInTeam[0].status === "pending") {
+      return {
+        success: false,
+        message: "Join request already sent",
+        data: userInTeam,
+      };
+    }
+
+    if (userInTeam[0].status === "rejected") {
+      return {
+        success: false,
+        message: "Join request already declined, please try again later",
+        data: userInTeam,
+      };
+    }
+  }
+
+  const [result] = await connection.query(
+    "INSERT INTO user_teams (user_id, team_id, status) VALUES (?, ?, ?)",
+    [userId, teamId, "pending"]
+  );
+
+  if (result.affectedRows === 0)
+    throw new Error("Join request could not be sent");
+
+  return {
+    success: true,
+    message: "Join request sent successfully",
+    data: result,
+  };
+};
+
+export const getRequests = async (teamId, userId) => {
+  if (!teamId) throw new Error("Team id is required");
+  console.log("Team id is valid", teamId);
+  if (!userId) throw new Error("Unauthorized: userId missing");
+  console.log("User id is valid", userId);
+
+  const [result] = await connection.query(
+    "SELECT * FROM user_teams WHERE team_id = ? AND status = 'pending'",
+    [teamId]
+  );
+
+  if (result.length === 0)
+    return { success: false, message: "No requests found" };
+
+  return {
+    success: true,
+    message: "Requests found successfully",
+    data: result,
+  };
+};
