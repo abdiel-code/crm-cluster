@@ -6,6 +6,8 @@ import {
   getTeam,
   joinRequest,
   getRequests,
+  acceptRequest,
+  rejectRequest,
 } from "./teamsService.js";
 import withTeamRole from "../../core/middleware/withTeamRole.js";
 import withGlobalRole from "../../core/middleware/withGlobalRole.js";
@@ -265,6 +267,73 @@ const registerTeamEvents = (socket) => {
         });
 
         socket.broadcast.emit("team:requests", results);
+      } catch (error) {
+        callback({
+          success: false,
+          error: {
+            message: error.message,
+            code: "SERVER_ERROR",
+          },
+        });
+      }
+    });
+  });
+
+  socket.on("handleRequest", async (teamId, userId, resolution, callback) => {
+    console.log("handleRequest backend", teamId, userId, resolution);
+
+    if (!teamId) {
+      return callback({
+        success: false,
+        error: {
+          message: "Team id is required",
+          code: "INVALID_DATA",
+        },
+      });
+    }
+
+    if (!socket.user.id) {
+      return callback({
+        success: false,
+        error: {
+          message: "Unauthorized: userId missing",
+          code: "UNAUTHORIZED",
+        },
+      });
+    }
+
+    if (!resolution || (resolution !== "accept" && resolution !== "reject")) {
+      return callback({
+        success: false,
+        error: {
+          message: "Invalid resolution",
+          code: "INVALID_DATA",
+        },
+      });
+    }
+
+    console.log("request handle data accepted backend");
+
+    withTeamRole(["admin"], teamId, socket, async () => {
+      console.log("Backend role accepted for handleRequest");
+      try {
+        console.log("Backend trying to handle request");
+
+        console.log("resolution for handleRequest", resolution);
+
+        if (resolution === "accept") {
+          console.log("accepting request");
+          const result = await acceptRequest(teamId, userId);
+          callback(result);
+
+          socket.broadcast.emit("team:requestAccepted", result);
+        } else {
+          console.log("rejecting request");
+          const result = await rejectRequest(teamId, userId);
+          callback(result);
+
+          socket.broadcast.emit("team:requestRejected", result);
+        }
       } catch (error) {
         callback({
           success: false,

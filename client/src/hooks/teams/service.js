@@ -90,9 +90,25 @@ export const sendJoinRequest = (teamId, userId) => {
 
 export const getRequests = (userId) => {
   console.log("get requests have userId?", userId);
+  if (!userId) throw new Error("Unauthorized: userId missing");
 
   return new Promise((resolve, reject) => {
     socket.emit("getRequests", userId, (response) => {
+      if (response.success) {
+        console.log("response", response);
+        resolve(response.data);
+      } else {
+        reject(response.error);
+      }
+    });
+  });
+};
+
+export const handleRequest = (teamId, userId, resolution) => {
+  console.log("handleRequest", teamId, userId, resolution);
+
+  return new Promise((resolve, reject) => {
+    socket.emit("handleRequest", teamId, userId, resolution, (response) => {
       if (response.success) {
         console.log("response", response);
         resolve(response.data);

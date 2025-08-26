@@ -308,3 +308,66 @@ export const getRequests = async (teamId, userId) => {
     data: result,
   };
 };
+
+export const acceptRequest = async (teamId, userId) => {
+  if (!teamId) throw new Error("Team id is required");
+  if (!userId) throw new Error("Unauthorized: userId missing");
+
+  console.log(
+    "User and team id received in acceptRequest, teamId , userId",
+    teamId,
+    userId
+  );
+
+  const [userRequestStatus] = await connection.query(
+    "SELECT * FROM user_teams WHERE team_id = ? AND user_id = ? AND status = ?",
+    [teamId, userId, "pending"]
+  );
+
+  if (userRequestStatus.length === 0)
+    return { success: false, message: "Request not found" };
+
+  const [result] = await connection.query(
+    "UPDATE user_teams SET status = 'active' WHERE team_id = ? AND user_id = ?",
+    [teamId, userId]
+  );
+
+  if (result.affectedRows === 0)
+    throw new Error("Request could not be accepted");
+
+  return {
+    success: true,
+    message: "Request accepted successfully",
+    data: result,
+  };
+};
+
+export const rejectRequest = async (teamId, userId) => {
+  if (!teamId) throw new Error("Team id is required");
+  if (!userId) throw new Error("Unauthorized: userId missing");
+
+  console.log("User and team id received in acceptRequest");
+
+  const [userRequestStatus] = await connection.query(
+    "SELECT * FROM user_teams WHERE team_id = ? AND user_id = ? AND status = ?",
+    [teamId, userId, "pending"]
+  );
+
+  console.log("User request status", userRequestStatus);
+
+  if (userRequestStatus.length === 0)
+    return { success: false, message: "Request not found" };
+
+  const [result] = await connection.query(
+    "UPDATE user_teams SET status = 'rejected' WHERE team_id = ? AND user_id = ?",
+    [teamId, userId]
+  );
+
+  if (result.affectedRows === 0) throw new Error("Failed to reject request");
+
+  return {
+    success: true,
+    message: "Request rejected successfully",
+    data: result,
+  };
+};

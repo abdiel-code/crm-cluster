@@ -6,6 +6,7 @@ import {
   handleUpdateTeam,
   handleGetTeam,
   handleJoinRequest,
+  handleSentRequest,
 } from "../../hooks/teams/useTeamActions.js";
 import { useTeamManager } from "../../hooks/teams/useTeamManager.js";
 import CreateTeamForm from "../../components/teams/CreateTeamForm.jsx";
@@ -142,6 +143,7 @@ const TeamManager = () => {
           <NotificationModal
             requests={requests}
             toggleNotificationModal={toggleNotificationModal}
+            handleSentRequest={handleSentRequest}
           />
         </div>
       )}

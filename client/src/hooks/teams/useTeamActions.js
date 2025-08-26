@@ -6,6 +6,7 @@ import {
   getTeam,
   sendJoinRequest,
   getRequests,
+  handleRequest,
 } from "./service.js";
 
 export const handleCreateTeam = async (formData) => {
@@ -100,5 +101,28 @@ export const handleGetRequests = async (userId) => {
   } catch (error) {
     console.error("Error getting requests:", error);
     throw new Error("Failed to get requests please try again later.");
+  }
+};
+
+export const handleSentRequest = async (teamId, userId, resolution) => {
+  console.log(
+    "handleSentRequest teamId userId, resolution",
+    teamId,
+    userId,
+    resolution
+  );
+
+  if (!teamId) throw new Error("Team id is required");
+  if (!userId) throw new Error("Unauthorized: userId missing");
+
+  try {
+    console.log("Trying to handle request");
+
+    const team = await handleRequest(teamId, userId, resolution);
+    console.log("Team:", team);
+    return team;
+  } catch (error) {
+    console.error("Error accepting request:", error);
+    throw new Error("Failed to accept request please try again later.");
   }
 };

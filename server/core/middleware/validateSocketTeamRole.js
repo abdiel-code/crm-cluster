@@ -1,7 +1,6 @@
 import connection from "../database/connection.js";
 
 const validateSocketTeamRole = (teamId, ...allowedRoles) => {
-
   console.log("validateSocketTeamRole roles", allowedRoles);
   console.log("validateSocketTeamRole teamId", teamId);
 
@@ -11,7 +10,6 @@ const validateSocketTeamRole = (teamId, ...allowedRoles) => {
     console.log("the user has reached validateSocketTeamRole", userId);
 
     try {
-
       const [teamRows] = await connection.query(
         "SELECT created_by FROM teams WHERE id = ?",
         [teamId]
