@@ -7,6 +7,7 @@ import {
   handleGetTeam,
   handleJoinRequest,
   handleSentRequest,
+  handleGetTeamMembers,
 } from "../../hooks/teams/useTeamActions.js";
 import { useTeamManager } from "../../hooks/teams/useTeamManager.js";
 import CreateTeamForm from "../../components/teams/CreateTeamForm.jsx";
@@ -97,6 +98,7 @@ const TeamManager = () => {
               team={team}
               toggleDeleteModal={toggleDeleteModal}
               toggleUpdateModal={toggleUpdateModal}
+              handleGetTeamMembers={handleGetTeamMembers}
             />
           ))
         ) : (

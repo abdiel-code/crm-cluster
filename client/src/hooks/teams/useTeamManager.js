@@ -71,6 +71,8 @@ export const useTeamManager = (userId) => {
 
     socket.on("team:requestSent", refreshRequests);
     socket.on("team:requests", refreshRequests);
+    socket.on("team:accepted", refreshTeams, refreshRequests);
+    socket.on("team:declined", refreshTeams, refreshRequests);
 
     return () => {
       socket.off("team:requestSent", refreshRequests);

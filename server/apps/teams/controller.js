@@ -8,6 +8,7 @@ import {
   getRequests,
   acceptRequest,
   rejectRequest,
+  getTeamMembers,
 } from "./teamsService.js";
 import withTeamRole from "../../core/middleware/withTeamRole.js";
 import withGlobalRole from "../../core/middleware/withGlobalRole.js";
@@ -326,14 +327,56 @@ const registerTeamEvents = (socket) => {
           const result = await acceptRequest(teamId, userId);
           callback(result);
 
-          socket.broadcast.emit("team:requestAccepted", result);
+          socket.broadcast.emit("team:accepted", result);
         } else {
           console.log("rejecting request");
           const result = await rejectRequest(teamId, userId);
           callback(result);
 
-          socket.broadcast.emit("team:requestRejected", result);
+          socket.broadcast.emit("team:rejected", result);
         }
+      } catch (error) {
+        callback({
+          success: false,
+          error: {
+            message: error.message,
+            code: "SERVER_ERROR",
+          },
+        });
+      }
+    });
+  });
+
+  socket.on("getTeamMembers", async (teamId, callback) => {
+    if (!teamId) {
+      return callback({
+        success: false,
+        error: {
+          message: "Team id is required",
+          code: "INVALID_DATA",
+        },
+      });
+    }
+
+    if (!socket.user.id) {
+      return callback({
+        success: false,
+        error: {
+          message: "Unauthorized: userId missing",
+          code: "UNAUTHORIZED",
+        },
+      });
+    }
+
+    withTeamRole(["admin", "editor"], teamId, socket, async () => {
+      console.log("Backend role accepted for getTeamMembers");
+
+      try {
+        console.log("Backend trying to get team members");
+        const result = await getTeamMembers(teamId, socket.user.id);
+
+        socket.broadcast.emit("team:members", result);
+        callback(result);
       } catch (error) {
         callback({
           success: false,

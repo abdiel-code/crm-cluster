@@ -118,3 +118,18 @@ export const handleRequest = (teamId, userId, resolution) => {
     });
   });
 };
+
+export const getTeamMembers = (teamId) => {
+  console.log("getTeamMembers", teamId);
+
+  return new Promise((resolve, reject) => {
+    socket.emit("getTeamMembers", teamId, (response) => {
+      if (response.success) {
+        console.log("response", response);
+        resolve(response.data);
+      } else {
+        reject(response.error);
+      }
+    });
+  });
+};

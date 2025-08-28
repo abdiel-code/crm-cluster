@@ -2,15 +2,18 @@ import formatDate from "../../hooks/global/formatDate.js";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaChevronDown } from "react-icons/fa";
 import { useState, useEffect, useRef } from "react";
+import AdminUserChart from "./AdminUserChart.jsx";
 
 const MyTeamsChart = ({
   team,
   toggleDeleteModal,
-  handleFetchMembers,
+  handleGetTeamMembers,
   toggleUpdateModal,
 }) => {
   const { id, name, description, created_at } = team;
   const [showMenu, setShowMenu] = useState(false);
+  const [members, setMembers] = useState(null);
+  const [showMembers, setShowMembers] = useState(false);
 
   const buttonRef = useRef(null);
   const menuRef = useRef(null);
@@ -38,8 +41,18 @@ const MyTeamsChart = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const getMembers = async (teamId) => {
+    try {
+      const data = await handleGetTeamMembers(teamId);
+      console.log("members in MyTeamsChart", data);
+      setMembers(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col gap-3 items-end">
       <div className="w-full h-full flex items-center justify-around rounded-[10px] bg-white shadow-[4px_4px_4px_rgba(0,0,0,0.20)] py-2">
         <div className="w-[4px] h-[100%] bg-[#577399] rounded-2xl"></div>
         <h1 className="font-medium text-xl">{name}</h1>
@@ -54,13 +67,21 @@ const MyTeamsChart = ({
             <div className="w-[80%] h-1 bg-white rounded-full"></div>
           </button>
 
-          <button
-            type="button"
-            className="text-[#495867] hover:text-[#577399] cursor-pointer"
-            onClick={() => handleFetchMembers(id)}
+          <motion.div
+            animate={{ rotate: showMembers ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
           >
-            <FaChevronDown size={25} />
-          </button>
+            <button
+              type="button"
+              className="text-[#495867] hover:text-[#577399] cursor-pointer"
+              onClick={() => {
+                getMembers(id);
+                setShowMembers((prev) => !prev);
+              }}
+            >
+              <FaChevronDown size={25} />
+            </button>
+          </motion.div>
 
           <div className="relative">
             <button
@@ -103,6 +124,26 @@ const MyTeamsChart = ({
           </div>
         </div>
       </div>
+
+      {showMembers && (
+        <div className="grid grid-cols-1 gap-2 w-[90%] h-full">
+          <motion.div
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            {members &&
+              members.map((member) => (
+                <AdminUserChart
+                  key={member.id}
+                  user={member}
+                  formatDate={formatDate}
+                />
+              ))}
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };

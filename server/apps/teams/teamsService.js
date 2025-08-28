@@ -168,19 +168,25 @@ export const getTeam = async (teamData, userId) => {
   return { success: true, message: "Team found successfully", data: result };
 };
 
-export const getTeamUsers = async (teamData) => {
-  const { id } = teamData;
-
-  if (!id) throw new Error("Team id is required");
+export const getTeamMembers = async (teamId, userId) => {
+  if (!teamId) throw new Error("Team id is required");
 
   const [result] = await connection.query(
-    "SELECT * FROM user_teams WHERE team_id = ?",
-    [id]
+    `SELECT ut.*, u.name 
+   FROM user_teams ut
+   JOIN users u ON ut.user_id = u.id
+   WHERE ut.team_id = ? AND ut.status = ? AND ut.user_id != ?`,
+    [teamId, "active", userId]
   );
 
-  if (result.length === 0) return { found: false, users: null };
+  if (result.length === 0)
+    return { success: false, message: "No team members found" };
 
-  return { found: true, users: result };
+  return {
+    success: true,
+    message: "Team members found successfully",
+    data: result,
+  };
 };
 
 export const deleteTeamUser = async (teamData) => {
