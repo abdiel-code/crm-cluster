@@ -1,5 +1,6 @@
 const DeleteModal = ({
   id,
+  userId,
   toggleDeleteModal,
   handleDeleteFunction,
   refreshTeams,
@@ -7,7 +8,12 @@ const DeleteModal = ({
   console.log("teamId", id);
   const handleClick = async () => {
     try {
-      await handleDeleteFunction(id);
+      if (!userId) {
+        await handleDeleteFunction(id);
+      } else {
+        await handleDeleteFunction(id, userId);
+      }
+
       refreshTeams();
       toggleDeleteModal();
     } catch (error) {

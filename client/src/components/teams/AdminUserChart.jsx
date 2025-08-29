@@ -77,16 +77,16 @@ const AdminUserChart = ({ user, formatDate, onRoleUpdate, onDelete }) => {
         )}
       </AnimatePresence>
       {deleteModal.isOpen && (
-        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+        <div className="fixed inset-0 flex items-center justify-center z-60 bg-[rgba(0,0,0,0.5)]">
           <DeleteModal
             teamId={user_id}
             toggleDeleteModal={toggleDeleteModal}
-            handleDeleteFunction={onDelete}
+            handleDeleteFunction={() => onDelete(user.team_id, user.user_id)}
           />
         </div>
       )}
       {updateModal.isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-[rgba(0,0,0,0.5)]">
+        <div className="fixed inset-0 flex items-center justify-center z-60 bg-[rgba(0,0,0,0.5)]">
           <UpdateUserForm
             user={user}
             toggleUpdateModal={toggleUpdateModal}

@@ -138,7 +138,7 @@ export const deleteTeamUser = (teamId, userId) => {
   console.log("deleteTeamUser", teamId, userId);
 
   return new Promise((resolve, reject) => {
-    socket.emit("deleteTeamUser", teamId, userId, (response) => {
+    socket.emit("kickUser", teamId, userId, (response) => {
       if (response.success) {
         console.log("response", response);
         resolve(response.data);

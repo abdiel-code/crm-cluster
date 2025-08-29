@@ -189,11 +189,22 @@ export const getTeamMembers = async (teamId, userId) => {
   };
 };
 
-export const deleteTeamUser = async (teamData) => {
-  const { id, userId } = teamData;
-
-  if (!id) throw new Error("Team id is required");
+export const kickUser = async (teamId, userId) => {
+  if (!teamId) throw new Error("Team id is required");
   if (!userId) throw new Error("Unauthorized: userId missing");
+
+  console.log("UserId and teamId are valid on kickuser backend call");
+
+  const [isCreator] = await connection.query(
+    "SELECT created_by FROM teams WHERE id = ?",
+    [teamId]
+  );
+
+  if (isCreator[0].created_by === userId) {
+    throw new Error("Creator cannot be deleted");
+  }
+
+  console.log("isCreator", isCreator[0].created_by === userId);
 
   const [result] = await connection.query(
     "DELETE FROM user_teams WHERE team_id = ? AND user_id = ?",
@@ -216,6 +227,17 @@ export const updateTeamUser = async (userId, teamId, userRole) => {
 
   console.log("updateTeamUser userId, teamId and userRole accepted");
 
+  //check if uerId is creator
+
+  const [isCreator] = await connection.query(
+    "SELECT created_by FROM teams WHERE id = ?",
+    [teamId]
+  );
+
+  if (isCreator[0].created_by === userId) {
+    throw new Error("Creator cannot be updated");
+  }
+
   const query = `UPDATE user_teams SET role = ? WHERE team_id = ? AND user_id = ?`;
   const params = [userRole, teamId, userId];
 
@@ -224,7 +246,13 @@ export const updateTeamUser = async (userId, teamId, userRole) => {
   if (result.affectedRows === 0)
     throw new Error("Team user could not be updated");
 
-  return { success: true, updated: true, userId, teamId, role: userRole };
+  return {
+    success: true,
+    updated: true,
+    user_id: userId,
+    team_id: teamId,
+    role: userRole,
+  };
 };
 
 export const joinRequest = async (teamId, userId) => {

@@ -150,9 +150,11 @@ export const handleDeleteMember = async (teamId, userId) => {
   if (!teamId) throw new Error("Team id is required");
   if (!userId) throw new Error("Unauthorized: userId missing");
 
+  console.log("handleDeleteMember teamId and userId accepted", teamId, userId);
+
   try {
     console.log("Trying to delete team member");
-    const team = await deleteTeamUser({ teamId, userId });
+    const team = await deleteTeamUser(teamId, userId);
     console.log("Team:", team);
     return team;
   } catch (error) {

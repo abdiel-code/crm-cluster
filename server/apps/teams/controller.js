@@ -10,6 +10,7 @@ import {
   rejectRequest,
   getTeamMembers,
   updateTeamUser,
+  kickUser,
 } from "./teamsService.js";
 import withTeamRole from "../../core/middleware/withTeamRole.js";
 import withGlobalRole from "../../core/middleware/withGlobalRole.js";
@@ -445,6 +446,63 @@ const registerTeamEvents = (socket) => {
 
         socket.emit("team:roleUpdated", result);
         socket.broadcast.emit("team:roleUpdated", result);
+      } catch (error) {
+        callback({
+          success: false,
+          error: {
+            message: error.message,
+            code: "SERVER_ERROR",
+          },
+        });
+      }
+    });
+  });
+
+  socket.on("kickUser", async (teamId, userId, callback) => {
+    console.log("kickUser backend", teamId, userId);
+
+    if (!teamId) {
+      return callback({
+        success: false,
+        error: {
+          message: "Team id is required",
+          code: "INVALID_DATA",
+        },
+      });
+    }
+
+    if (!socket.user.id) {
+      return callback({
+        success: false,
+        error: {
+          message: "Unauthorized: userId missing",
+          code: "UNAUTHORIZED",
+        },
+      });
+    }
+
+    if (!userId) {
+      return callback({
+        success: false,
+        error: {
+          message: "Unauthorized: userId missing",
+          code: "UNAUTHORIZED",
+        },
+      });
+    }
+
+    console.log("kickUser data accepted backend");
+
+    withTeamRole(["admin"], teamId, socket, async () => {
+      console.log("Backend role accepted for kickUser");
+
+      try {
+        console.log("Backend trying to kick user");
+        const result = await kickUser(teamId, userId);
+        callback(result);
+
+        socket.emit("team:userKicked", result);
+        socket.broadcast.emit("team:userKicked", result);
       } catch (error) {
         callback({
           success: false,
