@@ -1,5 +1,5 @@
 import connection from "../../core/database/connection.js";
-
+const acceptedRoles = ["admin", "editor", "user", "viewer"];
 export const createTeam = async (teamData) => {
   const { name, description, id: userId } = teamData;
 
@@ -206,37 +206,25 @@ export const deleteTeamUser = async (teamData) => {
   return { deleted: true, teamId: id };
 };
 
-export const updateTeamUser = async (teamData) => {
-  const { id, userId, role, status } = teamData;
+export const updateTeamUser = async (userId, teamId, userRole) => {
+  if (!userId) throw new Error("User id is required");
+  if (!teamId) throw new Error("Team id is required");
+  if (!userRole) throw new Error("User role is required");
 
-  if (!id) throw new Error("Team id is required");
-  if (!userId) throw new Error("Unauthorized: userId missing");
+  if (!acceptedRoles.includes(userRole))
+    throw new Error("User role not accepted");
 
-  const updates = [];
-  const params = [];
+  console.log("updateTeamUser userId, teamId and userRole accepted");
 
-  if (role) {
-    updates.push("role = ?");
-    params.push(role);
-  }
-  if (status) {
-    updates.push("status = ?");
-    params.push(status);
-  }
-
-  if (updates.length === 0) throw new Error("No fields to update");
-
-  const query = `UPDATE user_teams SET ${updates.join(
-    ", "
-  )} WHERE team_id = ? AND user_id = ?`;
-  params.push(id, userId);
+  const query = `UPDATE user_teams SET role = ? WHERE team_id = ? AND user_id = ?`;
+  const params = [userRole, teamId, userId];
 
   const [result] = await connection.query(query, params);
 
   if (result.affectedRows === 0)
     throw new Error("Team user could not be updated");
 
-  return { updated: true, userId };
+  return { success: true, updated: true, userId, teamId, role: userRole };
 };
 
 export const joinRequest = async (teamId, userId) => {

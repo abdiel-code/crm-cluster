@@ -9,6 +9,7 @@ import {
   acceptRequest,
   rejectRequest,
   getTeamMembers,
+  updateTeamUser,
 } from "./teamsService.js";
 import withTeamRole from "../../core/middleware/withTeamRole.js";
 import withGlobalRole from "../../core/middleware/withGlobalRole.js";
@@ -377,6 +378,73 @@ const registerTeamEvents = (socket) => {
 
         socket.broadcast.emit("team:members", result);
         callback(result);
+      } catch (error) {
+        callback({
+          success: false,
+          error: {
+            message: error.message,
+            code: "SERVER_ERROR",
+          },
+        });
+      }
+    });
+  });
+
+  socket.on("updateTeamUser", async (userId, teamId, userRole, callback) => {
+    console.log("updateTeamUser backend", userId, teamId, userRole);
+
+    if (!userId) {
+      return callback({
+        success: false,
+        error: {
+          message: "Unauthorized: userId missing",
+          code: "UNAUTHORIZED",
+        },
+      });
+    }
+
+    if (!teamId) {
+      return callback({
+        success: false,
+        error: {
+          message: "Team id is required",
+          code: "INVALID_DATA",
+        },
+      });
+    }
+
+    if (!userRole) {
+      return callback({
+        success: false,
+        error: {
+          message: "Invalid role",
+          code: "INVALID_DATA",
+        },
+      });
+    }
+
+    if (!socket.user.id) {
+      return callback({
+        success: false,
+        error: {
+          message: "Unauthorized: userId missing",
+          code: "UNAUTHORIZED",
+        },
+      });
+    }
+
+    console.log("updateTeamUser data accepted backend");
+
+    withTeamRole(["admin"], teamId, socket, async () => {
+      console.log("Backend role accepted for updateTeamUser");
+
+      try {
+        console.log("Backend trying to update team member role");
+        const result = await updateTeamUser(userId, teamId, userRole);
+        callback(result);
+
+        socket.emit("team:roleUpdated", result);
+        socket.broadcast.emit("team:roleUpdated", result);
       } catch (error) {
         callback({
           success: false,

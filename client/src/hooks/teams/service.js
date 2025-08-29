@@ -133,3 +133,34 @@ export const getTeamMembers = (teamId) => {
     });
   });
 };
+
+export const deleteTeamUser = (teamId, userId) => {
+  console.log("deleteTeamUser", teamId, userId);
+
+  return new Promise((resolve, reject) => {
+    socket.emit("deleteTeamUser", teamId, userId, (response) => {
+      if (response.success) {
+        console.log("response", response);
+        resolve(response.data);
+      } else {
+        reject(response.error);
+      }
+    });
+  });
+};
+
+export const updateTeamUser = (userId, teamId, role) => {
+  console.log("updateTeamUser", userId, teamId, role);
+
+  return new Promise((resolve, reject) => {
+    console.log("trying to update team member role", userId, teamId, role);
+    socket.emit("updateTeamUser", userId, teamId, role, (response) => {
+      if (response.success) {
+        console.log("response", response);
+        resolve(response.data);
+      } else {
+        reject(response.error);
+      }
+    });
+  });
+};

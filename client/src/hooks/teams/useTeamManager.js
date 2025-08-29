@@ -56,6 +56,7 @@ export const useTeamManager = (userId) => {
     socket.on("team:updated", refreshTeams);
 
     socket.on("team:deleted", refreshTeams);
+    socket.on("team:roleUpdated", refreshTeams);
 
     return () => {
       socket.off("team:created", refreshTeams);
@@ -63,6 +64,7 @@ export const useTeamManager = (userId) => {
       socket.off("team:updated", refreshTeams);
 
       socket.off("team:deleted", refreshTeams);
+      socket.off("team:roleUpdated", () => refreshTeams);
     };
   }, [userId, refreshTeams]);
 
@@ -71,14 +73,28 @@ export const useTeamManager = (userId) => {
 
     socket.on("team:requestSent", refreshRequests);
     socket.on("team:requests", refreshRequests);
-    socket.on("team:accepted", refreshTeams, refreshRequests);
-    socket.on("team:declined", refreshTeams, refreshRequests);
+    socket.on("team:accepted", () => {
+      refreshTeams();
+      refreshRequests();
+    });
+    socket.on("team:declined", () => {
+      refreshTeams();
+      refreshRequests();
+    });
 
     return () => {
       socket.off("team:requestSent", refreshRequests);
       socket.off("team:requests", refreshRequests);
+      socket.off("team:accepted", () => {
+        refreshTeams();
+        refreshRequests();
+      });
+      socket.off("team:declined", () => {
+        refreshTeams();
+        refreshRequests();
+      });
     };
-  }, [userId, refreshRequests]);
+  }, [userId, refreshRequests, refreshTeams]);
 
   return { teams, requests, loading, refreshTeams, refreshRequests };
 };

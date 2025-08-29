@@ -8,6 +8,8 @@ import {
   getRequests,
   handleRequest,
   getTeamMembers,
+  deleteTeamUser,
+  updateTeamUser,
 } from "./service.js";
 
 export const handleCreateTeam = async (formData) => {
@@ -141,5 +143,39 @@ export const handleGetTeamMembers = async (teamId) => {
   } catch (error) {
     console.error("Error getting team members:", error);
     throw new Error("Failed to get team members please try again later.");
+  }
+};
+
+export const handleDeleteMember = async (teamId, userId) => {
+  if (!teamId) throw new Error("Team id is required");
+  if (!userId) throw new Error("Unauthorized: userId missing");
+
+  try {
+    console.log("Trying to delete team member");
+    const team = await deleteTeamUser({ teamId, userId });
+    console.log("Team:", team);
+    return team;
+  } catch (error) {
+    console.error("Error deleting team member:", error);
+    throw new Error("Failed to delete team member please try again later.");
+  }
+};
+
+export const handleUpdateRole = async (userId, teamId, role) => {
+  if (!teamId) throw new Error("Team id is required");
+  if (!userId) throw new Error("Unauthorized: userId missing");
+
+  console.log("handleUpdateRole teamId and userId accepted", teamId, userId);
+
+  try {
+    console.log("Trying to update team member role", userId, teamId, role);
+    const team = await updateTeamUser(userId, teamId, role);
+    console.log("Team:", team);
+    return team;
+  } catch (error) {
+    console.error("Error updating team member role:", error);
+    throw new Error(
+      "Failed to update team member role please try again later."
+    );
   }
 };

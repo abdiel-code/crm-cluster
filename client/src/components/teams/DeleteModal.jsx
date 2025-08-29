@@ -1,13 +1,13 @@
-const DeleteTeamModal = ({
-  teamId,
+const DeleteModal = ({
+  id,
   toggleDeleteModal,
-  handleDeleteTeam,
+  handleDeleteFunction,
   refreshTeams,
 }) => {
-  console.log("teamId", teamId);
+  console.log("teamId", id);
   const handleClick = async () => {
     try {
-      await handleDeleteTeam(teamId);
+      await handleDeleteFunction(id);
       refreshTeams();
       toggleDeleteModal();
     } catch (error) {
@@ -18,7 +18,7 @@ const DeleteTeamModal = ({
   return (
     <div className="w-full max-w-md mx-auto bg-white rounded-lg shadow-[4px_4px_4px_rgba(0,0,0,0.20)] p-6 flex flex-col items-center space-y-6">
       <h1 className="text-lg font-semibold text-gray-800 text-center">
-        Are you sure you want to delete this team?
+        Are you sure you want to delete?
       </h1>
       <div className="flex space-x-4">
         <button
@@ -40,4 +40,4 @@ const DeleteTeamModal = ({
   );
 };
 
-export default DeleteTeamModal;
+export default DeleteModal;

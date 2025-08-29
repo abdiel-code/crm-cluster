@@ -3,16 +3,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaChevronDown } from "react-icons/fa";
 import { useState, useEffect, useRef } from "react";
 import AdminUserChart from "./AdminUserChart.jsx";
+import { socket } from "../../core/socketInstance.js";
 
 const MyTeamsChart = ({
   team,
   toggleDeleteModal,
   handleGetTeamMembers,
   toggleUpdateModal,
+  handleDeleteMember,
+  handleUpdateRole,
 }) => {
   const { id, name, description, created_at } = team;
   const [showMenu, setShowMenu] = useState(false);
-  const [members, setMembers] = useState(null);
+  const [members, setMembers] = useState([]);
   const [showMembers, setShowMembers] = useState(false);
 
   const buttonRef = useRef(null);
@@ -36,20 +39,43 @@ const MyTeamsChart = ({
         setShowMenu(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const getMembers = async (teamId) => {
-    try {
-      const data = await handleGetTeamMembers(teamId);
-      console.log("members in MyTeamsChart", data);
-      setMembers(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  useEffect(() => {
+    if (!team?.id) return;
+    const fetchMembers = async () => {
+      try {
+        const data = await handleGetTeamMembers(team.id);
+        setMembers(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchMembers();
+  }, [team.id]);
+
+  useEffect(() => {
+    if (!team?.id) return;
+    const handleRoleUpdated = (updatedUser) => {
+      if (updatedUser.team_id === team.id) {
+        setMembers((prevMembers) =>
+          prevMembers.map((m) =>
+            m.user_id === updatedUser.user_id
+              ? { ...m, role: updatedUser.role }
+              : m
+          )
+        );
+      }
+    };
+
+    socket.on("team:roleUpdated", handleRoleUpdated);
+
+    return () => {
+      socket.off("team:roleUpdated", handleRoleUpdated);
+    };
+  }, [team.id]);
 
   return (
     <div className="w-full h-full flex flex-col gap-3 items-end">
@@ -74,10 +100,7 @@ const MyTeamsChart = ({
             <button
               type="button"
               className="text-[#495867] hover:text-[#577399] cursor-pointer"
-              onClick={() => {
-                getMembers(id);
-                setShowMembers((prev) => !prev);
-              }}
+              onClick={() => setShowMembers((prev) => !prev)}
             >
               <FaChevronDown size={25} />
             </button>
@@ -139,6 +162,8 @@ const MyTeamsChart = ({
                   key={member.id}
                   user={member}
                   formatDate={formatDate}
+                  onRoleUpdate={handleUpdateRole}
+                  onDelete={handleDeleteMember}
                 />
               ))}
           </motion.div>

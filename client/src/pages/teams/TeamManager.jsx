@@ -8,12 +8,14 @@ import {
   handleJoinRequest,
   handleSentRequest,
   handleGetTeamMembers,
+  handleDeleteMember,
+  handleUpdateRole,
 } from "../../hooks/teams/useTeamActions.js";
 import { useTeamManager } from "../../hooks/teams/useTeamManager.js";
 import CreateTeamForm from "../../components/teams/CreateTeamForm.jsx";
 import AddTeamButton from "../../components/teams/AddTeamButton.jsx";
 import MyTeamsChart from "../../components/teams/MyTeamsChart.jsx";
-import DeleteTeamModal from "../../components/teams/DeleteTeamModal.jsx";
+import DeleteTeamModal from "../../components/teams/DeleteModal.jsx";
 import UpdateTeamForm from "../../components/teams/UpdateTeamForm.jsx";
 import TeamChart from "../../components/teams/TeamChart.jsx";
 import useModal from "../../hooks/teams/modalHook.js";
@@ -99,6 +101,8 @@ const TeamManager = () => {
               toggleDeleteModal={toggleDeleteModal}
               toggleUpdateModal={toggleUpdateModal}
               handleGetTeamMembers={handleGetTeamMembers}
+              handleDeleteMember={handleDeleteMember}
+              handleUpdateRole={handleUpdateRole}
             />
           ))
         ) : (
@@ -121,9 +125,9 @@ const TeamManager = () => {
       {deleteModal.isOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-[rgba(0,0,0,0.5)]">
           <DeleteTeamModal
-            teamId={deleteModal.id}
+            id={deleteModal.id}
             toggleDeleteModal={toggleDeleteModal}
-            handleDeleteTeam={handleDeleteTeam}
+            handleDeleteFunction={handleDeleteTeam}
             refreshTeams={refreshTeams}
           />
         </div>
