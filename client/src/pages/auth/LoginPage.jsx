@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 // gray: 495867, HardBlue: 577399, SoftBlue: BDD5EA, White: FFFFFF, SoftRed: F7B1AB
 
 const LoginPage = () => {
   const { setUser } = useAuth();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -49,7 +51,11 @@ const LoginPage = () => {
 
       setTimeout(() => {
         setMessage("");
-      }, 5000);
+      }, 2000);
+
+      setTimeout(() => {
+        navigate("/tasks");
+      });
     } catch (error) {
       console.error(error);
       setError(

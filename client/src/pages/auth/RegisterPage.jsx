@@ -1,17 +1,19 @@
-import React, { useState } from 'react'
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // gray: 495867, HardBlue: 577399, SoftBlue: BDD5EA, White: FFFFFF, SoftRed: F7B1AB
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
+    name: "",
+    email: "",
+    password: "",
   });
 
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,40 +27,43 @@ const RegisterPage = () => {
     e.preventDefault();
 
     try {
-
-      const response = await axios.post('http://localhost:3030/api/auth/register', formData);
+      const response = await axios.post(
+        "http://localhost:3030/api/auth/register",
+        formData
+      );
 
       setMessage(response.data.message);
 
       console.log(response);
 
       setFormData({
-        name: '',
-        email: '',
-        password: '',
+        name: "",
+        email: "",
+        password: "",
       });
 
       setTimeout(() => {
-        setMessage('');
-      }, 5000);
+        setMessage("");
+      }, 2000);
 
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
     } catch (error) {
       console.error(error);
-      setError(error.response?.data?.message || "An error occurred while registering.");
+      setError(
+        error.response?.data?.message || "An error occurred while registering."
+      );
       setTimeout(() => {
-        setError('');
+        setError("");
       }, 5000);
     }
-
   };
-
-
 
   return (
     <div className="h-screen bg-[linear-gradient(to_bottom,_#ffffff_0%,_#ffffff_65%,_#bdd5ea_90%,_#bdd5ea_100%)] flex flex-col justify-center items-center">
-      <h1 className='text-3xl font-bold mb-7 shadow-2xl'>Register</h1>
+      <h1 className="text-3xl font-bold mb-7 shadow-2xl">Register</h1>
       <form className="border-2 border-[#F7B1AB] shadow-[4px_4px_14px_rgba(0,0,0,0.3)] rounded-lg p-6">
-
         <div className="mb-4">
           <label className="block text-gray-700 font-bold mb-2" htmlFor="name">
             Name
@@ -90,7 +95,10 @@ const RegisterPage = () => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2" htmlFor="password">
+          <label
+            className="block text-gray-700 font-bold mb-2"
+            htmlFor="password"
+          >
             Password
           </label>
           <input
@@ -116,12 +124,9 @@ const RegisterPage = () => {
 
         {message && <p className="text-[#577399] mt-4">{message}</p>}
         {error && <p className="text-red-500 mt-4">{error}</p>}
-
-
       </form>
-
     </div>
   );
-}
+};
 
-export default RegisterPage
+export default RegisterPage;
