@@ -10,6 +10,8 @@ import {
   handleGetTeamMembers,
   handleDeleteMember,
   handleUpdateRole,
+  handleLeaveTeam,
+  handleTeamConnect,
 } from "../../hooks/teams/useTeamActions.js";
 import { useTeamManager } from "../../hooks/teams/useTeamManager.js";
 import CreateTeamForm from "../../components/teams/CreateTeamForm.jsx";
@@ -109,6 +111,7 @@ const TeamManager = () => {
               handleGetTeamMembers={handleGetTeamMembers}
               handleDeleteMember={handleDeleteMember}
               handleUpdateRole={handleUpdateRole}
+              handleTeamConnect={handleTeamConnect}
             />
           ))
         ) : (
@@ -126,6 +129,9 @@ const TeamManager = () => {
               key={team.id}
               team={team}
               handleGetTeamMembers={handleGetTeamMembers}
+              handleLeaveTeam={handleLeaveTeam}
+              refreshTeams={refreshTeams}
+              handleTeamConnect={handleTeamConnect}
             />
           ))
         ) : (

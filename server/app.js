@@ -6,14 +6,6 @@ import cors from "./core/middleware/cors.js";
 import taskRoutes from "./apps/tasks/routes.js";
 import connectRoute from "./apps/connections/routes.js";
 
-/*
- * Main App of CRM Cluster
- *  - Load base middleware (cors, express.json, cookie-parser)
- *  - Load routes (auth, users)
- *  - Personalized CORS configuration
-
-*/
-
 const app = express();
 
 app.use(express.json());

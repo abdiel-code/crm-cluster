@@ -11,6 +11,8 @@ import {
   deleteTeamUser,
   updateTeamUser,
   getJoinedTeams,
+  leaveTeam,
+  connectTeam,
 } from "./service.js";
 
 export const handleCreateTeam = async (formData) => {
@@ -77,6 +79,8 @@ export const handleGetTeam = async (teamId) => {
 };
 
 export const handleJoinRequest = async (teamId, userId) => {
+  console.log("handleJoinRequest teamId and userId", teamId, userId);
+
   if (!teamId) throw new Error("Team id is required");
 
   console.log("handleJoinRequest teamId accepted");
@@ -194,5 +198,33 @@ export const handleJoinedTeams = async (userId) => {
   } catch (error) {
     console.error("Error getting joined teams:", error);
     throw new Error("Failed to get joined teams please try again later.");
+  }
+};
+
+export const handleLeaveTeam = async (teamId, userId) => {
+  if (!teamId) throw new Error("Team id is required");
+  if (!userId) throw new Error("Unauthorized: userId missing");
+
+  console.log("handleLeaveTeam teamId and userId accepted", teamId, userId);
+
+  try {
+    console.log("Trying to leave team");
+    const team = await leaveTeam(teamId, userId);
+    console.log("Team:", team);
+    return team;
+  } catch (error) {
+    console.error("Error leaving team:", error);
+    throw new Error("Failed to leave team please try again later.");
+  }
+};
+
+export const handleTeamConnect = (teamId) => {
+  try {
+    const team = connectTeam(teamId);
+    console.log("Team:", team);
+    return team;
+  } catch (error) {
+    console.error("Error connecting to team:", error);
+    throw new Error("Failed to connect to team please try again later.");
   }
 };

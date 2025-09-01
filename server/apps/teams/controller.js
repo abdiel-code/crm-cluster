@@ -12,6 +12,7 @@ import {
   updateTeamUser,
   kickUser,
   getJoinedTeams,
+  leaveTeam,
 } from "./teamsService.js";
 import withTeamRole from "../../core/middleware/withTeamRole.js";
 import withGlobalRole from "../../core/middleware/withGlobalRole.js";
@@ -540,6 +541,82 @@ const registerTeamEvents = (socket) => {
 
         socket.emit("team:joinedTeams", result);
         socket.broadcast.emit("team:joinedTeams", result);
+      } catch (error) {
+        callback({
+          success: false,
+          error: {
+            message: error.message,
+            code: "SERVER_ERROR",
+          },
+        });
+      }
+    });
+  });
+
+  socket.on("leaveTeam", async (teamId, userId, callback) => {
+    if (!teamId) {
+      return callback({
+        success: false,
+        error: {
+          message: "Team id is required",
+          code: "INVALID_DATA",
+        },
+      });
+    }
+
+    console.log("leaveTeam data accepted backend");
+
+    withGlobalRole(["admin", "editor", "agent", "viewer"], socket, async () => {
+      console.log("Backend role accepted for leaveTeam");
+
+      try {
+        console.log("Backend trying to leave team");
+        const result = await leaveTeam(teamId, userId);
+        callback(result);
+
+        socket.emit("team:leaveTeam", result);
+        socket.broadcast.emit("team:leaveTeam", result);
+      } catch (error) {
+        callback({
+          success: false,
+          error: {
+            message: error.message,
+            code: "SERVER_ERROR",
+          },
+        });
+      }
+    });
+  });
+
+  socket.on("connectTeam", async (teamId, callback) => {
+    if (!teamId) {
+      return callback({
+        success: false,
+        error: {
+          message: "Team id is required",
+          code: "INVALID_DATA",
+        },
+      });
+    }
+
+    console.log("connectTeam data accepted backend");
+
+    withGlobalRole(["admin", "editor", "agent", "viewer"], socket, async () => {
+      console.log("Backend role accepted for connectTeam");
+
+      try {
+        console.log("Backend trying to connect to team");
+        const result = await connectTeam(teamId, socket.user.id);
+
+        if (result.success) {
+          socket.join(teamId);
+          console.log("Joined team", teamId);
+        }
+
+        callback(result);
+
+        socket.emit("team:connectTeam", result);
+        socket.broadcast.emit("team:connectTeam", result);
       } catch (error) {
         callback({
           success: false,

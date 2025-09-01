@@ -179,3 +179,33 @@ export const getJoinedTeams = (userId) => {
     });
   });
 };
+
+export const leaveTeam = (teamId, userId) => {
+  console.log("leaveTeam", teamId, userId);
+
+  return new Promise((resolve, reject) => {
+    socket.emit("leaveTeam", teamId, userId, (response) => {
+      if (response.success) {
+        console.log("response", response);
+        resolve(response.data);
+      } else {
+        reject(response.error);
+      }
+    });
+  });
+};
+
+export const connectTeam = (teamId) => {
+  console.log("connectTeam", teamId);
+
+  return new Promise((resolve, reject) => {
+    socket.emit("connectTeam", teamId, (response) => {
+      if (response.success) {
+        console.log("response", response);
+        resolve(response.data);
+      } else {
+        reject(response.error);
+      }
+    });
+  });
+};

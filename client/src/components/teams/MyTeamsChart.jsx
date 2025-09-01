@@ -4,6 +4,7 @@ import { FaChevronDown } from "react-icons/fa";
 import { useState, useEffect, useRef } from "react";
 import AdminUserChart from "./AdminUserChart.jsx";
 import { socket } from "../../core/socketInstance.js";
+import { useNavigate } from "react-router-dom";
 
 const MyTeamsChart = ({
   team,
@@ -12,6 +13,7 @@ const MyTeamsChart = ({
   toggleUpdateModal,
   handleDeleteMember,
   handleUpdateRole,
+  handleTeamConnect,
 }) => {
   const { id, name, description, created_at } = team;
   const [showMenu, setShowMenu] = useState(false);
@@ -22,6 +24,8 @@ const MyTeamsChart = ({
   const menuRef = useRef(null);
 
   const formattedDate = formatDate(created_at);
+
+  const navigate = useNavigate();
 
   const handleCopyId = () => {
     navigator.clipboard.writeText(id);
@@ -78,7 +82,7 @@ const MyTeamsChart = ({
   }, [team.id]);
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 items-end">
+    <div className="w-full h-full flex flex-col gap-3 items-end relative group">
       <div className="w-full h-full flex items-center justify-around rounded-[10px] bg-white shadow-[4px_4px_4px_rgba(0,0,0,0.20)] py-2">
         <div className="w-[4px] h-[100%] bg-[#577399] rounded-2xl"></div>
         <h1 className="font-medium text-xl">{name}</h1>
@@ -105,6 +109,18 @@ const MyTeamsChart = ({
               <FaChevronDown size={25} />
             </button>
           </motion.div>
+
+          <div className="absolute top-[-50%] right-[50%] opacity-0 group-hover:opacity-100 transition-opacity z-20">
+            <button
+              onClick={() => {
+                handleTeamConnect(team.id);
+                navigate(`/teams/${team.id}`);
+              }}
+              className="bg-[#BDD5EA] text-[#495867] px-3 py-1 rounded-md shadow-md hover:bg-[#577399] font-semibold cursor-pointer"
+            >
+              Connect to this team
+            </button>
+          </div>
 
           <div className="relative">
             <button
@@ -149,24 +165,23 @@ const MyTeamsChart = ({
       </div>
 
       {showMembers && (
-        <div className="grid grid-cols-1 gap-2 w-[90%] h-full">
-          <motion.div
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -10 }}
-            transition={{ duration: 0.2 }}
-          >
-            {members &&
-              members.map((member) => (
-                <AdminUserChart
-                  key={member.id}
-                  user={member}
-                  formatDate={formatDate}
-                  onRoleUpdate={handleUpdateRole}
-                  onDelete={handleDeleteMember}
-                />
-              ))}
-          </motion.div>
+        <div className="absolute top-full left-0 w-full bg-white rounded-lg z-60 p-4 flex flex-col gap-2 border-2 border-[#577399]">
+          {members.map((member) => (
+            <motion.div
+              key={member.id}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <AdminUserChart
+                user={member}
+                formatDate={formatDate}
+                onRoleUpdate={handleUpdateRole}
+                onDelete={handleDeleteMember}
+              />
+            </motion.div>
+          ))}
         </div>
       )}
     </div>

@@ -13,6 +13,8 @@ export const useTeamManager = (userId) => {
   const [loading, setLoading] = useState(false);
   const listenersRegistered = useRef(false);
 
+  console.log("joined teams", joinedTeams);
+
   const refreshRequests = useCallback(async () => {
     if (!userId) return;
 
@@ -29,6 +31,8 @@ export const useTeamManager = (userId) => {
 
   const refreshJoinedTeams = useCallback(async () => {
     if (!userId) return;
+
+    console.log("refreshing joined teams is using userId:", userId);
     try {
       const data = await handleJoinedTeams(userId);
       setJoinedTeams(data || []);
@@ -61,6 +65,10 @@ export const useTeamManager = (userId) => {
   }, [refreshRequests]);
 
   useEffect(() => {
+    refreshJoinedTeams();
+  }, [refreshJoinedTeams]);
+
+  useEffect(() => {
     if (!userId || listenersRegistered.current) return;
 
     listenersRegistered.current = true;
@@ -74,11 +82,17 @@ export const useTeamManager = (userId) => {
       console.log("handleAccepted is requesting refresh requests");
       refreshTeams();
       refreshRequests();
+      refreshJoinedTeams();
     };
     const handleDeclined = () => {
       console.log("handleDeclined is requesting refresh requests");
       refreshTeams();
       refreshRequests();
+    };
+
+    const handleLeaveTeam = () => {
+      console.log("handleLeaveTeam is requesting refresh joined teams");
+      refreshJoinedTeams();
     };
 
     socket.on("team:created", handleTeamChange);
@@ -96,6 +110,8 @@ export const useTeamManager = (userId) => {
     socket.on("team:accepted", handleAccepted);
     socket.on("team:declined", handleDeclined);
 
+    socket.on("team:leave", handleLeaveTeam);
+
     return () => {
       socket.off("team:created", handleTeamChange);
       socket.off("team:updated", handleTeamChange);
@@ -106,6 +122,8 @@ export const useTeamManager = (userId) => {
       socket.off("team:requests", handleRequestChange);
       socket.off("team:accepted", handleAccepted);
       socket.off("team:declined", handleDeclined);
+
+      socket.off("team:leave", handleLeaveTeam);
 
       listenersRegistered.current = false;
     };

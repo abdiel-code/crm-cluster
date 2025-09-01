@@ -12,7 +12,7 @@ const ConnectPage = () => {
       return;
     }
 
-    try {
+    if (!socket.connected) {
       socket.auth = { userId: user.id };
       socket.connect();
 
@@ -24,8 +24,9 @@ const ConnectPage = () => {
       socket.on("connect_error", (err) => {
         console.error("❌ Connection failed:", err.message);
       });
-    } catch (error) {
-      console.error("Error connecting to the server:", error);
+    } else {
+      console.log("⚡ Already connected:", socket.id);
+      navigate("/coop");
     }
   };
 

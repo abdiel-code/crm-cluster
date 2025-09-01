@@ -3,6 +3,7 @@ const DeleteModal = ({
   userId,
   toggleDeleteModal,
   handleDeleteFunction,
+  message,
   refreshTeams,
 }) => {
   console.log("teamId", id);
@@ -24,7 +25,7 @@ const DeleteModal = ({
   return (
     <div className="w-full max-w-md mx-auto bg-white rounded-lg shadow-[4px_4px_4px_rgba(0,0,0,0.20)] p-6 flex flex-col items-center space-y-6">
       <h1 className="text-lg font-semibold text-gray-800 text-center">
-        Are you sure you want to delete?
+        {message || "Are you sure you want to delete?"}
       </h1>
       <div className="flex space-x-4">
         <button

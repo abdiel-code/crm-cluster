@@ -350,8 +350,8 @@ export const acceptRequest = async (teamId, userId) => {
     return { success: false, message: "Request not found" };
 
   const [result] = await connection.query(
-    "UPDATE user_teams SET status = 'active' WHERE team_id = ? AND user_id = ?",
-    [teamId, userId]
+    "UPDATE user_teams SET status = 'active', role = ? WHERE team_id = ? AND user_id = ?",
+    ["viewer", teamId, userId]
   );
 
   if (result.affectedRows === 0)
@@ -413,6 +413,56 @@ export const getJoinedTeams = async (userId) => {
   return {
     success: true,
     message: "Joined teams found successfully",
+    data: result,
+  };
+};
+
+export const leaveTeam = async (teamId, userId) => {
+  if (!teamId) throw new Error("Team id is required");
+  if (!userId) throw new Error("Unauthorized: userId missing");
+
+  console.log("User and team id received in leaveTeam");
+
+  const [isOnTeam] = await connection.query(
+    "SELECT * FROM user_teams WHERE team_id = ? AND user_id = ?",
+    [teamId, userId]
+  );
+
+  console.log("Is user on team", isOnTeam);
+
+  if (isOnTeam.length === 0)
+    return { success: false, message: "User is not on the team" };
+
+  const [result] = await connection.query(
+    "DELETE FROM user_teams WHERE team_id = ? AND user_id = ?",
+    [teamId, userId]
+  );
+
+  if (result.affectedRows === 0) throw new Error("Failed to leave team");
+
+  return {
+    success: true,
+    message: "Left team successfully",
+    data: result,
+  };
+};
+
+export const connectTeam = async (teamId, userId) => {
+  if (!teamId) throw new Error("Team id is required");
+  if (!userId) throw new Error("Unauthorized: userId missing");
+
+  console.log("Team id is valid", teamId);
+
+  const [result] = await connection.query(
+    "SELECT * FROM user_teams WHERE team_id = ? AND user_id = ?",
+    [teamId, userId]
+  );
+
+  if (result.length === 0) throw new Error("Team not found");
+
+  return {
+    success: true,
+    message: "Team found successfully",
     data: result,
   };
 };
