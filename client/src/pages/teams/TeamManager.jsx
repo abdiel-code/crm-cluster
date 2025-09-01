@@ -21,15 +21,16 @@ import TeamChart from "../../components/teams/TeamChart.jsx";
 import useModal from "../../hooks/teams/modalHook.js";
 import NotificationButton from "../../components/teams/NotificationButton.jsx";
 import NotificationModal from "../../components/teams/NotificationModal.jsx";
+import JoinedTeamChart from "../../components/teams/JoinedTeamChart.jsx";
 
 const TeamManager = () => {
   const { user } = useAuth();
   const {
     teams: myTeams,
+    joinedTeams,
     requests,
     loading,
     refreshTeams,
-    refreshRequests,
   } = useTeamManager(user?.id);
   const [isCreateTeamModalOpen, setIsCreateTeamModalOpen] = useState(false);
   const [deleteModal, toggleDeleteModal] = useModal();
@@ -81,13 +82,18 @@ const TeamManager = () => {
       </div>
       <div className="w-full grid grid-cols-1 gap-4">
         <h1 className="text-2xl font-bold text-center">Found Team</h1>
-        {foundTeam && (
+
+        {foundTeam && foundTeam.length > 0 ? (
           <TeamChart
-            key={foundTeam.id}
+            key={foundTeam[0].id}
             team={foundTeam[0]}
             userId={user.id}
             handleJoinRequest={handleJoinRequest}
           />
+        ) : (
+          <p className="text-center text-gray-500 italic text-xl">
+            Search for a team to get results.
+          </p>
         )}
       </div>
 
@@ -106,7 +112,26 @@ const TeamManager = () => {
             />
           ))
         ) : (
-          <p>No teams found.</p>
+          <p className="text-center text-gray-500 italic text-xl">
+            No teams found.
+          </p>
+        )}
+      </div>
+
+      <div className="w-full grid grid-cols-1 gap-4">
+        <h1 className="text-2xl font-bold text-center">Joined Teams</h1>
+        {joinedTeams.length > 0 ? (
+          joinedTeams.map((team) => (
+            <JoinedTeamChart
+              key={team.id}
+              team={team}
+              handleGetTeamMembers={handleGetTeamMembers}
+            />
+          ))
+        ) : (
+          <p className="text-center text-gray-500 italic text-xl">
+            You're not part of any teams yet.
+          </p>
         )}
       </div>
 

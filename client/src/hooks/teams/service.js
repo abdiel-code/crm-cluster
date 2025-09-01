@@ -164,3 +164,18 @@ export const updateTeamUser = (userId, teamId, role) => {
     });
   });
 };
+
+export const getJoinedTeams = (userId) => {
+  console.log("getJoinedTeams", userId);
+
+  return new Promise((resolve, reject) => {
+    socket.emit("getJoinedTeams", userId, (response) => {
+      if (response.success) {
+        console.log("response", response);
+        resolve(response.data);
+      } else {
+        reject(response.error);
+      }
+    });
+  });
+};

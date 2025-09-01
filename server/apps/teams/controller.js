@@ -11,6 +11,7 @@ import {
   getTeamMembers,
   updateTeamUser,
   kickUser,
+  getJoinedTeams,
 } from "./teamsService.js";
 import withTeamRole from "../../core/middleware/withTeamRole.js";
 import withGlobalRole from "../../core/middleware/withGlobalRole.js";
@@ -200,29 +201,27 @@ const registerTeamEvents = (socket) => {
     }
 
     console.log("user id accepted backend");
-    withGlobalRole(
-      ["admin", "editor", "agent", "viewer"],
-      teamId,
-      userId,
-      async () => {
-        console.log("Backend role accepted for joinTeam");
-        try {
-          console.log("Backend trying to join team");
-          const result = await joinRequest(teamId, userId);
-          callback(result);
+    withGlobalRole(["admin", "editor", "agent", "viewer"], socket, async () => {
+      console.log("Backend role accepted for joinTeam");
+      try {
+        console.log("Backend trying to join team");
+        const result = await joinRequest(teamId, userId);
+        callback(result);
 
-          socket.broadcast.emit("team:requestSent", result);
-        } catch (error) {
-          callback({
-            success: false,
-            error: {
-              message: error.message,
-              code: "SERVER_ERROR",
-            },
-          });
-        }
+        console.log(
+          "Emitting team:requests for user" + userId + " on joinRequest"
+        );
+        socket.emit("team:requests", result);
+      } catch (error) {
+        callback({
+          success: false,
+          error: {
+            message: error.message,
+            code: "SERVER_ERROR",
+          },
+        });
       }
-    );
+    });
   });
 
   socket.on("getRequests", async (userId, callback) => {
@@ -269,7 +268,10 @@ const registerTeamEvents = (socket) => {
           data: results,
         });
 
-        socket.broadcast.emit("team:requests", results);
+        console.log(
+          "Emitting team:request to user" + userId + " for getRequests"
+        );
+        socket.emit("team:requests", { userId, results });
       } catch (error) {
         callback({
           success: false,
@@ -329,13 +331,13 @@ const registerTeamEvents = (socket) => {
           const result = await acceptRequest(teamId, userId);
           callback(result);
 
-          socket.broadcast.emit("team:accepted", result);
+          socket.emit("team:accepted", result);
         } else {
           console.log("rejecting request");
           const result = await rejectRequest(teamId, userId);
           callback(result);
 
-          socket.broadcast.emit("team:rejected", result);
+          socket.emit("team:rejected", result);
         }
       } catch (error) {
         callback({
@@ -503,6 +505,41 @@ const registerTeamEvents = (socket) => {
 
         socket.emit("team:userKicked", result);
         socket.broadcast.emit("team:userKicked", result);
+      } catch (error) {
+        callback({
+          success: false,
+          error: {
+            message: error.message,
+            code: "SERVER_ERROR",
+          },
+        });
+      }
+    });
+  });
+
+  socket.on("getJoinedTeams", async (userId, callback) => {
+    if (!userId) {
+      return callback({
+        success: false,
+        error: {
+          message: "Unauthorized: userId missing",
+          code: "UNAUTHORIZED",
+        },
+      });
+    }
+
+    console.log("getJoinedTeams data accepted backend");
+
+    withGlobalRole(["admin", "editor", "agent", "viewer"], socket, async () => {
+      console.log("Backend role accepted for getJoinedTeams");
+
+      try {
+        console.log("Backend trying to get joined teams");
+        const result = await getJoinedTeams(userId);
+        callback(result);
+
+        socket.emit("team:joinedTeams", result);
+        socket.broadcast.emit("team:joinedTeams", result);
       } catch (error) {
         callback({
           success: false,

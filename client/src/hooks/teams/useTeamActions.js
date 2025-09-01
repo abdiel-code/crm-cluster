@@ -10,6 +10,7 @@ import {
   getTeamMembers,
   deleteTeamUser,
   updateTeamUser,
+  getJoinedTeams,
 } from "./service.js";
 
 export const handleCreateTeam = async (formData) => {
@@ -179,5 +180,19 @@ export const handleUpdateRole = async (userId, teamId, role) => {
     throw new Error(
       "Failed to update team member role please try again later."
     );
+  }
+};
+
+export const handleJoinedTeams = async (userId) => {
+  if (!userId) throw new Error("Unauthorized: userId missing");
+
+  try {
+    console.log("Trying to get joined teams");
+    const teams = await getJoinedTeams(userId);
+    console.log("Teams:", teams);
+    return teams;
+  } catch (error) {
+    console.error("Error getting joined teams:", error);
+    throw new Error("Failed to get joined teams please try again later.");
   }
 };

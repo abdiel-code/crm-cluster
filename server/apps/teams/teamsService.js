@@ -393,3 +393,26 @@ export const rejectRequest = async (teamId, userId) => {
     data: result,
   };
 };
+
+export const getJoinedTeams = async (userId) => {
+  if (!userId) throw new Error("Unauthorized: userId missing");
+
+  console.log("User id is valid", userId);
+
+  const [result] = await connection.query(
+    `SELECT ut.*, t.name, t.description
+    FROM user_teams ut
+    JOIN teams t ON ut.team_id = t.id
+    WHERE ut.user_id = ? AND ut.status = ? AND t.created_by != ?`,
+    [userId, "active", userId]
+  );
+
+  if (result.length === 0)
+    return { success: false, message: "No joined teams found" };
+
+  return {
+    success: true,
+    message: "Joined teams found successfully",
+    data: result,
+  };
+};

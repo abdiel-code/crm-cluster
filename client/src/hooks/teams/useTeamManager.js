@@ -1,39 +1,51 @@
-import { useState, useEffect, useCallback } from "react";
-
-import { handleGetMyTeams, handleGetRequests } from "./useTeamActions.js";
-
+import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  handleGetMyTeams,
+  handleGetRequests,
+  handleJoinedTeams,
+} from "./useTeamActions.js";
 import { socket } from "../../core/socketInstance.js";
 
 export const useTeamManager = (userId) => {
   const [teams, setTeams] = useState([]);
+  const [joinedTeams, setJoinedTeams] = useState([]);
   const [requests, setRequests] = useState([]);
-
   const [loading, setLoading] = useState(false);
+  const listenersRegistered = useRef(false);
 
   const refreshRequests = useCallback(async () => {
     if (!userId) return;
+
+    console.log("refreshing requests called for user:", userId);
 
     try {
       const data = await handleGetRequests(userId);
       setRequests(data || []);
     } catch (error) {
-      console.error("Error in refreshTeams:", error);
+      console.error("Error in refreshRequests:", error);
       setRequests([]);
+    }
+  }, [userId]);
+
+  const refreshJoinedTeams = useCallback(async () => {
+    if (!userId) return;
+    try {
+      const data = await handleJoinedTeams(userId);
+      setJoinedTeams(data || []);
+    } catch (error) {
+      console.error("Error in refreshJoinedTeams:", error);
+      setJoinedTeams([]);
     }
   }, [userId]);
 
   const refreshTeams = useCallback(async () => {
     if (!userId) return;
-
     try {
       setLoading(true);
-
       const data = await handleGetMyTeams(userId);
-
       setTeams(data || []);
     } catch (err) {
       console.error("Error in refreshTeams:", err);
-
       setTeams([]);
     } finally {
       setLoading(false);
@@ -49,52 +61,63 @@ export const useTeamManager = (userId) => {
   }, [refreshRequests]);
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId || listenersRegistered.current) return;
 
-    socket.on("team:created", refreshTeams);
+    listenersRegistered.current = true;
 
-    socket.on("team:updated", refreshTeams);
-
-    socket.on("team:deleted", refreshTeams);
-    socket.on("team:roleUpdated", refreshTeams);
-
-    return () => {
-      socket.off("team:created", refreshTeams);
-
-      socket.off("team:updated", refreshTeams);
-
-      socket.off("team:deleted", refreshTeams);
-      socket.off("team:roleUpdated", () => refreshTeams);
+    const handleTeamChange = () => refreshTeams();
+    const handleRequestChange = () => {
+      console.log("handleRequestChange is requesting refresh requests");
+      refreshRequests();
     };
-  }, [userId, refreshTeams]);
-
-  useEffect(() => {
-    if (!userId) return;
-
-    socket.on("team:requestSent", refreshRequests);
-    socket.on("team:requests", refreshRequests);
-    socket.on("team:accepted", () => {
+    const handleAccepted = () => {
+      console.log("handleAccepted is requesting refresh requests");
       refreshTeams();
       refreshRequests();
-    });
-    socket.on("team:declined", () => {
+    };
+    const handleDeclined = () => {
+      console.log("handleDeclined is requesting refresh requests");
       refreshTeams();
       refreshRequests();
+    };
+
+    socket.on("team:created", handleTeamChange);
+    socket.on("team:updated", handleTeamChange);
+    socket.on("team:deleted", handleTeamChange);
+    socket.on("team:roleUpdated", handleTeamChange);
+
+    socket.on("team:requestSent", handleRequestChange);
+    socket.on("team:requests", (payload) => {
+      if (!payload || payload.userId !== userId) return;
+      console.log("✅ team:requests received for current user");
+      setRequests(payload.results || []);
     });
+
+    socket.on("team:accepted", handleAccepted);
+    socket.on("team:declined", handleDeclined);
 
     return () => {
-      socket.off("team:requestSent", refreshRequests);
-      socket.off("team:requests", refreshRequests);
-      socket.off("team:accepted", () => {
-        refreshTeams();
-        refreshRequests();
-      });
-      socket.off("team:declined", () => {
-        refreshTeams();
-        refreshRequests();
-      });
+      socket.off("team:created", handleTeamChange);
+      socket.off("team:updated", handleTeamChange);
+      socket.off("team:deleted", handleTeamChange);
+      socket.off("team:roleUpdated", handleTeamChange);
+
+      socket.off("team:requestSent", handleRequestChange);
+      socket.off("team:requests", handleRequestChange);
+      socket.off("team:accepted", handleAccepted);
+      socket.off("team:declined", handleDeclined);
+
+      listenersRegistered.current = false;
     };
   }, [userId, refreshRequests, refreshTeams]);
 
-  return { teams, requests, loading, refreshTeams, refreshRequests };
+  return {
+    teams,
+    joinedTeams,
+    requests,
+    loading,
+    refreshTeams,
+    refreshRequests,
+    refreshJoinedTeams,
+  };
 };

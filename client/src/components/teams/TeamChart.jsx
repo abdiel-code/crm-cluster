@@ -43,7 +43,7 @@ const MyTeamsChart = ({ team, userId, handleJoinRequest }) => {
         <div className="flex items-center gap-4">
           <button
             type="button"
-            className="bg-[#BDD5EA] text-[#495867] px-3 py-1 rounded-md hover:bg-[#AFCDE7] font-medium"
+            className="bg-[#BDD5EA] text-[#495867] px-3 py-1 rounded-md hover:bg-[#AFCDE7] font-medium cursor-pointer"
             onClick={() => handleJoinRequest(id, userId)}
           >
             Send Join Request
