@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import AdminUserChart from "./AdminUserChart.jsx";
 import { socket } from "../../core/socketInstance.js";
 import { useNavigate } from "react-router-dom";
+import { useTeam } from "../../context/TeamContext.jsx";
 
 const MyTeamsChart = ({
   team,
@@ -15,6 +16,7 @@ const MyTeamsChart = ({
   handleUpdateRole,
   handleTeamConnect,
 }) => {
+  const { setActiveTeam } = useTeam();
   const { id, name, description, created_at } = team;
   const [showMenu, setShowMenu] = useState(false);
   const [members, setMembers] = useState([]);
@@ -113,8 +115,10 @@ const MyTeamsChart = ({
           <div className="absolute top-[-50%] right-[50%] opacity-0 group-hover:opacity-100 transition-opacity z-20">
             <button
               onClick={() => {
-                handleTeamConnect(team.id);
-                navigate(`/teams/${team.id}`);
+                console.log("handleTeamConnect team_id", team.id);
+                handleTeamConnect(team.id, setActiveTeam).then(() => {
+                  navigate(`/coop/messages`);
+                });
               }}
               className="bg-[#BDD5EA] text-[#495867] px-3 py-1 rounded-md shadow-md hover:bg-[#577399] font-semibold cursor-pointer"
             >

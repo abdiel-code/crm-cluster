@@ -6,6 +6,8 @@ import UserChart from "./UserChart.jsx";
 import useModal from "../../hooks/teams/modalHook.js";
 import DeleteModal from "./DeleteModal.jsx";
 import { socket } from "../../core/socketInstance.js";
+import { useNavigate } from "react-router-dom";
+import { useTeam } from "../../context/TeamContext.jsx";
 
 const JoinedTeamChart = ({
   team,
@@ -14,12 +16,15 @@ const JoinedTeamChart = ({
   refreshTeams,
   handleTeamConnect,
 }) => {
+  const { setActiveTeam } = useTeam();
   const { team_id, name, description, joined_at, role, user_id } = team;
 
   const [showMenu, setShowMenu] = useState(false);
   const [members, setMembers] = useState([]);
   const [showMembers, setShowMembers] = useState(false);
   const [deleteModal, toggleDeleteModal] = useModal();
+
+  const navigate = useNavigate();
 
   console.log("members", members);
 
@@ -83,7 +88,7 @@ const JoinedTeamChart = ({
   }, [team.id]);
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 items-end relative">
+    <div className="w-full h-full flex flex-col gap-3 items-end relative group">
       <div className="w-full h-full flex items-center justify-around rounded-[10px] bg-white shadow-[4px_4px_4px_rgba(0,0,0,0.20)] py-2">
         <div className="w-[4px] h-[100%] bg-[#577399] rounded-2xl"></div>
         <h1 className="font-medium text-xl">{name}</h1>
@@ -116,7 +121,11 @@ const JoinedTeamChart = ({
 
           <div className="absolute top-[-50%] right-[50%] opacity-0 group-hover:opacity-100 transition-opacity z-20">
             <button
-              onClick={() => handleTeamConnect(team)}
+              onClick={() => {
+                handleTeamConnect(team_id, setActiveTeam).then(() => {
+                  navigate(`/coop/messages`);
+                });
+              }}
               className="bg-[#BDD5EA] text-[#495867] px-3 py-1 rounded-md shadow-md hover:bg-[#577399] font-semibold cursor-pointer"
             >
               Connect to this team

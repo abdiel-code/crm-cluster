@@ -5,6 +5,7 @@ const IconExample = () => <FaPaw color="#577399" />;
 
 const items = [
   //{ alt: "profile", label: "Profile" },
+  { alt: "messages", label: "Messages" },
   { alt: "tasks", label: "Tasks" },
   //{ alt: "customers", label: "Customers" },
   //{ alt: "users", label: "Users" },

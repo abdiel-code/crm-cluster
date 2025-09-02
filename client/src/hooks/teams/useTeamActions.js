@@ -218,13 +218,16 @@ export const handleLeaveTeam = async (teamId, userId) => {
   }
 };
 
-export const handleTeamConnect = (teamId) => {
+export const handleTeamConnect = async (teamId, setActiveTeam) => {
   try {
-    const team = connectTeam(teamId);
-    console.log("Team:", team);
-    return team;
+    const teamData = await connectTeam(teamId);
+    if (teamData?.[0]) {
+      setActiveTeam(teamData[0]);
+      localStorage.setItem("activeTeam", JSON.stringify(teamData[0]));
+    }
+    return teamData;
   } catch (error) {
     console.error("Error connecting to team:", error);
-    throw new Error("Failed to connect to team please try again later.");
+    throw error;
   }
 };

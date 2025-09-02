@@ -8,6 +8,7 @@ import TaskPage from "./pages/tasks/TaskManager.jsx";
 import ConnectPage from "./pages/connection/ConnectPage.jsx";
 import CoopTaskManager from "./pages/coopTasks/CoopTaskManager.jsx";
 import TeamManager from "./pages/teams/TeamManager.jsx";
+import MessageManager from "./pages/messages/MessageManager.jsx";
 
 // Sidebar is a component that will be used to display the sidebar but it is not yet implemented
 // Sidebar is tested in a page for now
@@ -43,6 +44,7 @@ function App() {
             <Route path="/coop" element={<div>Coop</div>} />
             <Route path="/coop/tasks" element={<CoopTaskManager />} />
             <Route path="/coop/teams" element={<TeamManager />} />
+            <Route path="/coop/messages" element={<MessageManager />} />
           </Route>
         </Route>
       </Routes>
