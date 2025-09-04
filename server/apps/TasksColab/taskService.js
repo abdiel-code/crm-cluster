@@ -3,52 +3,91 @@ import isValid from "../../core/validation/tasks/validators.js";
 import { buildTaskQuery } from "../tasks/service.js";
 
 export const createTask = async (taskData) => {
-  const { title, description, status, priority, due_date, teamId, userId } = taskData;
+  console.log("processing data to mysql", taskData);
+
+  const {
+    title,
+    description,
+    status,
+    priority,
+    due_date,
+    user_id: userId,
+    team_id: teamId,
+  } = taskData;
 
   if (!title?.trim()) throw new Error("Title is required and cannot be empty");
   if (!userId) throw new Error("Unauthorized: userId missing");
   if (!teamId) throw new Error("Unauthorized: teamId missing");
 
   const [result] = await connection.query(
-    "INSERT INTO tasks (...) VALUES (?, ?, ?, ?, ?, ?, ?)",
-    [title, description, status, priority, due_date, teamId, userId]
+    "INSERT INTO tasks (title, description, status, priority, due_date, user_id, team_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [title, description, status, priority, due_date, userId, teamId]
   );
 
-  const [rows] = await connection.query("SELECT * FROM tasks WHERE id = ?", [result.insertId]);
-  return rows[0];
+  if (result.affectedRows === 0) throw new Error("Task could not be created");
+
+  return {
+    success: true,
+    message: "Task created successfully",
+    data: {
+      id: result.insertId,
+      title,
+      description,
+      status,
+      priority,
+      due_date,
+      user_id: userId,
+      team_id: teamId,
+    },
+  };
 };
 
-
-export const deleteTask = async (taskData) => {
-  const { taskId, userId, teamId } = taskData;
-
+export const deleteTask = async (taskId, teamId) => {
   if (!taskId) throw new Error("Unauthorized: taskId missing");
-  if (!userId) throw new Error("Unauthorized: userId missing");
   if (!teamId) throw new Error("Unauthorized: teamId missing");
 
+  console.log("taskId and teamId is valid");
+
   const [existing] = await connection.query(
-    "SELECT * FROM tasks WHERE id = ? AND user_id = ? AND team_id = ?",
-    [taskId, userId, teamId]
+    "SELECT * FROM tasks WHERE id = ? AND team_id = ?",
+    [taskId, teamId]
   );
 
   if (existing.length === 0) throw new Error("Task not found or unauthorized");
 
   const [result] = await connection.query(
-    "DELETE FROM tasks WHERE id = ? AND user_id = ? AND team_id = ?",
-    [taskId, userId, teamId]
+    "DELETE FROM tasks WHERE id = ? AND team_id = ?",
+    [taskId, teamId]
   );
 
   if (result.affectedRows === 0) throw new Error("Task could not be deleted");
 
-  return existing[0];
+  return {
+    success: true,
+    message: "Task deleted successfully",
+    data: result,
+  };
 };
 
 export const updateTask = async (taskData) => {
-  const { taskId, title, description, status, priority, due_date, teamId, userId } = taskData;
+  const {
+    id: taskId,
+    user_id: userId,
+    title,
+    description,
+    status,
+    priority,
+    due_date,
+    team_id: teamId,
+  } = taskData;
+
+  console.log("processing data to mysql", taskData);
 
   if (!taskId) throw new Error("Unauthorized: taskId missing");
   if (!userId) throw new Error("Unauthorized: userId missing");
   if (!teamId) throw new Error("Unauthorized: teamId missing");
+
+  console.log("valid data");
 
   const fields = [];
   const values = [];
@@ -92,29 +131,61 @@ export const updateTask = async (taskData) => {
 
   if (result.affectedRows === 0) throw new Error("Task could not be updated");
 
-  const [rows] = await connection.query("SELECT * FROM tasks WHERE id = ?", [taskId]);
-  return rows[0];
+  const [rows] = await connection.query("SELECT * FROM tasks WHERE id = ?", [
+    taskId,
+  ]);
+
+  return {
+    success: true,
+    message: "Task updated successfully",
+    data: rows[0],
+  };
 };
 
 export const getTasks = async (filters) => {
+  console.log("processing data to mysql on getTasks", filters);
 
-  const { userId, teamId, status, priority, due_date, search } = filters;
+  const { status, priority, due_date, search, userId, teamId } = filters;
 
   if (!userId) throw new Error("Unauthorized: userId missing");
   if (!teamId) throw new Error("Unauthorized: teamId missing");
 
-  const isInvalidInformation = isValid({ status, priority, due_date })
+  const isInvalidInformation = isValid({ status, priority, due_date });
 
-  if (isInvalidInformation) throw new Error({
-    errors: isInvalidInformation.errors,
-    details: isInvalidInformation,
-    code: "INVALID_INFORMATION"
+  if (isInvalidInformation)
+    throw new Error({
+      errors: isInvalidInformation.errors,
+      details: isInvalidInformation,
+      code: "INVALID_INFORMATION",
+    });
+
+  console.log("information is valid");
+
+  const { query, params } = buildTaskQuery({
+    userId,
+    teamId,
+    status,
+    priority,
+    due_date,
+    search,
+    requiredTeamId: true,
   });
 
-  const { query, params } = buildTaskQuery({ userId, teamId, status, priority, due_date, search });
   const [tasks] = await connection.query(query, params);
-  if (tasks.length === 0) { return [] };
 
-  return tasks
+  console.log("tasks founded", tasks);
 
-}
+  if (tasks.length === 0) {
+    return {
+      success: true,
+      message: "Tasks not found",
+      data: [],
+    };
+  }
+
+  return {
+    success: true,
+    message: "Tasks found successfully",
+    data: tasks,
+  };
+};

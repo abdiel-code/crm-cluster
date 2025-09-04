@@ -2,27 +2,39 @@ import formatDate from "../../hooks/global/formatDate.js";
 
 const userLocale = navigator.language || "en-US";
 
-const TaskChart = ({ task, fetchTasks, toggleUpdateModal, toggleDeleteModal, handleUpdateTask, handleMessage }) => {
-
-
-  const { id, title, description, due_date, priority, status = "pending" } = task;
+const TaskChart = ({
+  task,
+  fetchTasks,
+  toggleUpdateModal,
+  toggleDeleteModal,
+  handleUpdateTask,
+  handleMessage,
+  teamId,
+  teamIdRequired,
+}) => {
+  const {
+    id,
+    title,
+    description,
+    due_date,
+    priority,
+    status = "pending",
+  } = task;
 
   const formattedDueDate = formatDate(due_date, userLocale);
 
-
   const statusColors = {
-    pending: '#577399',
-    in_progress: '#ffb347',
-    completed: '#38A169',
-    cancelled: '#F7B1AB',
-  }
+    pending: "#577399",
+    in_progress: "#ffb347",
+    completed: "#38A169",
+    cancelled: "#F7B1AB",
+  };
   const priorityColors = {
-    low: '#577399',
-    medium: '#ffb347',
-    high: '#F7B1AB',
-    urgent: '#ff0000',
-  }
-
+    low: "#577399",
+    medium: "#ffb347",
+    high: "#F7B1AB",
+    urgent: "#ff0000",
+  };
 
   const handleOption = async (e) => {
     const newStatus = e.target.value;
@@ -37,29 +49,35 @@ const TaskChart = ({ task, fetchTasks, toggleUpdateModal, toggleDeleteModal, han
   };
 
   return (
-    <div className='border-gray-400 shadow-[4px_4px_4px_4px_rgba(0,0,0,0.2)] p-2 
-      w-full h-full rounded-[20px] flex flex-col justify-around items-center box-border hover:border-2 hover:border-[#577399]'>
-
+    <div
+      className="border-gray-400 shadow-[4px_4px_4px_4px_rgba(0,0,0,0.2)] p-2 
+      w-full h-full rounded-[20px] flex flex-col justify-around items-center box-border hover:border-2 hover:border-[#577399]"
+    >
       <p
         className="font-medium text-2xl"
         style={{
-          textAlign: 'center',
-          wordBreak: 'break-word',
-          textAlignLast: 'center'
+          textAlign: "center",
+          wordBreak: "break-word",
+          textAlignLast: "center",
         }}
-      >{title}</p>
+      >
+        {title}
+      </p>
 
       <p
         className="text-[#495867] font-medium text-xl block"
         style={{
-          textAlign: 'center',
-          wordBreak: 'break-word',
-          textAlignLast: 'center'
+          textAlign: "center",
+          wordBreak: "break-word",
+          textAlignLast: "center",
         }}
       >
         {description}
       </p>
-      <p className="font-bold text-xl" style={{ color: priorityColors[priority] }}>
+      <p
+        className="font-bold text-xl"
+        style={{ color: priorityColors[priority] }}
+      >
         Priority: {priority}
       </p>
       <p className="font-bold">Expires {formattedDueDate}</p>
@@ -91,16 +109,15 @@ const TaskChart = ({ task, fetchTasks, toggleUpdateModal, toggleDeleteModal, han
 
         <button
           type="button"
-          onClick={() => toggleDeleteModal(task)}
+          onClick={() => toggleDeleteModal(task, teamId, teamIdRequired)}
           className="bg-[#F7B1AB] w-10 h-10 text-white rounded-full font-bold text-[1.1rem] 
-          hover:bg-[#FF847E] cursor-pointer flex justify-center items-center">
-          <div className="w-6 h-1 bg-white rounded">
-
-          </div>
+          hover:bg-[#FF847E] cursor-pointer flex justify-center items-center"
+        >
+          <div className="w-6 h-1 bg-white rounded"></div>
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default TaskChart;

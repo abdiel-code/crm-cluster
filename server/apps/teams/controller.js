@@ -13,6 +13,7 @@ import {
   kickUser,
   getJoinedTeams,
   leaveTeam,
+  connectTeam,
 } from "./teamsService.js";
 import withTeamRole from "../../core/middleware/withTeamRole.js";
 import withGlobalRole from "../../core/middleware/withGlobalRole.js";
@@ -615,8 +616,7 @@ const registerTeamEvents = (socket) => {
 
         callback(result);
 
-        socket.emit("team:connectTeam", result);
-        socket.broadcast.emit("team:connectTeam", result);
+        socket.to(teamId).emit("team:connectTeam", result);
       } catch (error) {
         callback({
           success: false,

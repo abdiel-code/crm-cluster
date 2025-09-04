@@ -1,6 +1,36 @@
-export function buildTaskQuery({ userId, status, priority, dueDate, search }) {
-  let query = "SELECT * FROM tasks WHERE user_id = ?";
+export function buildTaskQuery({
+  userId,
+  teamId,
+  status,
+  priority,
+  dueDate,
+  search,
+  requiredTeamId = false,
+}) {
+  console.log("team id", teamId);
+  console.log("required team id", requiredTeamId);
+
+  console.log("team id is valid", teamId);
+  console.log("user id is valid", userId);
+
+  if (!userId) throw new Error("Unauthorized: userId missing");
+
+  console.log("User id is valid");
+
+  if (requiredTeamId && !teamId)
+    throw new Error("Unauthorized: teamId missing");
+
+  console.log("Team id is valid");
+
+  let query = "";
   const params = [userId];
+
+  if (requiredTeamId) {
+    query = "SELECT * FROM tasks WHERE user_id = ? AND team_id = ?";
+    params.push(teamId);
+  } else {
+    query = "SELECT * FROM tasks WHERE user_id = ?";
+  }
 
   if (status) {
     query += " AND status = ?";
@@ -21,6 +51,9 @@ export function buildTaskQuery({ userId, status, priority, dueDate, search }) {
     query += " AND (title LIKE ? OR description LIKE ?)";
     params.push(`%${search}%`, `%${search}%`);
   }
+
+  console.log("query", query);
+  console.log("params", params);
 
   return { query, params };
 }

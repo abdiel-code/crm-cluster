@@ -452,10 +452,14 @@ export const connectTeam = async (teamId, userId) => {
   if (!userId) throw new Error("Unauthorized: userId missing");
 
   console.log("Team id is valid", teamId);
+  console.log("User id is valid", userId);
 
   const [result] = await connection.query(
-    "SELECT * FROM user_teams WHERE team_id = ? AND user_id = ?",
-    [teamId, userId]
+    `SELECT ut.*, t.name AS team_name
+     FROM user_teams ut
+     INNER JOIN teams t ON ut.team_id = t.id
+     WHERE ut.team_id = ? AND ut.user_id = ? AND ut.status = ?`,
+    [teamId, userId, "active"]
   );
 
   if (result.length === 0) throw new Error("Team not found");
