@@ -7,8 +7,8 @@ import TaskManagerBase from "../../components/tasks/TaskManagerBase.jsx";
 const CoopTaskManager = () => {
   const { user } = useAuth();
 
-  const { filters, handleAddFilter } = useCoopTaskFilters();
-  const { taskList, fetchTasks } = useCoopTaskFetcher(filters);
+  const { filters, handleAddFilter, search } = useCoopTaskFilters();
+  const { taskList, fetchTasks } = useCoopTaskFetcher(filters, search);
   const { handleCreateTask, handleUpdateTask, handleDeleteTask } =
     useCoopTaskActions(user, fetchTasks);
 

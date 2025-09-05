@@ -8,7 +8,6 @@ export const createTask = (taskData) => {
     console.log("Calling createTask from frontend to backend");
     socket.emit("createTask", taskData, (response) => {
       if (response.success) {
-        console.log("response", response);
         resolve(response.data);
       } else {
         reject(response.error);

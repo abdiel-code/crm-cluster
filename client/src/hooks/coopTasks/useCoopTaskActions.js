@@ -8,28 +8,47 @@ const useCoopTaskActions = (user, fetchTasks) => {
   const handleCreateTask = async (formData) => {
     console.log("Handle create task data", formData);
 
-    const response = await createTask(formData);
-    await fetchTasks();
-    return response;
+    try {
+      const response = await createTask(formData);
+      console.log("Task created successfully:", response);
+      return response;
+    } catch (error) {
+      console.error("Error creating task:", error);
+      return {
+        success: false,
+        message: error.message || "Error creating task",
+      };
+    }
   };
 
   const handleUpdateTask = async (formData, taskId) => {
     console.log("Handle update task data", formData);
 
-    const response = await updateTask(formData, taskId, user.id);
-
-    console.log("response", response);
-    await fetchTasks();
-
-    return response;
+    try {
+      const response = await updateTask(formData);
+      console.log("Task updated successfully:", response);
+      return response;
+    } catch (error) {
+      console.error("Error updating task:", error);
+      return {
+        success: false,
+        message: error.message || "Error updating task",
+      };
+    }
   };
   const handleDeleteTask = async (taskId, teamId) => {
     console.log("Handle delete task data", taskId);
-    console.log("teamId", teamId);
-
-    const response = await deleteTask(taskId, teamId);
-    await fetchTasks();
-    return response;
+    try {
+      const response = await deleteTask(taskId, teamId);
+      console.log("Task deleted successfully:", response);
+      return response;
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      return {
+        success: false,
+        message: error.message || "Error deleting task",
+      };
+    }
   };
 
   return { handleCreateTask, handleUpdateTask, handleDeleteTask };

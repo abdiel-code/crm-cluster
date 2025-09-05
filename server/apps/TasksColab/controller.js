@@ -23,9 +23,13 @@ const registerTaskEvents = (socket) => {
 
         callback(task);
 
-        socket.emit("taskCreated", task);
-        socket.to(task.team_id).emit("taskCreated", task);
+        socket.to(task.data.team_id).emit("taskCreated", task.data);
+        socket.emit("taskCreated", task.data);
       } catch (error) {
+        callback({
+          success: false,
+          error: error.message,
+        });
         socket.emit("taskError", {
           message: error.message,
           code: "CREATE_FAILED",
@@ -49,13 +53,15 @@ const registerTaskEvents = (socket) => {
       console.log("comes here if there is role and proceed to await handler");
 
       try {
-        const task = await deleteTask(taskId, teamId);
-        console.log("task deleted", task);
+        const result = await deleteTask(taskId, teamId);
+        console.log("task deleted", result);
 
-        callback(task);
+        callback(result);
 
-        socket.emit("taskDeleted", task);
-        socket.to(task.team_id).emit("taskDeleted", task);
+        console.log("taskId", taskId);
+
+        socket.to(teamId).emit("taskDeleted", taskId);
+        socket.emit("taskDeleted", taskId);
       } catch (error) {
         socket.emit("taskError", {
           success: false,
@@ -87,8 +93,8 @@ const registerTaskEvents = (socket) => {
 
         callback(task);
 
-        socket.emit("taskUpdated", task);
-        socket.to(task.team_id).emit("taskUpdated", task);
+        socket.to(task.data.team_id).emit("taskUpdated", task.data);
+        socket.emit("taskUpdated", task.data);
       } catch (error) {
         socket.emit("taskError", {
           success: false,
@@ -111,8 +117,10 @@ const registerTaskEvents = (socket) => {
 
     console.log("filters", filters);
 
+    console.log("socket for get tasks", socket);
+
     withTeamRole(
-      ["admin", "editor, viewer"],
+      ["admin", "editor", "viewer"],
       filters.teamId,
       socket,
       async () => {
@@ -124,6 +132,8 @@ const registerTaskEvents = (socket) => {
           callback(tasks);
 
           socket.emit("tasks", tasks);
+          console.log("filters.teamId", filters.teamId);
+          socket.to(filters.teamId).emit("tasks", tasks);
         } catch (error) {
           socket.emit("taskError", {
             success: false,

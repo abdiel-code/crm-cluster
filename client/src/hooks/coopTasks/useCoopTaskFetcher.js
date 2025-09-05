@@ -3,11 +3,16 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import { useTeam } from "../../context/TeamContext.jsx";
 import { socket } from "../../core/socketInstance.js";
 
-const useCoopTaskFetcher = (filters = {}) => {
+const useCoopTaskFetcher = (filters = {}, search = "") => {
   const [taskList, setTaskList] = useState([]);
   const { user } = useAuth();
   const { activeTeam } = useTeam();
   const isFetching = useRef(false);
+  const lastSearch = useRef(search);
+
+  useEffect(() => {
+    lastSearch.current = search;
+  }, [search]);
 
   const fetchTasks = useCallback(
     (overrideFilters = {}, overrideSearch = "") => {
@@ -17,7 +22,7 @@ const useCoopTaskFetcher = (filters = {}) => {
       const finalFilters = {
         ...filters,
         ...overrideFilters,
-        search: overrideSearch,
+        search: overrideSearch || lastSearch.current,
         userId: user?.id,
         teamId: activeTeam?.team_id,
       };
@@ -39,6 +44,7 @@ const useCoopTaskFetcher = (filters = {}) => {
           return;
         }
 
+        console.log("Received tasks at socket.emit(getTasks):", response.data);
         setTaskList(response.data || []);
       });
     },
@@ -48,17 +54,34 @@ const useCoopTaskFetcher = (filters = {}) => {
   useEffect(() => {
     const handleCreateTask = (task) => {
       console.log("Received taskCreated:", task);
-      if (task.team_id === activeTeam?.team_id) fetchTasks();
+      if (task.team_id === activeTeam?.team_id) {
+        console.log("Adding new task to state directly");
+        setTaskList((prevTasks) => {
+          const exists = prevTasks.some((t) => t.id === task.id);
+          if (exists) return prevTasks;
+          return [...prevTasks, task];
+        });
+      }
     };
 
-    const handleUpdateTask = (task) => {
-      console.log("Received taskUpdated:", task);
-      if (task.team_id === activeTeam?.team_id) fetchTasks();
+    const handleUpdateTask = (updatedTask) => {
+      console.log("Received taskUpdated:", updatedTask);
+      if (updatedTask.team_id === activeTeam?.team_id) {
+        console.log("Updating task in state directly");
+        setTaskList((prevTasks) =>
+          prevTasks.map((task) =>
+            task.id === updatedTask.id ? updatedTask : task
+          )
+        );
+      }
     };
 
     const handleDeleteTask = (taskId) => {
       console.log("Received taskDeleted:", taskId);
-      if (taskId.team_id === activeTeam?.team_id) fetchTasks();
+      console.log("Removing task from state directly");
+      setTaskList((prevTasks) =>
+        prevTasks.filter((task) => task.id !== taskId)
+      );
     };
 
     socket.on("taskCreated", handleCreateTask);
@@ -70,11 +93,13 @@ const useCoopTaskFetcher = (filters = {}) => {
       socket.off("taskUpdated", handleUpdateTask);
       socket.off("taskDeleted", handleDeleteTask);
     };
-  }, [fetchTasks, activeTeam?.team_id]);
+  }, [activeTeam?.team_id]);
 
   useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
+    if (user?.id && activeTeam?.team_id) {
+      fetchTasks();
+    }
+  }, [user?.id, activeTeam?.team_id, filters, search]);
 
   return { taskList, fetchTasks };
 };

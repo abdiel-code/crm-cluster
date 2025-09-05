@@ -23,13 +23,14 @@ export function buildTaskQuery({
   console.log("Team id is valid");
 
   let query = "";
-  const params = [userId];
+  const params = [];
 
   if (requiredTeamId) {
-    query = "SELECT * FROM tasks WHERE user_id = ? AND team_id = ?";
+    query = "SELECT * FROM tasks WHERE team_id = ?";
     params.push(teamId);
   } else {
     query = "SELECT * FROM tasks WHERE user_id = ?";
+    params.push(userId);
   }
 
   if (status) {
