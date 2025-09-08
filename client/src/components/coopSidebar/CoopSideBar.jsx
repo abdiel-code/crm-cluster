@@ -1,7 +1,20 @@
 import CoopSideBarItem from "./CoopSideBarItem.jsx";
-import { FaPaw } from "react-icons/fa";
+import {
+  FaEnvelope,
+  FaTasks,
+  FaUsers,
+  FaPaw,
+  FaUsersCog,
+  FaSignOutAlt,
+} from "react-icons/fa";
 
-const IconExample = () => <FaPaw color="#577399" />;
+const iconMap = {
+  messages: <FaEnvelope color="#577399" />,
+  tasks: <FaTasks color="#577399" />,
+  users: <FaUsers color="#577399" />,
+  teams: <FaUsersCog color="#577399" />,
+  disconnect: <FaSignOutAlt color="#577399" />,
+};
 
 const items = [
   //{ alt: "profile", label: "Profile" },
@@ -16,6 +29,7 @@ const items = [
 ];
 
 const settingItems = [
+  { alt: "disconnect", label: "Disconnect" },
   //{ alt: "settings", label: "Settings" },
   //{ alt: "logout", label: "Logout" },
 ];
@@ -24,13 +38,13 @@ const CoopSideBar = () => {
   return (
     <div className="flex flex-col gap-4 justify-center items-center rounded-r-md w-[15%] h-full pt-4 border-r-2 border-[#495867]">
       <div className="flex items-center gap-3 w-full px-4 pb-4">
-        <img src={IconExample()} alt="logo" className="w-10 h-10" />
+        <FaPaw color="#577399" className="w-10 h-10" />
         <h1 className="text-xl font-bold">FOXCOON</h1>
       </div>
       {items.map((item) => (
         <CoopSideBarItem
           key={item.alt}
-          icon={IconExample()}
+          icon={iconMap[item.alt]}
           label={item.label}
           to={`/coop/${item.alt}`}
         />
@@ -39,7 +53,7 @@ const CoopSideBar = () => {
       {settingItems.map((item) => (
         <CoopSideBarItem
           key={item.alt}
-          icon={IconExample()}
+          icon={iconMap[item.alt]}
           label={item.label}
           to={`/coop/${item.alt}`}
         />

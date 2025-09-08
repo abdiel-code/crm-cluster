@@ -55,7 +55,11 @@ const TaskManagerBase = ({
     "Saturday",
   ][fullDate.getDay()];
 
-  const handleSearch = (e) => setSearch(e.target.value);
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+    console.log("search", e.target.value);
+    console.log("search", search);
+  };
 
   const toggleModal = () => setIsModalOpen((prev) => !prev);
   const toggleDeleteModal = (task = null) => {
@@ -74,8 +78,10 @@ const TaskManagerBase = ({
   };
 
   useEffect(() => {
-    if (!user) return;
-    fetchTasks({ ...filters, search });
+    const delay = setTimeout(() => {
+      if (user) fetchTasks({ ...filters, search });
+    }, 1000);
+    return () => clearTimeout(delay);
   }, [user, filters, search, fetchTasks]);
 
   useEffect(() => {
@@ -103,7 +109,10 @@ const TaskManagerBase = ({
             onChange={handleSearch}
             className="border border-gray-500 rounded-md px-2 py-1"
           />
-          <button className="bg-[#577399] text-white rounded-md px-3 py-1">
+          <button
+            onClick={() => fetchTasks({ ...filters, search })}
+            className="bg-[#577399] text-white rounded-md px-3 py-1"
+          >
             Search
           </button>
         </div>

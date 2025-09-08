@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { socket } from "../../core/socketInstance.js";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +7,7 @@ const ConnectPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const handleConnect = async () => {
+  useEffect(() => {
     if (!user) {
       console.error("User not authenticated");
       return;
@@ -18,7 +19,7 @@ const ConnectPage = () => {
 
       socket.on("connect", () => {
         console.log("✅ Connected to server with ID:", socket.id);
-        navigate("/coop");
+        navigate("/coop/teams");
       });
 
       socket.on("connect_error", (err) => {
@@ -26,18 +27,16 @@ const ConnectPage = () => {
       });
     } else {
       console.log("⚡ Already connected:", socket.id);
-      navigate("/coop");
+      navigate("/coop/teams");
     }
-  };
 
-  return (
-    <div>
-      <h1>Connection page</h1>
-      <button onClick={handleConnect} className="border-2 border-black">
-        Connect
-      </button>
-    </div>
-  );
+    return () => {
+      socket.off("connect");
+      socket.off("connect_error");
+    };
+  }, [user]);
+
+  return null;
 };
 
 export default ConnectPage;

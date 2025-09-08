@@ -25,6 +25,11 @@ const registerTaskEvents = (socket) => {
 
         socket.to(task.data.team_id).emit("taskCreated", task.data);
         socket.emit("taskCreated", task.data);
+        console.log("emitting message", task.message);
+        socket.emit("barSignal", {
+          message: task.message,
+          duration: 3000,
+        });
       } catch (error) {
         callback({
           success: false,
@@ -62,6 +67,10 @@ const registerTaskEvents = (socket) => {
 
         socket.to(teamId).emit("taskDeleted", taskId);
         socket.emit("taskDeleted", taskId);
+        socket.emit("barSignal", {
+          message: result.message,
+          duration: 3000,
+        });
       } catch (error) {
         socket.emit("taskError", {
           success: false,
@@ -95,6 +104,10 @@ const registerTaskEvents = (socket) => {
 
         socket.to(task.data.team_id).emit("taskUpdated", task.data);
         socket.emit("taskUpdated", task.data);
+        socket.emit("barSignal", {
+          message: task.message,
+          duration: 3000,
+        });
       } catch (error) {
         socket.emit("taskError", {
           success: false,

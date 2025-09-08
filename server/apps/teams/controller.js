@@ -35,6 +35,10 @@ const registerTeamEvents = (socket) => {
         callback(result);
 
         socket.broadcast.emit("team:created", result);
+        socket.emit("barSignal", {
+          message: result.message,
+          duration: 3000,
+        });
       } catch (error) {
         callback({
           success: false,
@@ -99,6 +103,10 @@ const registerTeamEvents = (socket) => {
         callback(result);
 
         socket.broadcast.emit("team:deleted", result);
+        socket.emit("barSignal", {
+          message: result.message,
+          duration: 3000,
+        });
       } catch (error) {
         callback({
           success: false,
@@ -132,6 +140,10 @@ const registerTeamEvents = (socket) => {
         callback(result);
 
         socket.broadcast.emit("team:updated", result);
+        socket.emit("barSignal", {
+          message: result.message,
+          duration: 3000,
+        });
       } catch (error) {
         callback({
           success: false,
@@ -167,6 +179,10 @@ const registerTeamEvents = (socket) => {
         callback(result);
 
         socket.broadcast.emit("team:found", result);
+        socket.emit("barSignal", {
+          message: result.message,
+          duration: 2000,
+        });
       } catch (error) {
         callback({
           success: false,
@@ -214,6 +230,10 @@ const registerTeamEvents = (socket) => {
           "Emitting team:requests for user" + userId + " on joinRequest"
         );
         socket.emit("team:requests", result);
+        socket.emit("barSignal", {
+          message: result.message,
+          duration: 3000,
+        });
       } catch (error) {
         callback({
           success: false,
@@ -334,12 +354,20 @@ const registerTeamEvents = (socket) => {
           callback(result);
 
           socket.emit("team:accepted", result);
+          socket.emit("barSignal", {
+            message: result.message,
+            duration: 3000,
+          });
         } else {
           console.log("rejecting request");
           const result = await rejectRequest(teamId, userId);
           callback(result);
 
           socket.emit("team:rejected", result);
+          socket.emit("barSignal", {
+            message: result.message,
+            duration: 3000,
+          });
         }
       } catch (error) {
         callback({
@@ -450,6 +478,10 @@ const registerTeamEvents = (socket) => {
 
         socket.emit("team:roleUpdated", result);
         socket.broadcast.emit("team:roleUpdated", result);
+        socket.emit("barSignal", {
+          message: result.message,
+          duration: 3000,
+        });
       } catch (error) {
         callback({
           success: false,
@@ -502,11 +534,15 @@ const registerTeamEvents = (socket) => {
 
       try {
         console.log("Backend trying to kick user");
-        const result = await kickUser(teamId, userId);
+        const result = await kickUser(teamId, userId, socket.user.id);
         callback(result);
 
         socket.emit("team:userKicked", result);
         socket.broadcast.emit("team:userKicked", result);
+        socket.emit("barSignal", {
+          message: result.message,
+          duration: 3000,
+        });
       } catch (error) {
         callback({
           success: false,

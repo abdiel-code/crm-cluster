@@ -41,6 +41,8 @@ const MessageManager = () => {
     console.log("After sending message:", messages);
   };
 
+  if (!team?.team_id) return <div>No team selected</div>;
+
   return (
     <div>
       <h1>Message Manager</h1>

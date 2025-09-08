@@ -189,9 +189,10 @@ export const getTeamMembers = async (teamId, userId) => {
   };
 };
 
-export const kickUser = async (teamId, userId) => {
+export const kickUser = async (teamId, userId, deleterId) => {
   if (!teamId) throw new Error("Team id is required");
   if (!userId) throw new Error("Unauthorized: userId missing");
+  if (!deleterId) throw new Error("Unauthorized: deleterId missing");
 
   console.log("UserId and teamId are valid on kickuser backend call");
 
@@ -200,21 +201,40 @@ export const kickUser = async (teamId, userId) => {
     [teamId]
   );
 
+  console.log("isCreator", isCreator);
+
   if (isCreator[0].created_by === userId) {
     throw new Error("Creator cannot be deleted");
   }
 
-  console.log("isCreator", isCreator[0].created_by === userId);
+  const [userExists] = await connection.query(
+    "SELECT * FROM user_teams WHERE team_id = ? AND user_id = ?",
+    [teamId, userId]
+  );
+
+  if (userExists.length === 0)
+    return {
+      deleted: false,
+      teamId: id,
+      message: "User not on team or does not exist",
+    };
+
+  if (userExists[0].role === "admin" && isCreator[0].created_by !== deleterId) {
+    throw new Error("Admin cannot be deleted");
+  }
+
+  console.log("team Id", teamId);
+  console.log("user Id", userId);
 
   const [result] = await connection.query(
     "DELETE FROM user_teams WHERE team_id = ? AND user_id = ?",
-    [id, userId]
+    [teamId, userId]
   );
 
   if (result.affectedRows === 0)
     throw new Error("Team user could not be deleted");
 
-  return { deleted: true, teamId: id };
+  return { deleted: true, teamId: id, message: "Team user deleted" };
 };
 
 export const updateTeamUser = async (userId, teamId, userRole) => {
@@ -249,6 +269,7 @@ export const updateTeamUser = async (userId, teamId, userRole) => {
   return {
     success: true,
     updated: true,
+    message: "Team user updated successfully",
     user_id: userId,
     team_id: teamId,
     role: userRole,

@@ -1,15 +1,16 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink } from "react-router-dom";
 
 const SideBarItem = ({ icon, label, to }) => {
   return (
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex items-center gap-3 w-full px-4 rounded-md transition cursor-pointer ${isActive ? 'bg-[#f7b1ab]' : 'hover:bg-[#f7b1ab]'
+        `flex items-center gap-3 w-full px-4 rounded-md transition cursor-pointer ${
+          isActive ? "bg-[#BDD5EA]" : "hover:bg-[#BDD5EA]"
         }`
       }
     >
-      <img src={icon} alt={label} className="w-10 h-10" />
+      <div className="text-xl">{icon}</div>
       <h2>{label}</h2>
     </NavLink>
   );
