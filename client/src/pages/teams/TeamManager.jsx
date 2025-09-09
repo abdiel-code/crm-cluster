@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { FaSearch } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext.jsx";
 import {
   handleCreateTeam,
@@ -56,9 +57,12 @@ const TeamManager = () => {
 
   return (
     <div className="w-full h-full flex flex-col p-2 items-center">
-      <div className="flex items-center justify-around w-full mb-4">
-        <h1 className="text-2xl font-bold">Team Manager</h1>
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full mb-4 gap-2">
+        <h1 className="text-2xl font-bold text-center sm:text-left">
+          Team Manager
+        </h1>
+
+        <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
           <input
             type="text"
             name="search"
@@ -70,30 +74,34 @@ const TeamManager = () => {
                 handleSearch();
               }
             }}
-            className="border border-gray-500 rounded-md px-2 py-1"
+            className="border border-gray-500 rounded-md px-2 py-1 w-full sm:w-auto"
           />
 
           <button
-            className="ml-2 px-3 py-1 bg-[#577399] text-white rounded-md hover:bg-[#495867] cursor-pointer"
+            className="px-3 py-1 bg-[#577399] text-white rounded-md hover:bg-[#495867] cursor-pointer mx-auto sm:mx-0 flex items-center justify-center gap-2 w-fit"
             disabled={!searchId.trim()}
             onClick={handleSearch}
           >
-            Search
+            <FaSearch className="block sm:hidden" />
+            <span className="hidden sm:block">Search</span>
           </button>
         </div>
       </div>
-      <div className="w-full grid grid-cols-1 gap-4">
+
+      <div className="w-full flex flex-col items-center gap-4 mt-4">
         <h1 className="text-2xl font-bold text-center">Found Team</h1>
 
         {foundTeam && foundTeam.length > 0 ? (
-          <TeamChart
-            key={foundTeam[0].id}
-            team={foundTeam[0]}
-            userId={user.id}
-            handleJoinRequest={handleJoinRequest}
-          />
+          <div className="w-full sm:w-[90%]">
+            <TeamChart
+              key={foundTeam[0].id}
+              team={foundTeam[0]}
+              userId={user.id}
+              handleJoinRequest={handleJoinRequest}
+            />
+          </div>
         ) : (
-          <p className="text-center text-gray-500 italic text-xl">
+          <p className="text-center text-gray-500 italic text-base sm:text-xl px-2">
             Search for a team to get results.
           </p>
         )}

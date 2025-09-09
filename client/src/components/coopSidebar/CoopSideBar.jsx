@@ -34,9 +34,13 @@ const settingItems = [
   //{ alt: "logout", label: "Logout" },
 ];
 
-const CoopSideBar = () => {
+const CoopSideBar = ({ isOpen, toggleSidebar }) => {
   return (
-    <div className="flex flex-col gap-4 justify-center items-center rounded-r-md w-[15%] h-full pt-4 border-r-2 border-[#495867]">
+    <div
+      className={`fixed top-0 left-0 h-full bg-white z-50 transition-transform duration-300 ease-in-out
+        ${isOpen ? "translate-x-0" : "-translate-x-full"}
+        w-[70%] sm:w-[15%] sm:static sm:translate-x-0 border-r-2 border-[#495867] flex flex-col gap-4 justify-center items-center pt-4 rounded-r-md`}
+    >
       <div className="flex items-center gap-3 w-full px-4 pb-4">
         <FaPaw color="#577399" className="w-10 h-10" />
         <h1 className="text-xl font-bold">FOXCOON</h1>

@@ -15,13 +15,15 @@ const UserChart = ({ user, formatDate }) => {
     setShowMenu(false);
   };
   return (
-    <div className="w-full h-full flex items-center justify-around rounded-[10px] bg-white shadow-[4px_4px_4px_rgba(0,0,0,0.20)] py-2 px-4 relative">
+    <div className="w-[100%] h-[100%] flex flex-col sm:flex sm:flex-row sm:items-center items-center justify-center sm:justify-around rounded-[10px] bg-white shadow-[4px_4px_4px_rgba(0,0,0,0.20)] py-2 relative">
       <FaUserCircle size={30} color="#577399" />
       <h1 className="font-medium text-xl">{name}</h1>
       <h1 className="text-xl">
         {role ? role[0].toUpperCase() + role.slice(1).toLowerCase() : ""}
       </h1>
-      <h1 className="text-xl text-gray-600">Joined at: {formattedDate}</h1>
+      <h1 className="text-xl text-gray-600 text-center sm:text-left">
+        Joined at: {formattedDate}
+      </h1>
       <button
         ref={buttonRef}
         type="button"

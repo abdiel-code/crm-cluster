@@ -6,7 +6,7 @@ import AdminUserChart from "./AdminUserChart.jsx";
 import { socket } from "../../core/socketInstance.js";
 import { useNavigate } from "react-router-dom";
 import { useTeam } from "../../context/TeamContext.jsx";
-
+import { FaMinus } from "react-icons/fa";
 const MyTeamsChart = ({
   team,
   toggleDeleteModal,
@@ -89,18 +89,18 @@ const MyTeamsChart = ({
 
   return (
     <div className="w-full h-full flex flex-col gap-3 items-end relative group">
-      <div className="w-full h-full flex items-center justify-around rounded-[10px] bg-white shadow-[4px_4px_4px_rgba(0,0,0,0.20)] py-2">
+      <div className="w-full h-full flex flex-col items-center justify-center sm:flex-row sm:items-center sm:justify-between rounded-[10px] bg-white shadow-[4px_4px_4px_rgba(0,0,0,0.20)] py-2 px-4 gap-4">
         <div className="w-[4px] h-[100%] bg-[#577399] rounded-2xl"></div>
         <h1 className="font-medium text-xl">{name}</h1>
         <h1 className="text-xl">{description}</h1>
         <h1 className="text-xl text-gray-600">{formattedDate}</h1>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-center gap-4">
           <button
             type="button"
-            className="bg-[#F7B1AB] w-[30px] h-[30px] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#FF847E]"
+            className="bg-[#F7B1AB] sm:w-[30px] sm:h-[30px] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#FF847E] active:scale-95 transition-transform duration-150"
             onClick={() => toggleDeleteModal(id)}
           >
-            <div className="w-[80%] h-1 bg-white rounded-full"></div>
+            <FaMinus className="text-white text-[30px] sm:text-[20px]" />
           </button>
 
           <motion.div
@@ -116,10 +116,9 @@ const MyTeamsChart = ({
             </button>
           </motion.div>
 
-          <div className="absolute top-[-50%] right-[50%] opacity-0 group-hover:opacity-100 transition-opacity z-20">
+          <div className="hidden sm:block absolute top-[-50%] right-[50%] opacity-0 group-hover:opacity-100 transition-opacity z-20">
             <button
               onClick={() => {
-                console.log("handleTeamConnect team_id", team.id);
                 handleTeamConnect(team.id, setActiveTeam).then(() => {
                   navigate(`/coop/messages`);
                 });
@@ -127,6 +126,19 @@ const MyTeamsChart = ({
               className="bg-[#BDD5EA] text-[#495867] px-3 py-1 rounded-md shadow-md hover:bg-[#577399] font-semibold cursor-pointer"
             >
               Connect to this team
+            </button>
+          </div>
+
+          <div className="block sm:hidden w-full flex justify-center mt-2">
+            <button
+              onClick={() => {
+                handleTeamConnect(team.id, setActiveTeam).then(() => {
+                  navigate(`/coop/messages`);
+                });
+              }}
+              className="bg-[#BDD5EA] text-[#495867] px-4 py-2 rounded-full shadow-md hover:bg-[#577399] font-semibold cursor-pointer w-[80%] max-w-[240px] text-center text-base flex items-center justify-center gap-2"
+            >
+              Connect
             </button>
           </div>
 

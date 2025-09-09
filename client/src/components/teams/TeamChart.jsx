@@ -34,22 +34,25 @@ const MyTeamsChart = ({ team, userId, handleJoinRequest }) => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="w-full h-full flex items-center justify-around rounded-[10px] bg-white shadow-[4px_4px_4px_rgba(0,0,0,0.20)] py-2">
-        <div className="w-[4px] h-[100%] bg-[#577399] rounded-2xl"></div>
-        <h1 className="font-medium text-xl">{name}</h1>
-        <h1 className="text-xl">{description}</h1>
-        <h1 className="text-xl text-gray-600">{formattedDate}</h1>
+      <div className="w-full h-full flex flex-col sm:flex-row sm:items-center sm:justify-around gap-4 rounded-[10px] bg-white shadow-[4px_4px_4px_rgba(0,0,0,0.20)] py-4 px-4">
+        <div className="hidden sm:block w-[4px] h-full bg-[#577399] rounded-2xl"></div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-center items-center sm:justify-around sm:text-left sm:flex-1 gap-2 sm:gap-4">
+          <h1 className="font-medium text-xl break-words">{name}</h1>
+          <h1 className="text-xl break-words">{description}</h1>
+          <h1 className="text-xl text-gray-600">{formattedDate}</h1>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
           <button
             type="button"
-            className="bg-[#BDD5EA] text-[#495867] px-3 py-1 rounded-md hover:bg-[#AFCDE7] font-medium cursor-pointer"
+            className="bg-[#BDD5EA] text-[#495867] px-3 py-1 rounded-md hover:bg-[#AFCDE7] font-medium cursor-pointer w-full sm:w-auto"
             onClick={() => handleJoinRequest(id, userId)}
           >
             Send Join Request
           </button>
 
-          <div className="relative">
+          <div className="relative w-full sm:w-auto flex justify-center sm:justify-start">
             <button
               ref={buttonRef}
               type="button"

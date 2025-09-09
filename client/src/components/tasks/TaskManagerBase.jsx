@@ -34,16 +34,8 @@ const TaskManagerBase = ({
   const [message, setMessage] = useState("");
   const [isVisible, setIsVisible] = useState(false);
 
-  const availableFilters = [
-    "pending",
-    "in_progress",
-    "completed",
-    "cancelled",
-    "low",
-    "medium",
-    "high",
-    "urgent",
-  ];
+  const statusFilters = ["pending", "in_progress", "completed", "cancelled"];
+  const priorityFilters = ["low", "medium", "high", "urgent"];
   const fullDate = new Date();
   const date = formatDate(fullDate);
   const day = [
@@ -100,7 +92,7 @@ const TaskManagerBase = ({
     <div className="w-full h-full flex flex-col p-2 items-center">
       <NotificationBar message={message} isVisible={isVisible} />
 
-      <div className="flex items-center justify-around w-full mb-4">
+      <div className="flex flex-col sm:flex-row items-center justify-between w-full mb-4 gap-2">
         <h1 className="text-2xl font-bold">Task Manager</h1>
         <div className="flex gap-2">
           <input
@@ -119,7 +111,7 @@ const TaskManagerBase = ({
         </div>
       </div>
 
-      <div className="bg-[#BDD5EA] w-[90%] h-[20%] flex items-center justify-around rounded-3xl">
+      <div className="bg-[#BDD5EA] w-full sm:w-[90%] flex flex-col sm:flex-row items-center justify-around rounded-3xl p-4 gap-4">
         <div className="flex flex-col items-center gap-2">
           <p className="text-3xl font-bold">{day}</p>
           <p className="text-xl">{date}</p>
@@ -136,7 +128,15 @@ const TaskManagerBase = ({
       </div>
 
       <FilterPanel
-        availableFilters={availableFilters}
+        filterType="Status"
+        availableFilters={statusFilters}
+        filters={filters}
+        handleAddFilter={handleAddFilter}
+      />
+
+      <FilterPanel
+        filterType="Priority"
+        availableFilters={priorityFilters}
         filters={filters}
         handleAddFilter={handleAddFilter}
       />
@@ -147,7 +147,7 @@ const TaskManagerBase = ({
         </p>
       )}
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
         {taskList.length > 0 ? (
           taskList.map((task) => (
             <TaskChart
@@ -161,7 +161,7 @@ const TaskManagerBase = ({
             />
           ))
         ) : (
-          <p>No tasks found</p>
+          <p className="text-2xl text-center font-bold">No tasks found</p>
         )}
       </div>
 

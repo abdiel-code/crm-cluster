@@ -22,31 +22,35 @@ const AdminUserChart = ({ user, formatDate, onRoleUpdate, onDelete }) => {
   };
 
   return (
-    <div className="w-[100%] h-[100%] flex items-center justify-around rounded-[10px] bg-white shadow-[4px_4px_4px_rgba(0,0,0,0.20)] py-2 relative">
+    <div className="w-[100%] h-[100%] flex flex-col sm:flex sm:flex-row sm:items-center items-center justify-center sm:justify-around rounded-[10px] bg-white shadow-[4px_4px_4px_rgba(0,0,0,0.20)] py-2 relative">
       <FaUserCircle size={30} color="#577399" />
       <h1 className="font-medium text-xl">{name}</h1>
       <h1 className="text-xl">
         {role ? role[0].toUpperCase() + role.slice(1).toLowerCase() : ""}
       </h1>
 
-      <h1 className="text-xl text-gray-600">Joined at: {formattedDate}</h1>
+      <h1 className="text-xl text-gray-600 text-center sm:text-left">
+        Joined at: {formattedDate}
+      </h1>
 
-      <button
-        type="button"
-        onClick={toggleDeleteModal}
-        className="bg-[#F7B1AB] w-[30px] h-[30px] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#FF847E]"
-      >
-        <div className="w-[80%] h-1 bg-white rounded-full"></div>
-      </button>
+      <div className="flex flex-row gap-2">
+        <button
+          type="button"
+          onClick={toggleDeleteModal}
+          className="bg-[#F7B1AB] w-[30px] h-[30px] rounded-full flex items-center justify-center cursor-pointer hover:bg-[#FF847E]"
+        >
+          <div className="w-[80%] h-1 bg-white rounded-full"></div>
+        </button>
 
-      <button
-        ref={buttonRef}
-        type="button"
-        className="w-[30px] h-[30px] flex items-center justify-center text-[#495867] hover:text-[#577399] text-3xl cursor-pointer"
-        onClick={() => setShowMenu((prev) => !prev)}
-      >
-        <div className="leading-none relative bottom-[25%]">...</div>
-      </button>
+        <button
+          ref={buttonRef}
+          type="button"
+          className="w-[30px] h-[30px] flex items-center justify-center text-[#495867] hover:text-[#577399] text-3xl cursor-pointer"
+          onClick={() => setShowMenu((prev) => !prev)}
+        >
+          <div className="leading-none relative bottom-[25%]">...</div>
+        </button>
+      </div>
 
       <AnimatePresence>
         {showMenu && (

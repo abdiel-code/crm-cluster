@@ -93,7 +93,7 @@ const JoinedTeamChart = ({
 
   return (
     <div className="w-full h-full flex flex-col gap-3 items-end relative group">
-      <div className="w-full h-full flex items-center justify-around rounded-[10px] bg-white shadow-[4px_4px_4px_rgba(0,0,0,0.20)] py-2">
+      <div className="w-full h-full flex flex-col items-center justify-center sm:flex-row sm:items-center sm:justify-between rounded-[10px] bg-white shadow-[4px_4px_4px_rgba(0,0,0,0.20)] py-2 px-4 gap-4">
         <div className="w-[4px] h-[100%] bg-[#577399] rounded-2xl"></div>
         <h1 className="font-medium text-xl">{name}</h1>
         <h1 className="text-xl">{description}</h1>

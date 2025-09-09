@@ -98,7 +98,7 @@ const TaskChart = ({
           name="status"
           onChange={handleOption}
           className="py-1 px-3 text-white text-[1.1rem] font-medium rounded-lg border border-gray-300 cursor-pointer
-          focus:outline-none focus:ring-2 transition duration-200"
+          focus:outline-none focus:ring-2 transition duration-200 relative max-h-[200px] overflow-hidden"
           style={{ backgroundColor: statusColors[status] }}
         >
           <option value="pending">Pending</option>

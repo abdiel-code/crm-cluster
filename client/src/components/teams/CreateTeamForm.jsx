@@ -31,14 +31,14 @@ const CreateTeamForm = ({
   };
 
   return (
-    <div className="w-[25%] h-[45%] flex flex-col items-center shadow-[4px_4px_0px_rgba(0,0,0,0.20)] bg-white rounded-md p-4">
-      <h2 className="text-2xl font-bold">Create Team</h2>
+    <div className="w-[90%] sm:w-[25%] h-auto sm:h-[45%] flex flex-col items-center shadow-[4px_4px_0px_rgba(0,0,0,0.20)] bg-white rounded-md p-4 gap-4">
+      <h2 className="text-2xl font-bold text-center">Create Team</h2>
 
       <form
-        className="w-full h-full flex flex-col gap-4 items-center justify-around"
+        className="w-full flex flex-col gap-4 items-center justify-between"
         onSubmit={handleSubmit}
       >
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 w-full">
           <label htmlFor="name" className="text-xl">
             Name
           </label>
@@ -48,10 +48,11 @@ const CreateTeamForm = ({
             value={formData.name}
             onChange={handleChange}
             placeholder="Team Name"
-            className="text-xl focus:scale-105 transition-all duration-300 ease-in-out border-2 border-[#577399] rounded-md"
+            className="text-xl px-2 py-1 focus:scale-[1.02] transition-all duration-300 ease-in-out border-2 border-[#577399] rounded-md w-full"
           />
         </div>
-        <div className="flex flex-col gap-2">
+
+        <div className="flex flex-col gap-2 w-full">
           <label htmlFor="description" className="text-xl">
             Description
           </label>
@@ -61,20 +62,21 @@ const CreateTeamForm = ({
             value={formData.description}
             onChange={handleChange}
             placeholder="Team Description"
-            className="text-xl focus:scale-105 transition-all duration-300 ease-in-out border-2 border-[#577399] rounded-md"
+            className="text-xl px-2 py-1 focus:scale-[1.02] transition-all duration-300 ease-in-out border-2 border-[#577399] rounded-md w-full"
           />
         </div>
-        <div className="flex gap-4 justify-center items-center">
+
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center w-full">
           <button
             type="submit"
-            className="bg-[#577399] text-white px-4 py-2 rounded-md hover:bg-[#495867] transition-colors cursor-pointer"
+            className="bg-[#577399] text-white px-4 py-2 rounded-md hover:bg-[#495867] transition-colors cursor-pointer w-full sm:w-auto"
           >
             Create Team
           </button>
           <button
             type="button"
             onClick={toggleCreateTeamModal}
-            className="bg-[#F7B1AB] text-white px-4 py-2 rounded-md hover:bg-[#FF847E] transition-colors cursor-pointer"
+            className="bg-[#F7B1AB] text-white px-4 py-2 rounded-md hover:bg-[#FF847E] transition-colors cursor-pointer w-full sm:w-auto"
           >
             Cancel
           </button>
