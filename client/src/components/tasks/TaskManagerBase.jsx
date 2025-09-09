@@ -18,9 +18,10 @@ const TaskManagerBase = ({
   handleCreateTask,
   handleUpdateTask,
   handleDeleteTask,
+  search,
+  setSearch,
 }) => {
   const { activeTeam } = useTeam();
-  const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState({
     isOpen: false,
@@ -126,7 +127,11 @@ const TaskManagerBase = ({
         <div className="w-[2px] h-[90%] bg-white"></div>
         <div className="flex flex-col items-center gap-2 text-lg">
           <p>Today you have</p>
-          <p>{taskList.length} tasks left</p>
+          <p>
+            {taskList.length === 1
+              ? "1 task left"
+              : `${taskList.length} tasks left`}
+          </p>
         </div>
       </div>
 
@@ -161,16 +166,34 @@ const TaskManagerBase = ({
       </div>
 
       <AddTaskButton toggleModal={toggleModal} />
-      <AddTaskForm
-        handleCreateTask={handleCreateTask}
-        handleMessage={handleMessage}
-        isActive={isModalOpen}
-        toggleModal={toggleModal}
-        userId={user?.id}
-        teamId={activeTeam?.team_id}
-      />
 
-      {isUpdateModalOpen.isOpen && (
+      <>
+        <div
+          className={`fixed inset-0 bg-black transition-opacity duration-300 z-40 ${
+            isModalOpen
+              ? "opacity-50 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+          }`}
+        ></div>
+
+        <AddTaskForm
+          handleCreateTask={handleCreateTask}
+          handleMessage={handleMessage}
+          isActive={isModalOpen}
+          toggleModal={toggleModal}
+          userId={user?.id}
+          teamId={activeTeam?.team_id}
+        />
+      </>
+
+      <>
+        <div
+          className={`fixed inset-0 bg-black transition-opacity duration-300 z-40 ${
+            isUpdateModalOpen.isOpen
+              ? "opacity-50 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+          }`}
+        ></div>
         <UpdateTaskForm
           task={isUpdateModalOpen.task}
           isUpdateModalOpen={isUpdateModalOpen}
@@ -179,18 +202,20 @@ const TaskManagerBase = ({
           handleMessage={handleMessage}
           teamId={activeTeam?.team_id}
         />
-      )}
+      </>
 
       {deleteConfirm.isOpen && (
-        <DeleteConfirmModal
-          task={deleteConfirm.task}
-          deleteConfirm={deleteConfirm}
-          toggleDeleteModal={toggleDeleteModal}
-          handleDelete={handleDeleteTask}
-          handleMessage={handleMessage}
-          teamId={activeTeam?.team_id}
-          teamIdRequired={activeTeam?.team_id ? true : false}
-        />
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-[rgba(0,0,0,0.5)]">
+          <DeleteConfirmModal
+            task={deleteConfirm.task}
+            deleteConfirm={deleteConfirm}
+            toggleDeleteModal={toggleDeleteModal}
+            handleDelete={handleDeleteTask}
+            handleMessage={handleMessage}
+            teamId={activeTeam?.team_id}
+            teamIdRequired={activeTeam?.team_id ? true : false}
+          />
+        </div>
       )}
     </div>
   );

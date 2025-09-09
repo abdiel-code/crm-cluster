@@ -22,6 +22,8 @@ export function buildTaskQuery({
 
   console.log("Team id is valid");
 
+  console.log("build id, teamid, status, priority, duedate, search", userId);
+
   let query = "";
   const params = [];
 
@@ -55,6 +57,10 @@ export function buildTaskQuery({
 
   console.log("query", query);
   console.log("params", params);
+
+  if (!requiredTeamId) {
+    query += "AND team_id IS NULL";
+  }
 
   return { query, params };
 }

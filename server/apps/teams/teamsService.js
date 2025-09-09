@@ -179,8 +179,13 @@ export const getTeamMembers = async (teamId, userId) => {
     [teamId, "active", userId]
   );
 
-  if (result.length === 0)
-    return { success: false, message: "No team members found" };
+  if (result.length === 0) {
+    return {
+      success: true,
+      message: "No team members found",
+      data: [],
+    };
+  }
 
   return {
     success: true,
@@ -429,7 +434,7 @@ export const getJoinedTeams = async (userId) => {
   );
 
   if (result.length === 0)
-    return { success: false, message: "No joined teams found" };
+    return { success: true, message: "No joined teams found", data: [] };
 
   return {
     success: true,

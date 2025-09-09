@@ -8,7 +8,7 @@ const acceptedPriority = ["low", "medium", "high", "urgent"];
 // Get all tasks
 export const getTasks = async (req, res) => {
   const userId = req.params.userId;
-  const { status, priority, dueDate, search } = req.query;
+  const { status, priority, due_date: dueDate, search } = req.query;
 
   console.log("processing data to mysql on getTasks", req.query);
 
@@ -124,11 +124,9 @@ export const updateTask = async (req, res) => {
     const [result] = await connection.query(query, params);
 
     if (result.affectedRows === 0)
-      return res
-        .status(404)
-        .json({
-          message: "Task not found or you don't have permission to update it",
-        });
+      return res.status(404).json({
+        message: "Task not found or you don't have permission to update it",
+      });
 
     return res.status(200).json({ message: "Task updated successfully" });
   } catch (error) {
@@ -151,11 +149,9 @@ export const deleteTask = async (req, res) => {
     );
 
     if (result.affectedRows === 0)
-      return res
-        .status(404)
-        .json({
-          message: "Task not found or you don't have permission to delete it",
-        });
+      return res.status(404).json({
+        message: "Task not found or you don't have permission to delete it",
+      });
 
     return res.status(200).json({ message: "Task deleted successfully" });
   } catch (error) {

@@ -3,11 +3,12 @@ import useCoopTaskFilters from "../../hooks/coopTasks/useCoopTaskFilters.js";
 import useCoopTaskActions from "../../hooks/coopTasks/useCoopTaskActions.js";
 import useCoopTaskFetcher from "../../hooks/coopTasks/useCoopTaskFetcher.js";
 import TaskManagerBase from "../../components/tasks/TaskManagerBase.jsx";
+import { useState } from "react";
 
 const CoopTaskManager = () => {
   const { user } = useAuth();
-
-  const { filters, handleAddFilter, search } = useCoopTaskFilters();
+  const [search, setSearch] = useState("");
+  const { filters, handleAddFilter } = useCoopTaskFilters();
   const { taskList, fetchTasks } = useCoopTaskFetcher(filters, search);
   const { handleCreateTask, handleUpdateTask, handleDeleteTask } =
     useCoopTaskActions(user, fetchTasks);
@@ -22,6 +23,8 @@ const CoopTaskManager = () => {
       handleCreateTask={handleCreateTask}
       handleUpdateTask={handleUpdateTask}
       handleDeleteTask={handleDeleteTask}
+      search={search}
+      setSearch={setSearch}
     />
   );
 };

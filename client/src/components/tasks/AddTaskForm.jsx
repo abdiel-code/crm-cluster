@@ -47,10 +47,10 @@ const AddTaskForm = ({
     });
     toggleModal();
   };
-
+  //<div className="fixed inset-0 flex items-center justify-center z-50 bg-[rgba(0,0,0,0.5)]">
   return (
     <div
-      className={`fixed left-1/2 transform -translate-x-1/2 bg-white p-4 rounded-lg shadow-[4px_4px_4px_4px_rgba(0,0,0,0.2)] transition-all duration-500 ease-out
+      className={`fixed left-1/2 transform -translate-x-1/2 z-50 bg-white p-4 rounded-lg shadow-[4px_4px_4px_4px_rgba(0,0,0,0.2)] transition-all duration-500 ease-out
     ${
       isActive
         ? "bottom-1/2 opacity-100 translate-y-1/2"

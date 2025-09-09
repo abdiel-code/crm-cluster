@@ -54,13 +54,17 @@ const MyTeamsChart = ({
     const fetchMembers = async () => {
       try {
         const data = await handleGetTeamMembers(team.id);
-        setMembers(data);
+        if (data.length === 0) {
+          setMembers([]);
+        } else {
+          setMembers(data);
+        }
       } catch (err) {
-        console.error(err);
+        console.error("Failed to fetch members:", err?.message || err);
       }
     };
     fetchMembers();
-  }, [team.id]);
+  }, [team?.id]);
 
   useEffect(() => {
     if (!team?.id) return;

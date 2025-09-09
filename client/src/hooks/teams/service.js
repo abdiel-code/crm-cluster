@@ -121,6 +121,10 @@ export const handleRequest = (teamId, userId, resolution) => {
 
 export const getTeamMembers = (teamId) => {
   console.log("getTeamMembers", teamId);
+  if (!teamId) {
+    console.warn("getTeamMemebrs called with invalid teamId: ", teamId);
+    return Promise.reject("Invalid teamId");
+  }
 
   return new Promise((resolve, reject) => {
     socket.emit("getTeamMembers", teamId, (response) => {
@@ -128,7 +132,7 @@ export const getTeamMembers = (teamId) => {
         console.log("response", response);
         resolve(response.data);
       } else {
-        reject(response.error);
+        reject(response.error || "Unknown error while fetching team members");
       }
     });
   });

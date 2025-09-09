@@ -58,7 +58,11 @@ const JoinedTeamChart = ({
     const fetchMembers = async () => {
       try {
         const data = await handleGetTeamMembers(team_id);
-        setMembers(data);
+        if (data.length > 0) {
+          setMembers([]);
+        } else {
+          setMembers(data);
+        }
       } catch (err) {
         console.error(err);
       }
