@@ -1,10 +1,11 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 dotenv.config();
 
 const envData = {
-  port: process.env.PORT || 3030,
+  port: process.env.PORT,
   db: {
+    port: process.env.DB_PORT,
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
