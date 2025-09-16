@@ -1,11 +1,11 @@
 import bcrypt from "bcrypt";
 import { findByEmail, createUser, generateToken } from "./service.js";
+import { log } from "../../logWrapper.js";
 
 export const registerController = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
-
     if (!email || !password || !name) {
       return res.status(400).json({
         message: "Name, email and password are required",
@@ -27,23 +27,18 @@ export const registerController = async (req, res) => {
     return res.status(201).json({
       message: "User created successfully",
     });
-
-
   } catch (error) {
-    console.log("Register error:", error);
+    log("Register error:", error);
     return res.status(500).json({
       message: "Internal server error. Please try again later",
-
     });
   }
-
 };
 
 export const loginController = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-
     if (!email || !password) {
       return res.status(400).json({
         message: "Email and password are required",
@@ -66,7 +61,12 @@ export const loginController = async (req, res) => {
       });
     }
 
-    const token = generateToken({ id: user[0].id, email: user[0].email, name: user[0].name, role: user[0].role });
+    const token = generateToken({
+      id: user[0].id,
+      email: user[0].email,
+      name: user[0].name,
+      role: user[0].role,
+    });
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -82,14 +82,11 @@ export const loginController = async (req, res) => {
         name: user[0].name,
         email: user[0].email,
       },
-    }
-    );
-
+    });
   } catch (error) {
-
-    console.log("Login error:", error);
+    log("Login error:", error);
     return res.status(500).json({
       message: "Internal server error. Please try again later",
     });
   }
-}
+};

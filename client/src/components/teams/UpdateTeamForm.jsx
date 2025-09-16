@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { log } from "../../core/logWrapper";
 
 const UpdateTeamForm = ({
   id,
@@ -21,12 +22,12 @@ const UpdateTeamForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("formData", formData);
+    log("formData", formData);
 
     try {
-      console.log("processing update team");
+      //("processing update team");
       await handleUpdateTeam(formData);
-      console.log("Processing refresh");
+      log("Processing refresh");
       refreshTeams();
       toggleUpdateTeamModal();
     } catch (error) {

@@ -1,3 +1,5 @@
+import { log } from "../../logWrapper.js";
+
 export function buildTaskQuery({
   userId,
   teamId,
@@ -7,22 +9,22 @@ export function buildTaskQuery({
   search,
   requiredTeamId = false,
 }) {
-  console.log("team id", teamId);
-  console.log("required team id", requiredTeamId);
+  log("team id", teamId);
+  log("required team id", requiredTeamId);
 
-  console.log("team id is valid", teamId);
-  console.log("user id is valid", userId);
+  log("team id is valid", teamId);
+  log("user id is valid", userId);
 
   if (!userId) throw new Error("Unauthorized: userId missing");
 
-  console.log("User id is valid");
+  log("User id is valid");
 
   if (requiredTeamId && !teamId)
     throw new Error("Unauthorized: teamId missing");
 
-  console.log("Team id is valid");
+  log("Team id is valid");
 
-  console.log("build id, teamid, status, priority, duedate, search", userId);
+  log("build id, teamid, status, priority, duedate, search", userId);
 
   let query = "";
   const params = [];
@@ -55,8 +57,8 @@ export function buildTaskQuery({
     params.push(`%${search}%`, `%${search}%`);
   }
 
-  console.log("query", query);
-  console.log("params", params);
+  log("query", query);
+  log("params", params);
 
   if (!requiredTeamId) {
     query += "AND team_id IS NULL";

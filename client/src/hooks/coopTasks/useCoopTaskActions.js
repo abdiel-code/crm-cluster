@@ -3,14 +3,15 @@ import {
   updateTask,
   deleteTask,
 } from "../../services/coopTaskService.js";
+import { log } from "../../core/logWrapper.js";
 
 const useCoopTaskActions = (user, fetchTasks) => {
   const handleCreateTask = async (formData) => {
-    console.log("Handle create task data", formData);
+    log("Handle create task data", formData);
 
     try {
       const response = await createTask(formData);
-      console.log("Task created successfully:", response);
+      log("Task created successfully:", response);
       return response;
     } catch (error) {
       console.error("Error creating task:", error);
@@ -22,11 +23,11 @@ const useCoopTaskActions = (user, fetchTasks) => {
   };
 
   const handleUpdateTask = async (formData, taskId) => {
-    console.log("Handle update task data", formData);
+    log("Handle update task data", formData);
 
     try {
       const response = await updateTask(formData);
-      console.log("Task updated successfully:", response);
+      log("Task updated successfully:", response);
       return response;
     } catch (error) {
       console.error("Error updating task:", error);
@@ -37,10 +38,10 @@ const useCoopTaskActions = (user, fetchTasks) => {
     }
   };
   const handleDeleteTask = async (taskId, teamId) => {
-    console.log("Handle delete task data", taskId);
+    log("Handle delete task data", taskId);
     try {
       const response = await deleteTask(taskId, teamId);
-      console.log("Task deleted successfully:", response);
+      log("Task deleted successfully:", response);
       return response;
     } catch (error) {
       console.error("Error deleting task:", error);

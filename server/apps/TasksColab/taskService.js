@@ -1,9 +1,10 @@
 import connection from "../../core/database/connection.js";
 import isValid from "../../core/validation/tasks/validators.js";
 import { buildTaskQuery } from "../tasks/service.js";
+import { log } from "../../logWrapper.js";
 
 export const createTask = async (taskData) => {
-  console.log("processing data to mysql", taskData);
+  log("processing data to mysql", taskData);
 
   const {
     title,
@@ -46,7 +47,7 @@ export const deleteTask = async (taskId, teamId) => {
   if (!taskId) throw new Error("Unauthorized: taskId missing");
   if (!teamId) throw new Error("Unauthorized: teamId missing");
 
-  console.log("taskId and teamId is valid");
+  log("taskId and teamId is valid");
 
   const [existing] = await connection.query(
     "SELECT * FROM tasks WHERE id = ? AND team_id = ?",
@@ -81,13 +82,13 @@ export const updateTask = async (taskData) => {
     team_id: teamId,
   } = taskData;
 
-  console.log("processing data to mysql", taskData);
+  log("processing data to mysql", taskData);
 
   if (!taskId) throw new Error("Unauthorized: taskId missing");
   if (!userId) throw new Error("Unauthorized: userId missing");
   if (!teamId) throw new Error("Unauthorized: teamId missing");
 
-  console.log("valid data");
+  log("valid data");
 
   const fields = [];
   const values = [];
@@ -143,7 +144,7 @@ export const updateTask = async (taskData) => {
 };
 
 export const getTasks = async (filters) => {
-  console.log("processing data to mysql on getTasks", filters);
+  log("processing data to mysql on getTasks", filters);
 
   const { status, priority, due_date, search, userId, teamId } = filters;
 
@@ -159,7 +160,7 @@ export const getTasks = async (filters) => {
       code: "INVALID_INFORMATION",
     });
 
-  console.log("information is valid");
+  log("information is valid");
 
   const { query, params } = buildTaskQuery({
     userId,
@@ -173,7 +174,7 @@ export const getTasks = async (filters) => {
 
   const [tasks] = await connection.query(query, params);
 
-  console.log("tasks founded", tasks);
+  log("tasks founded", tasks);
 
   if (tasks.length === 0) {
     return {

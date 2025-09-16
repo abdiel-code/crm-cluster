@@ -1,10 +1,10 @@
 import { createTask, getTasks, updateTask, deleteTask } from "./taskService.js";
 import withGlobalRole from "../../core/middleware/withGlobalRole.js";
 import withTeamRole from "../../core/middleware/withTeamRole.js";
-
+import { log } from "../../logWrapper.js";
 const registerTaskEvents = (socket) => {
   socket.on("createTask", async (taskData, callback) => {
-    console.log("backend receive taskData", taskData);
+    log("backend receive taskData", taskData);
 
     if (!taskData || typeof taskData !== "object") {
       socket.emit("taskError", {

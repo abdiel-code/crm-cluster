@@ -11,6 +11,8 @@ import TeamManager from "./pages/teams/TeamManager.jsx";
 import MessageManager from "./pages/messages/MessageManager.jsx";
 import { BarSignalProvider } from "./context/BarSignalContext.jsx";
 import DisconnectPage from "./pages/connection/DisconnectPage.jsx";
+import HomePage from "./pages/home/HomePage.jsx";
+import AboutPage from "./pages/home/AboutPage.jsx";
 
 // Sidebar is a component that will be used to display the sidebar but it is not yet implemented
 // Sidebar is tested in a page for now
@@ -24,12 +26,13 @@ function App() {
     softRed: "#F7B1AB",
   };
 
-  console.log("colors", colors);
+  //console.log("colors", colors);
   return (
-    <>
+    <div className="bg-[linear-gradient(to_bottom,_#ffffff_0%,_#ffffff_65%,_#bdd5ea_90%,_#bdd5ea_100%)] min-h-screen w-full">
       <Routes>
         {/*Public routes*/}
-        <Route path="/" element={<div>Home</div>} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         {/*Task to test*/}
@@ -42,6 +45,7 @@ function App() {
             <Route path="/connect" element={<ConnectPage />} />
           </Route>
 
+          {/*Coop routes*/}
           <Route
             element={
               <BarSignalProvider>
@@ -57,7 +61,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
-    </>
+    </div>
   );
 }
 

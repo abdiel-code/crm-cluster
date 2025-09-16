@@ -1,3 +1,5 @@
+import { log } from "../../core/logWrapper";
+
 const DeleteModal = ({
   id,
   userId,
@@ -6,7 +8,7 @@ const DeleteModal = ({
   message,
   refreshTeams,
 }) => {
-  console.log("teamId", id);
+  log("teamId", id);
   const handleClick = async () => {
     try {
       if (!userId) {

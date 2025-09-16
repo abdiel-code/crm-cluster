@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { socket } from "../core/socketInstance.js";
+import { log } from "../core/logWrapper.js";
 
 const BarSignalContext = createContext();
 
@@ -11,7 +12,7 @@ export const BarSignalProvider = ({ children }) => {
 
   useEffect(() => {
     const handleBarSignal = ({ message, duration = 3000 }) => {
-      console.log("Received barSignal:", message);
+      log("Received barSignal:", message);
 
       setMessage(message);
       setIsVisible(true);

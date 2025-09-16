@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { sendMessage } from "./service.js";
+import { log } from "../../core/logWrapper.js";
 
 export const handleSendMessage = async (message) => {
-  console.log("handleSendMessage message");
+  log("handleSendMessage message");
   if (!message || typeof message !== "object") {
     throw new Error("Message is required and must be an object");
   }
@@ -11,12 +12,12 @@ export const handleSendMessage = async (message) => {
     throw new Error("Sender ID, sender name, and team ID are required");
   }
 
-  console.log("handleSendMessage message accepted");
+  log("handleSendMessage message accepted");
 
   try {
-    console.log("Sending message:", message);
+    log("Sending message:", message);
     const response = await sendMessage(message);
-    console.log("returning response which is ", response);
+    log("returning response which is ", response);
     return response;
   } catch (error) {
     console.error("Error sending message:", error);

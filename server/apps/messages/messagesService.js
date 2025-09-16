@@ -20,7 +20,7 @@ export const sendMessage = async (message) => {
     throw new Error("User is not in the team");
   }
 
-  console.log("Message will be sended");
+  //  console.log("Message will be sended");
 
   return {
     success: true,

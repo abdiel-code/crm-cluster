@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { FaRegTimesCircle } from "react-icons/fa";
+import { log } from "../../core/logWrapper";
 
 const NotificationModal = ({
   requests,
@@ -7,11 +8,11 @@ const NotificationModal = ({
   handleSentRequest,
 }) => {
   const handleClick = (teamId, userId, resolution) => {
-    console.log("handleClick", teamId, userId, resolution);
+    log("handleClick", teamId, userId, resolution);
     handleSentRequest(teamId, userId, resolution);
   };
 
-  console.log("requests from notification modal", requests);
+  log("requests from notification modal", requests);
 
   return (
     <div className="border-2 border-[#495867] p-2 w-[80%] h-[80%] bg-white rounded-2xl shadow-[4px_4px_4px_4px_rgba(0,0,0,0.25)] flex flex-col items-center gap-4">

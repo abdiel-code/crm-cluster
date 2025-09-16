@@ -1,3 +1,4 @@
+import { log } from "../../logWrapper.js";
 import {
   createTeam,
   getMyTeams,
@@ -66,7 +67,7 @@ const registerTeamEvents = (socket) => {
       try {
         const result = await getMyTeams(userId);
 
-        console.log("result for registerTeamEvents", result);
+        log("result for registerTeamEvents", result);
         callback(result);
       } catch (error) {
         callback({
@@ -81,11 +82,11 @@ const registerTeamEvents = (socket) => {
   });
 
   socket.on("deleteTeam", async (teamId, callback) => {
-    console.log("deleting in socket deleteTeam");
+    log("deleting in socket deleteTeam");
     const userId = socket.user.id;
 
-    console.log("socket deleteTeam userId", userId);
-    console.log("socket deleteTeam teamId", teamId);
+    log("socket deleteTeam userId", userId);
+    log("socket deleteTeam teamId", teamId);
 
     if (!teamId) {
       return callback({
@@ -130,12 +131,12 @@ const registerTeamEvents = (socket) => {
       });
     }
 
-    console.log("Backend team data accepted");
+    log("Backend team data accepted");
 
     withTeamRole(["admin"], teamData.id, socket, async () => {
-      console.log("Backend role accepted");
+      log("Backend role accepted");
       try {
-        console.log("Backend trying to update team");
+        log("Backend trying to update team");
         const result = await updateTeam(teamData, socket.user.id);
         callback(result);
 
@@ -157,7 +158,7 @@ const registerTeamEvents = (socket) => {
   });
 
   socket.on("getTeam", async (teamId, callback) => {
-    console.log("getTeam backend", teamId);
+    log("getTeam backend", teamId);
 
     if (!teamId) {
       return callback({
@@ -169,12 +170,12 @@ const registerTeamEvents = (socket) => {
       });
     }
 
-    console.log("team id accepted backend");
+    log("team id accepted backend");
 
     withGlobalRole(["admin", "editor", "agent", "viewer"], socket, async () => {
-      console.log("Backend role accepted for getTeam");
+      log("Backend role accepted for getTeam");
       try {
-        console.log("Backend trying to get team");
+        log("Backend trying to get team");
         const result = await getTeam(teamId, socket.user.id);
         callback(result);
 
@@ -206,7 +207,7 @@ const registerTeamEvents = (socket) => {
       });
     }
 
-    console.log("team id accepted backend");
+    log("team id accepted backend");
 
     if (!userId || userId !== socket.user.id) {
       return callback({
@@ -218,17 +219,15 @@ const registerTeamEvents = (socket) => {
       });
     }
 
-    console.log("user id accepted backend");
+    log("user id accepted backend");
     withGlobalRole(["admin", "editor", "agent", "viewer"], socket, async () => {
-      console.log("Backend role accepted for joinTeam");
+      log("Backend role accepted for joinTeam");
       try {
-        console.log("Backend trying to join team");
+        log("Backend trying to join team");
         const result = await joinRequest(teamId, userId);
         callback(result);
 
-        console.log(
-          "Emitting team:requests for user" + userId + " on joinRequest"
-        );
+        log("Emitting team:requests for user" + userId + " on joinRequest");
         socket.emit("team:requests", result);
         socket.emit("barSignal", {
           message: result.message,
@@ -257,21 +256,21 @@ const registerTeamEvents = (socket) => {
       });
     }
 
-    console.log("user id accepted backend for getRequests");
+    log("user id accepted backend for getRequests");
 
     withGlobalRole(["admin", "editor", "agent", "viewer"], socket, async () => {
-      console.log("Backend role accepted for getRequests");
+      log("Backend role accepted for getRequests");
       try {
-        console.log("Backend trying to get teams for getRequests");
+        log("Backend trying to get teams for getRequests");
         const teams = await getMyTeams(userId);
-        console.log("teams get for getRequests", teams);
+        log("teams get for getRequests", teams);
         const results = [];
 
         for (const team of teams.data) {
           await new Promise((resolve) => {
             withTeamRole(["admin"], team.id, socket, async () => {
               const reqs = await getRequests(team.id, userId);
-              console.log("reqs for getRequests", reqs);
+              log("reqs for getRequests", reqs);
               if (reqs.success) {
                 results.push({
                   teamName: team.name,
@@ -283,16 +282,14 @@ const registerTeamEvents = (socket) => {
           });
         }
 
-        console.log("results for getRequests", results);
+        log("results for getRequests", results);
 
         callback({
           success: true,
           data: results,
         });
 
-        console.log(
-          "Emitting team:request to user" + userId + " for getRequests"
-        );
+        log("Emitting team:request to user" + userId + " for getRequests");
         socket.emit("team:requests", { userId, results });
       } catch (error) {
         callback({
@@ -307,7 +304,7 @@ const registerTeamEvents = (socket) => {
   });
 
   socket.on("handleRequest", async (teamId, userId, resolution, callback) => {
-    console.log("handleRequest backend", teamId, userId, resolution);
+    log("handleRequest backend", teamId, userId, resolution);
 
     if (!teamId) {
       return callback({
@@ -339,17 +336,17 @@ const registerTeamEvents = (socket) => {
       });
     }
 
-    console.log("request handle data accepted backend");
+    log("request handle data accepted backend");
 
     withTeamRole(["admin"], teamId, socket, async () => {
-      console.log("Backend role accepted for handleRequest");
+      log("Backend role accepted for handleRequest");
       try {
-        console.log("Backend trying to handle request");
+        log("Backend trying to handle request");
 
-        console.log("resolution for handleRequest", resolution);
+        log("resolution for handleRequest", resolution);
 
         if (resolution === "accept") {
-          console.log("accepting request");
+          log("accepting request");
           const result = await acceptRequest(teamId, userId);
           callback(result);
 
@@ -359,7 +356,7 @@ const registerTeamEvents = (socket) => {
             duration: 3000,
           });
         } else {
-          console.log("rejecting request");
+          log("rejecting request");
           const result = await rejectRequest(teamId, userId);
           callback(result);
 
@@ -403,10 +400,10 @@ const registerTeamEvents = (socket) => {
     }
 
     withTeamRole(["admin", "editor"], teamId, socket, async () => {
-      console.log("Backend role accepted for getTeamMembers");
+      log("Backend role accepted for getTeamMembers");
 
       try {
-        console.log("Backend trying to get team members");
+        log("Backend trying to get team members");
         const result = await getTeamMembers(teamId, socket.user.id);
 
         socket.broadcast.emit("team:members", result);
@@ -424,7 +421,7 @@ const registerTeamEvents = (socket) => {
   });
 
   socket.on("updateTeamUser", async (userId, teamId, userRole, callback) => {
-    console.log("updateTeamUser backend", userId, teamId, userRole);
+    log("updateTeamUser backend", userId, teamId, userRole);
 
     if (!userId) {
       return callback({
@@ -466,13 +463,13 @@ const registerTeamEvents = (socket) => {
       });
     }
 
-    console.log("updateTeamUser data accepted backend");
+    log("updateTeamUser data accepted backend");
 
     withTeamRole(["admin"], teamId, socket, async () => {
-      console.log("Backend role accepted for updateTeamUser");
+      log("Backend role accepted for updateTeamUser");
 
       try {
-        console.log("Backend trying to update team member role");
+        log("Backend trying to update team member role");
         const result = await updateTeamUser(userId, teamId, userRole);
         callback(result);
 
@@ -495,7 +492,7 @@ const registerTeamEvents = (socket) => {
   });
 
   socket.on("kickUser", async (teamId, userId, callback) => {
-    console.log("kickUser backend", teamId, userId);
+    log("kickUser backend", teamId, userId);
 
     if (!teamId) {
       return callback({
@@ -527,13 +524,13 @@ const registerTeamEvents = (socket) => {
       });
     }
 
-    console.log("kickUser data accepted backend");
+    log("kickUser data accepted backend");
 
     withTeamRole(["admin"], teamId, socket, async () => {
-      console.log("Backend role accepted for kickUser");
+      log("Backend role accepted for kickUser");
 
       try {
-        console.log("Backend trying to kick user");
+        log("Backend trying to kick user");
         const result = await kickUser(teamId, userId, socket.user.id);
         callback(result);
 
@@ -566,13 +563,13 @@ const registerTeamEvents = (socket) => {
       });
     }
 
-    console.log("getJoinedTeams data accepted backend");
+    log("getJoinedTeams data accepted backend");
 
     withGlobalRole(["admin", "editor", "agent", "viewer"], socket, async () => {
-      console.log("Backend role accepted for getJoinedTeams");
+      log("Backend role accepted for getJoinedTeams");
 
       try {
-        console.log("Backend trying to get joined teams");
+        log("Backend trying to get joined teams");
         const result = await getJoinedTeams(userId);
         callback(result);
 
@@ -601,13 +598,13 @@ const registerTeamEvents = (socket) => {
       });
     }
 
-    console.log("leaveTeam data accepted backend");
+    log("leaveTeam data accepted backend");
 
     withGlobalRole(["admin", "editor", "agent", "viewer"], socket, async () => {
-      console.log("Backend role accepted for leaveTeam");
+      log("Backend role accepted for leaveTeam");
 
       try {
-        console.log("Backend trying to leave team");
+        log("Backend trying to leave team");
         const result = await leaveTeam(teamId, userId);
         callback(result);
 
@@ -636,18 +633,18 @@ const registerTeamEvents = (socket) => {
       });
     }
 
-    console.log("connectTeam data accepted backend");
+    log("connectTeam data accepted backend");
 
     withGlobalRole(["admin", "editor", "agent", "viewer"], socket, async () => {
-      console.log("Backend role accepted for connectTeam");
+      log("Backend role accepted for connectTeam");
 
       try {
-        console.log("Backend trying to connect to team");
+        log("Backend trying to connect to team");
         const result = await connectTeam(teamId, socket.user.id);
 
         if (result.success) {
           socket.join(teamId);
-          console.log("Joined team", teamId);
+          log("Joined team", teamId);
         }
 
         callback(result);

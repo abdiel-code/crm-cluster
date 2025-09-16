@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { socket } from "../../core/socketInstance.js";
+import { log } from "../../core/logWrapper.js";
 import axios from "axios";
 
 const ProtectedRoute = () => {
@@ -22,7 +23,7 @@ const ProtectedRoute = () => {
         socket.connect();
 
         socket.on("connect", () => {
-          console.log("✅ Socket connected:", socket.id);
+          log("✅ Socket connected:", socket.id);
         });
 
         socket.on("connect_error", (err) => {
@@ -32,6 +33,7 @@ const ProtectedRoute = () => {
         setIsAuthenticated(true);
       } catch (error) {
         setIsAuthenticated(false);
+        console.error("Error checking authentication:", error);
       }
     };
 

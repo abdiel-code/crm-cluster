@@ -5,7 +5,7 @@ import {
   handleJoinedTeams,
 } from "./useTeamActions.js";
 import { socket } from "../../core/socketInstance.js";
-
+import { log } from "../../core/logWrapper.js";
 export const useTeamManager = (userId) => {
   const [teams, setTeams] = useState([]);
   const [joinedTeams, setJoinedTeams] = useState([]);
@@ -13,12 +13,12 @@ export const useTeamManager = (userId) => {
   const [loading, setLoading] = useState(false);
   const listenersRegistered = useRef(false);
 
-  console.log("joined teams", joinedTeams);
+  log("joined teams", joinedTeams);
 
   const refreshRequests = useCallback(async () => {
     if (!userId) return;
 
-    console.log("refreshing requests called for user:", userId);
+    log("refreshing requests called for user:", userId);
 
     try {
       const data = await handleGetRequests(userId);
@@ -32,7 +32,7 @@ export const useTeamManager = (userId) => {
   const refreshJoinedTeams = useCallback(async () => {
     if (!userId) return;
 
-    console.log("refreshing joined teams is using userId:", userId);
+    log("refreshing joined teams is using userId:", userId);
     try {
       const data = await handleJoinedTeams(userId);
       setJoinedTeams(data || []);
@@ -75,23 +75,23 @@ export const useTeamManager = (userId) => {
 
     const handleTeamChange = () => refreshTeams();
     const handleRequestChange = () => {
-      console.log("handleRequestChange is requesting refresh requests");
+      log("handleRequestChange is requesting refresh requests");
       refreshRequests();
     };
     const handleAccepted = () => {
-      console.log("handleAccepted is requesting refresh requests");
+      log("handleAccepted is requesting refresh requests");
       refreshTeams();
       refreshRequests();
       refreshJoinedTeams();
     };
     const handleDeclined = () => {
-      console.log("handleDeclined is requesting refresh requests");
+      log("handleDeclined is requesting refresh requests");
       refreshTeams();
       refreshRequests();
     };
 
     const handleLeaveTeam = () => {
-      console.log("handleLeaveTeam is requesting refresh joined teams");
+      log("handleLeaveTeam is requesting refresh joined teams");
       refreshJoinedTeams();
     };
 
@@ -103,7 +103,7 @@ export const useTeamManager = (userId) => {
     socket.on("team:requestSent", handleRequestChange);
     socket.on("team:requests", (payload) => {
       if (!payload || payload.userId !== userId) return;
-      console.log("✅ team:requests received for current user");
+      log("✅ team:requests received for current user");
       setRequests(payload.results || []);
     });
 

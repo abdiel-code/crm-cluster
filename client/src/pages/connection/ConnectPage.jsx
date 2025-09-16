@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { socket } from "../../core/socketInstance.js";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
+import { log } from "../../core/logWrapper.js";
 
 const ConnectPage = () => {
   const { user } = useAuth();
@@ -18,7 +19,7 @@ const ConnectPage = () => {
       socket.connect();
 
       socket.on("connect", () => {
-        console.log("✅ Connected to server with ID:", socket.id);
+        log("✅ Connected to server with ID:", socket.id);
         navigate("/coop/teams");
       });
 
@@ -26,7 +27,7 @@ const ConnectPage = () => {
         console.error("❌ Connection failed:", err.message);
       });
     } else {
-      console.log("⚡ Already connected:", socket.id);
+      log("⚡ Already connected:", socket.id);
       navigate("/coop/teams");
     }
 

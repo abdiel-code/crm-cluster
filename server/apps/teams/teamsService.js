@@ -1,4 +1,5 @@
 import connection from "../../core/database/connection.js";
+import { log } from "../../logWrapper.js";
 const acceptedRoles = ["admin", "editor", "user", "viewer"];
 export const createTeam = async (teamData) => {
   const { name, description, id: userId } = teamData;
@@ -66,8 +67,8 @@ export const getMyTeams = async (userId) => {
 };
 
 export const deleteTeam = async (teamId, userId) => {
-  console.log("deleteTeam teamId", teamId);
-  console.log("deleteTeam userId", userId);
+  log("deleteTeam teamId", teamId);
+  log("deleteTeam userId", userId);
 
   if (!teamId) throw new Error("Team id is required");
   if (!userId) throw new Error("Unauthorized: userId missing");
@@ -77,48 +78,42 @@ export const deleteTeam = async (teamId, userId) => {
     [userId]
   );
 
-  console.log("findTeams where created_by", findTeam);
+  log("findTeams where created_by", findTeam);
 
   if (findTeam.length === 0) throw new Error("Team not found or unauthorized");
 
-  console.log("find team success");
+  log("find team success");
 
   const [result] = await connection.query(
     "DELETE FROM teams WHERE id = ? AND created_by = ?",
     [teamId, userId]
   );
 
-  console.log("deleteTeam result", result);
+  log("deleteTeam result", result);
 
   if (result.affectedRows === 0) throw new Error("Team could not be deleted");
 
-  console.log("deleteTeam success");
+  log("deleteTeam success");
 
   return { success: true, message: "Team deleted successfully", data: result };
 };
 
 export const updateTeam = async (teamData, userId) => {
-  console.log("updateTeam has data?", teamData);
+  log("updateTeam has data?", teamData);
 
   const { id, name, description } = teamData;
 
-  console.log(
-    "Something is null at updateTeam?",
-    id,
-    name,
-    description,
-    userId
-  );
+  log("Something is null at updateTeam?", id, name, description, userId);
 
   if (!id) throw new Error("Team id is required");
   if (!userId) throw new Error("Unauthorized: userId missing");
 
-  console.log("UserId and teamId are valid");
+  log("UserId and teamId are valid");
 
   if (!name?.trim() && !description)
     return { success: false, message: "No fields to update", data: null };
 
-  console.log("name and description are valid");
+  log("name and description are valid");
 
   let query = "UPDATE teams SET";
   const params = [];
@@ -139,29 +134,29 @@ export const updateTeam = async (teamData, userId) => {
 
   const [result] = await connection.query(query, params);
 
-  console.log("updateTeam result", result);
+  log("updateTeam result", result);
 
   if (result.affectedRows === 0) throw new Error("Team could not be updated");
 
-  if (result.affectedRows > 0) console.log("Team updated successfully");
+  if (result.affectedRows > 0) log("Team updated successfully");
 
   return { success: true, message: "Team updated successfully", data: result };
 };
 
 export const getTeam = async (teamData, userId) => {
-  console.log("getTeam has data?", teamData);
+  log("getTeam has data?", teamData);
   const teamId = teamData;
 
-  console.log("getTeam id and userId", teamId, userId);
+  log("getTeam id and userId", teamId, userId);
 
   if (!teamId || !userId) throw new Error("Missing team id or userId");
-  console.log("Team id and user id are valid");
+  log("Team id and user id are valid");
 
   const [result] = await connection.query("SELECT * FROM teams WHERE id = ?", [
     teamId,
   ]);
 
-  console.log("Team found?", result);
+  log("Team found?", result);
 
   if (result.length === 0) return { success: false, message: "Team not found" };
 
@@ -199,14 +194,14 @@ export const kickUser = async (teamId, userId, deleterId) => {
   if (!userId) throw new Error("Unauthorized: userId missing");
   if (!deleterId) throw new Error("Unauthorized: deleterId missing");
 
-  console.log("UserId and teamId are valid on kickuser backend call");
+  log("UserId and teamId are valid on kickuser backend call");
 
   const [isCreator] = await connection.query(
     "SELECT created_by FROM teams WHERE id = ?",
     [teamId]
   );
 
-  console.log("isCreator", isCreator);
+  log("isCreator", isCreator);
 
   if (isCreator[0].created_by === userId) {
     throw new Error("Creator cannot be deleted");
@@ -228,8 +223,8 @@ export const kickUser = async (teamId, userId, deleterId) => {
     throw new Error("Admin cannot be deleted");
   }
 
-  console.log("team Id", teamId);
-  console.log("user Id", userId);
+  log("team Id", teamId);
+  log("user Id", userId);
 
   const [result] = await connection.query(
     "DELETE FROM user_teams WHERE team_id = ? AND user_id = ?",
@@ -250,7 +245,7 @@ export const updateTeamUser = async (userId, teamId, userRole) => {
   if (!acceptedRoles.includes(userRole))
     throw new Error("User role not accepted");
 
-  console.log("updateTeamUser userId, teamId and userRole accepted");
+  log("updateTeamUser userId, teamId and userRole accepted");
 
   //check if uerId is creator
 
@@ -285,14 +280,14 @@ export const joinRequest = async (teamId, userId) => {
   if (!teamId) throw new Error("Team id is required");
   if (!userId) throw new Error("Unauthorized: userId missing");
 
-  console.log("User and team id received");
+  log("User and team id received");
 
   const [userInTeam] = await connection.query(
     "SELECT * FROM user_teams WHERE team_id = ? AND user_id = ?",
     [teamId, userId]
   );
 
-  console.log("user is in the team", userInTeam);
+  log("user is in the team", userInTeam);
 
   //Check if user is already in the team
   if (userInTeam.length > 0) {
@@ -338,9 +333,9 @@ export const joinRequest = async (teamId, userId) => {
 
 export const getRequests = async (teamId, userId) => {
   if (!teamId) throw new Error("Team id is required");
-  console.log("Team id is valid", teamId);
+  log("Team id is valid", teamId);
   if (!userId) throw new Error("Unauthorized: userId missing");
-  console.log("User id is valid", userId);
+  log("User id is valid", userId);
 
   const [result] = await connection.query(
     "SELECT * FROM user_teams WHERE team_id = ? AND status = 'pending'",
@@ -361,7 +356,7 @@ export const acceptRequest = async (teamId, userId) => {
   if (!teamId) throw new Error("Team id is required");
   if (!userId) throw new Error("Unauthorized: userId missing");
 
-  console.log(
+  log(
     "User and team id received in acceptRequest, teamId , userId",
     teamId,
     userId
@@ -394,14 +389,14 @@ export const rejectRequest = async (teamId, userId) => {
   if (!teamId) throw new Error("Team id is required");
   if (!userId) throw new Error("Unauthorized: userId missing");
 
-  console.log("User and team id received in acceptRequest");
+  log("User and team id received in acceptRequest");
 
   const [userRequestStatus] = await connection.query(
     "SELECT * FROM user_teams WHERE team_id = ? AND user_id = ? AND status = ?",
     [teamId, userId, "pending"]
   );
 
-  console.log("User request status", userRequestStatus);
+  log("User request status", userRequestStatus);
 
   if (userRequestStatus.length === 0)
     return { success: false, message: "Request not found" };
@@ -423,7 +418,7 @@ export const rejectRequest = async (teamId, userId) => {
 export const getJoinedTeams = async (userId) => {
   if (!userId) throw new Error("Unauthorized: userId missing");
 
-  console.log("User id is valid", userId);
+  log("User id is valid", userId);
 
   const [result] = await connection.query(
     `SELECT ut.*, t.name, t.description
@@ -447,14 +442,14 @@ export const leaveTeam = async (teamId, userId) => {
   if (!teamId) throw new Error("Team id is required");
   if (!userId) throw new Error("Unauthorized: userId missing");
 
-  console.log("User and team id received in leaveTeam");
+  log("User and team id received in leaveTeam");
 
   const [isOnTeam] = await connection.query(
     "SELECT * FROM user_teams WHERE team_id = ? AND user_id = ?",
     [teamId, userId]
   );
 
-  console.log("Is user on team", isOnTeam);
+  log("Is user on team", isOnTeam);
 
   if (isOnTeam.length === 0)
     return { success: false, message: "User is not on the team" };
@@ -477,8 +472,8 @@ export const connectTeam = async (teamId, userId) => {
   if (!teamId) throw new Error("Team id is required");
   if (!userId) throw new Error("Unauthorized: userId missing");
 
-  console.log("Team id is valid", teamId);
-  console.log("User id is valid", userId);
+  log("Team id is valid", teamId);
+  log("User id is valid", userId);
 
   const [result] = await connection.query(
     `SELECT ut.*, t.name AS team_name

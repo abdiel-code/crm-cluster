@@ -1,6 +1,10 @@
 import axios from "axios";
+import { log } from "../core/logWrapper.js";
 
-const API_URL = "https://crm-cluster.onrender.com/api/users/";
+const isLocal = window.location.hostname === "localhost";
+const API_URL = isLocal
+  ? "http://localhost:3030/api/users/"
+  : "https://crm-cluster.onrender.com/api/users/";
 
 // Create task
 export const createTask = async (taskData, user) => {
@@ -12,7 +16,7 @@ export const createTask = async (taskData, user) => {
     const response = await axios.post(API_URL + user + "/tasks", taskData, {
       withCredentials: true,
     });
-    console.log(response.data);
+    log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error creating task:", error);
@@ -32,7 +36,7 @@ export const updateTask = async (taskId, taskData, user) => {
       taskData,
       { withCredentials: true }
     );
-    console.log(response.data);
+    log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error updating task:", error);
@@ -51,7 +55,7 @@ export const deleteTask = async (taskId, user) => {
     const response = await axios.delete(API_URL + user + "/tasks/" + taskId, {
       withCredentials: true,
     });
-    console.log(response.data);
+    log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error deleting task:", error);

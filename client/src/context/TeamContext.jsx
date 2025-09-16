@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { socket } from "../core/socketInstance.js";
+import { log } from "../core/logWrapper.js";
 
 const TeamContext = createContext();
 
@@ -19,7 +20,7 @@ export const TeamProvider = ({ children }) => {
         const team = data.data[0];
         setActiveTeam(team);
         localStorage.setItem("activeTeam", JSON.stringify(team));
-        console.log("✅ Team connected successfully:", team);
+        log("✅ Team connected successfully:", team);
       }
     };
 

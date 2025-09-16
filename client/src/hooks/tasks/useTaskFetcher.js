@@ -1,13 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
+const isLocal = window.location.hostname === "localhost";
+
 // const API_URL = "http://localhost:3030/api/users/";
-const API_URL = "https://crm-cluster.onrender.com/api/users/";
+const API_URL = isLocal
+  ? "http://localhost:3030/api/users/"
+  : "https://crm-cluster.onrender.com/api/users/";
 
 const useTaskFetcher = (user, filters = {}, search = "") => {
   const [taskList, setTaskList] = useState([]);
-
-  console.log("for useTaskFetcher here is the data", user, filters, search);
 
   const fetchTasks = useCallback(
     async (overrideFilters = {}, overrideSearch = "") => {

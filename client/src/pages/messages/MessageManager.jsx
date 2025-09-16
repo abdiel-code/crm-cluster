@@ -5,7 +5,7 @@ import MessageBox from "../../components/messages/MessageBox.jsx";
 import useMessageManager from "../../hooks/messages/useMessageManager.js";
 import { handleSendMessage } from "../../hooks/messages/useMessageActions.js";
 import { v4 as uuidv4 } from "uuid";
-
+import { log } from "../../core/logWrapper.js";
 const MessageManager = () => {
   const { user } = useAuth();
   const { activeTeam: team } = useTeam();
@@ -38,7 +38,7 @@ const MessageManager = () => {
       setMessageData({ message: "" });
     }
 
-    console.log("After sending message:", messages);
+    log("After sending message:", messages);
   };
 
   if (!team?.team_id) return <div>No team selected</div>;

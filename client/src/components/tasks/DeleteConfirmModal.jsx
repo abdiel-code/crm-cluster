@@ -1,3 +1,4 @@
+import { log } from "../../core/logWrapper";
 const DeleteConfirmModal = ({
   task,
   deleteConfirm,
@@ -8,9 +9,9 @@ const DeleteConfirmModal = ({
   teamIdRequired,
 }) => {
   const onDelete = async () => {
-    console.log("teamId", teamId);
+    log("teamId", teamId);
 
-    console.log("teamIdRequired", teamIdRequired);
+    log("teamIdRequired", teamIdRequired);
 
     if (teamIdRequired && !teamId) {
       return handleMessage("Unauthorized: teamId missing");

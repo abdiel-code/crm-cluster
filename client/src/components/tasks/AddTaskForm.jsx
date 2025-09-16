@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { log } from "../../core/logWrapper.js";
 
 const AddTaskForm = ({
   handleCreateTask,
@@ -34,7 +35,7 @@ const AddTaskForm = ({
       ...(teamId ? { team_id: teamId } : {}),
     };
 
-    console.log("Data that will be sended:", payload);
+    log("Data that will be sended:", payload);
     const response = await handleCreateTask(payload);
     handleMessage(response.message);
     setFormData({

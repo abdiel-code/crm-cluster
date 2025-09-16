@@ -14,11 +14,12 @@ import {
   leaveTeam,
   connectTeam,
 } from "./service.js";
+import { log } from "../../core/logWrapper.js";
 
 export const handleCreateTeam = async (formData) => {
   try {
     const team = await createTeam(formData);
-    console.log("Team created successfully:", team);
+    log("Team created successfully:", team);
     return team;
   } catch (error) {
     console.error("Error creating team:", error);
@@ -29,7 +30,7 @@ export const handleCreateTeam = async (formData) => {
 export const handleGetMyTeams = async (userId) => {
   try {
     const myTeams = await getMyTeams(userId);
-    console.log("My teams:", myTeams);
+    log("My teams:", myTeams);
     return myTeams;
   } catch (error) {
     console.error("Error getting my teams:", error);
@@ -38,11 +39,11 @@ export const handleGetMyTeams = async (userId) => {
 };
 
 export const handleDeleteTeam = async (teamId) => {
-  console.log("handleDelete teamId", teamId);
+  log("handleDelete teamId", teamId);
 
   try {
     const team = await deleteTeam(teamId);
-    console.log("Team deleted successfully:", team);
+    log("Team deleted successfully:", team);
     return team;
   } catch (error) {
     console.error("Error deleting team:", error);
@@ -51,12 +52,12 @@ export const handleDeleteTeam = async (teamId) => {
 };
 
 export const handleUpdateTeam = async (teamData) => {
-  console.log("handleUpdate teamData", teamData);
+  log("handleUpdate teamData", teamData);
 
   try {
-    console.log("processing update team");
+    log("processing update team");
     const team = await updateTeam(teamData);
-    console.log("Team updated successfully:", team);
+    log("Team updated successfully:", team);
     return team;
   } catch (error) {
     console.error("Error updating team:", error);
@@ -68,9 +69,9 @@ export const handleGetTeam = async (teamId) => {
   if (!teamId) throw new Error("Team id is required");
 
   try {
-    console.log("handleGet teamId", teamId);
+    log("handleGet teamId", teamId);
     const team = await getTeam(teamId);
-    console.log("Team:", team);
+    log("Team:", team);
     return team;
   } catch (error) {
     console.error("Error getting team:", error);
@@ -79,20 +80,20 @@ export const handleGetTeam = async (teamId) => {
 };
 
 export const handleJoinRequest = async (teamId, userId) => {
-  console.log("handleJoinRequest teamId and userId", teamId, userId);
+  log("handleJoinRequest teamId and userId", teamId, userId);
 
   if (!teamId) throw new Error("Team id is required");
 
-  console.log("handleJoinRequest teamId accepted");
+  log("handleJoinRequest teamId accepted");
 
   if (!userId) throw new Error("Unauthorized: userId missing");
 
-  console.log("handleJoinRequest userId accepted");
+  log("handleJoinRequest userId accepted");
 
   try {
-    console.log("Sending join request");
+    log("Sending join request");
     const team = await sendJoinRequest(teamId, userId);
-    console.log("Team:", team);
+    log("Team:", team);
     return team;
   } catch (error) {
     console.error("Error sending join request:", error);
@@ -104,7 +105,7 @@ export const handleGetRequests = async (userId) => {
   if (!userId) throw new Error("Unauthorized: userId missing");
   try {
     const requests = await getRequests(userId);
-    console.log("Requests:", requests);
+    log("Requests:", requests);
     return requests;
   } catch (error) {
     console.error("Error getting requests:", error);
@@ -113,7 +114,7 @@ export const handleGetRequests = async (userId) => {
 };
 
 export const handleSentRequest = async (teamId, userId, resolution) => {
-  console.log(
+  log(
     "handleSentRequest teamId userId, resolution",
     teamId,
     userId,
@@ -124,10 +125,10 @@ export const handleSentRequest = async (teamId, userId, resolution) => {
   if (!userId) throw new Error("Unauthorized: userId missing");
 
   try {
-    console.log("Trying to handle request");
+    log("Trying to handle request");
 
     const team = await handleRequest(teamId, userId, resolution);
-    console.log("Team:", team);
+    log("Team:", team);
     return team;
   } catch (error) {
     console.error("Error accepting request:", error);
@@ -138,12 +139,12 @@ export const handleSentRequest = async (teamId, userId, resolution) => {
 export const handleGetTeamMembers = async (teamId) => {
   if (!teamId) throw new Error("Team id is required");
 
-  console.log("handleGetTeamMembers teamId accepted");
+  log("handleGetTeamMembers teamId accepted");
 
   try {
-    console.log("Trying to get team members");
+    log("Trying to get team members");
     const team = await getTeamMembers(teamId);
-    console.log("Team:", team);
+    log("Team:", team);
     return team;
   } catch (error) {
     console.error("Error getting team members:", error);
@@ -155,12 +156,12 @@ export const handleDeleteMember = async (teamId, userId) => {
   if (!teamId) throw new Error("Team id is required");
   if (!userId) throw new Error("Unauthorized: userId missing");
 
-  console.log("handleDeleteMember teamId and userId accepted", teamId, userId);
+  log("handleDeleteMember teamId and userId accepted", teamId, userId);
 
   try {
-    console.log("Trying to delete team member");
+    log("Trying to delete team member");
     const team = await deleteTeamUser(teamId, userId);
-    console.log("Team:", team);
+    log("Team:", team);
     return team;
   } catch (error) {
     console.error("Error deleting team member:", error);
@@ -172,12 +173,12 @@ export const handleUpdateRole = async (userId, teamId, role) => {
   if (!teamId) throw new Error("Team id is required");
   if (!userId) throw new Error("Unauthorized: userId missing");
 
-  console.log("handleUpdateRole teamId and userId accepted", teamId, userId);
+  log("handleUpdateRole teamId and userId accepted", teamId, userId);
 
   try {
-    console.log("Trying to update team member role", userId, teamId, role);
+    log("Trying to update team member role", userId, teamId, role);
     const team = await updateTeamUser(userId, teamId, role);
-    console.log("Team:", team);
+    log("Team:", team);
     return team;
   } catch (error) {
     console.error("Error updating team member role:", error);
@@ -191,9 +192,9 @@ export const handleJoinedTeams = async (userId) => {
   if (!userId) throw new Error("Unauthorized: userId missing");
 
   try {
-    console.log("Trying to get joined teams");
+    log("Trying to get joined teams");
     const teams = await getJoinedTeams(userId);
-    console.log("Teams:", teams);
+    log("Teams:", teams);
     return teams;
   } catch (error) {
     console.error("Error getting joined teams:", error);
@@ -205,12 +206,12 @@ export const handleLeaveTeam = async (teamId, userId) => {
   if (!teamId) throw new Error("Team id is required");
   if (!userId) throw new Error("Unauthorized: userId missing");
 
-  console.log("handleLeaveTeam teamId and userId accepted", teamId, userId);
+  log("handleLeaveTeam teamId and userId accepted", teamId, userId);
 
   try {
-    console.log("Trying to leave team");
+    log("Trying to leave team");
     const team = await leaveTeam(teamId, userId);
-    console.log("Team:", team);
+    log("Team:", team);
     return team;
   } catch (error) {
     console.error("Error leaving team:", error);

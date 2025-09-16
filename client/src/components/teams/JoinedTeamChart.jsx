@@ -8,6 +8,7 @@ import DeleteModal from "./DeleteModal.jsx";
 import { socket } from "../../core/socketInstance.js";
 import { useNavigate } from "react-router-dom";
 import { useTeam } from "../../context/TeamContext.jsx";
+import { log } from "../../core/logWrapper.js";
 
 const JoinedTeamChart = ({
   team,
@@ -26,7 +27,7 @@ const JoinedTeamChart = ({
 
   const navigate = useNavigate();
 
-  console.log("members", members);
+  log("members", members);
 
   const formattedDate = formatDate(joined_at);
 

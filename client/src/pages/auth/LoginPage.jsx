@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
+import { log } from "../../core/logWrapper.js";
 
 // gray: 495867, HardBlue: 577399, SoftBlue: BDD5EA, White: FFFFFF, SoftRed: F7B1AB
 
@@ -38,9 +39,9 @@ const LoginPage = () => {
 
       setMessage(response.data.message);
 
-      console.log(response);
+      log(response);
 
-      console.log(response.data.user);
+      log(response.data.user);
 
       setUser(response.data.user);
 

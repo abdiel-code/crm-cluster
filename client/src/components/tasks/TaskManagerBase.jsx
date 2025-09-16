@@ -8,6 +8,7 @@ import DeleteConfirmModal from "./DeleteConfirmModal.jsx";
 import NotificationBar from "../core/NotificationBar.jsx";
 import formatDate from "../../hooks/global/formatDate.js";
 import { useTeam } from "../../context/TeamContext.jsx";
+import { log } from "../../core/logWrapper.js";
 
 const TaskManagerBase = ({
   user,
@@ -50,8 +51,8 @@ const TaskManagerBase = ({
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
-    console.log("search", e.target.value);
-    console.log("search", search);
+    log("search", e.target.value);
+    log("search", search);
   };
 
   const toggleModal = () => setIsModalOpen((prev) => !prev);

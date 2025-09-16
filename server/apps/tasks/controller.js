@@ -10,8 +10,6 @@ export const getTasks = async (req, res) => {
   const userId = req.params.userId;
   const { status, priority, due_date: dueDate, search } = req.query;
 
-  console.log("processing data to mysql on getTasks", req.query);
-
   const isInvalidInformation = isValid({ status, priority, dueDate });
 
   if (isInvalidInformation) return res.status(400).json(isInvalidInformation);
@@ -70,7 +68,6 @@ export const createTask = async (req, res) => {
       .status(200)
       .json({ message: "Task created successfully", taskId: result.insertId });
   } catch (error) {
-    console.log(error);
     console.error(error);
     res
       .status(500)
