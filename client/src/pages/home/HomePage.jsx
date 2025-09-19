@@ -121,9 +121,12 @@ const HomePage = () => {
           <iframe
             width="100%"
             height="315"
-            title="Ahora CRM - Demo en 5 minutos"
-            src="https://www.youtube.com/embed/4584nO1JAko"
-            allowFullScreen
+            src="https://www.youtube.com/embed/CSGETC9ozto?si=pSHCg2SrvERqUgv9"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
           ></iframe>
         </div>
         <div className="flex justify-center">
