@@ -4,7 +4,9 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import { socket } from "../../core/socketInstance.js";
 import { log } from "../../core/logWrapper.js";
 import axios from "axios";
+import { baseUrl } from "../../config.js";
 
+//"http://localhost:3030/api/users/me"
 const ProtectedRoute = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const { setUser } = useAuth();
@@ -12,7 +14,7 @@ const ProtectedRoute = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get("http://localhost:3030/api/users/me", {
+        const res = await axios.get(`${baseUrl}/api/users/me`, {
           withCredentials: true,
         });
 
