@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { log } from "../../core/logWrapper";
+import { baseUrl } from "../../config";
 
 // gray: 495867, HardBlue: 577399, SoftBlue: BDD5EA, White: FFFFFF, SoftRed: F7B1AB
 
@@ -29,7 +30,7 @@ const RegisterPage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3030/api/auth/register",
+        `${baseUrl}/api/auth/register`,
         formData
       );
 

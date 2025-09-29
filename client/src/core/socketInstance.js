@@ -1,11 +1,7 @@
 import { io } from "socket.io-client";
+import { baseUrl } from "../config.js";
 
-const isLocal = window.location.hostname === "localhost";
-
-export const socket = io(
-  isLocal ? "http://localhost:3030" : "https://crm-cluster.vercel.app",
-  {
-    withCredentials: true,
-    autoConnect: false,
-  }
-);
+export const socket = io(baseUrl, {
+  withCredentials: true,
+  autoConnect: false,
+});

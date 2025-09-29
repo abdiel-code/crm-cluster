@@ -3,6 +3,7 @@ import axios from "axios";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { log } from "../../core/logWrapper.js";
+import { baseUrl } from "../../config.js";
 
 // gray: 495867, HardBlue: 577399, SoftBlue: BDD5EA, White: FFFFFF, SoftRed: F7B1AB
 
@@ -31,11 +32,9 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:3030/api/auth/login",
-        formData,
-        { withCredentials: true }
-      );
+      const response = await axios.post(`${baseUrl}/api/auth/login`, formData, {
+        withCredentials: true,
+      });
 
       setMessage(response.data.message);
 

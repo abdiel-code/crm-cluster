@@ -1,12 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-
-const isLocal = window.location.hostname === "localhost";
+import { baseUrl } from "../../config.js";
 
 // const API_URL = "http://localhost:3030/api/users/";
-const API_URL = isLocal
-  ? "http://localhost:3030/api/users/"
-  : "https://crm-cluster.onrender.com/api/users/";
+const API_URL = `${baseUrl}/api/users/`;
 
 const useTaskFetcher = (user, filters = {}, search = "") => {
   const [taskList, setTaskList] = useState([]);

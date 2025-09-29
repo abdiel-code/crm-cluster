@@ -1,10 +1,9 @@
 import axios from "axios";
 import { log } from "../core/logWrapper.js";
+import { baseUrl } from "../config.js";
 
-const isLocal = window.location.hostname === "localhost";
-const API_URL = isLocal
-  ? "http://localhost:3030/api/users/"
-  : "https://crm-cluster.onrender.com/api/users/";
+// const API_URL = "http://localhost:3030/api/users/";
+const API_URL = `${baseUrl}/api/users/`;
 
 // Create task
 export const createTask = async (taskData, user) => {
