@@ -26,6 +26,8 @@ const UpdateTaskForm = ({
 
     const payload = {
       ...formData,
+      id: task.id,
+      user_id: task.user_id,
       ...(teamId ? { team_id: teamId } : {}),
     };
 

@@ -84,6 +84,10 @@ export const updateTask = async (taskData) => {
 
   log("processing data to mysql", taskData);
 
+  log("Task id", taskId);
+  log("User id", userId);
+  log("Team id", teamId);
+
   if (!taskId) throw new Error("Unauthorized: taskId missing");
   if (!userId) throw new Error("Unauthorized: userId missing");
   if (!teamId) throw new Error("Unauthorized: teamId missing");

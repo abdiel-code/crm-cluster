@@ -15,17 +15,17 @@ const registerTaskEvents = (socket) => {
     }
 
     withTeamRole(["admin", "editor"], taskData.team_id, socket, async () => {
-      console.log("comes here if there is role and proceed to await handler");
+      log("comes here if there is role and proceed to await handler");
 
       try {
         const task = await createTask(taskData);
-        console.log("backend send task", task);
+        log("backend send task", task);
 
         callback(task);
 
         socket.to(task.data.team_id).emit("taskCreated", task.data);
         socket.emit("taskCreated", task.data);
-        console.log("emitting message", task.message);
+        log("emitting message", task.message);
         socket.emit("barSignal", {
           message: task.message,
           duration: 3000,
@@ -44,7 +44,7 @@ const registerTaskEvents = (socket) => {
   });
 
   socket.on("deleteTask", async (taskId, teamId, callback) => {
-    console.log("delete task backend called with data", taskId, teamId);
+    log("delete task backend called with data", taskId, teamId);
 
     if (!taskId || !teamId) {
       socket.emit("taskError", {
@@ -55,15 +55,15 @@ const registerTaskEvents = (socket) => {
     }
 
     withTeamRole(["admin", "editor"], teamId, socket, async () => {
-      console.log("comes here if there is role and proceed to await handler");
+      log("comes here if there is role and proceed to await handler");
 
       try {
         const result = await deleteTask(taskId, teamId);
-        console.log("task deleted", result);
+        log("task deleted", result);
 
         callback(result);
 
-        console.log("taskId", taskId);
+        log("taskId", taskId);
 
         socket.to(teamId).emit("taskDeleted", taskId);
         socket.emit("taskDeleted", taskId);
@@ -93,12 +93,12 @@ const registerTaskEvents = (socket) => {
 
     withTeamRole(["admin", "editor"], taskData.team_id, socket, async () => {
       try {
-        console.log(
+        log(
           "comes here if there is role and proceed to await handler updateTask"
         );
 
         const task = await updateTask(taskData);
-        console.log("task updated", task);
+        log("task updated", task);
 
         callback(task);
 
@@ -128,9 +128,9 @@ const registerTaskEvents = (socket) => {
       return;
     }
 
-    console.log("filters", filters);
+    log("filters", filters);
 
-    console.log("socket for get tasks", socket);
+    log("socket for get tasks", socket);
 
     withTeamRole(
       ["admin", "editor", "viewer"],
@@ -138,14 +138,14 @@ const registerTaskEvents = (socket) => {
       socket,
       async () => {
         try {
-          console.log(
+          log(
             "comes here if there is role and proceed to await handler getTasks"
           );
           const tasks = await getTasks(filters);
           callback(tasks);
 
           socket.emit("tasks", tasks);
-          console.log("filters.teamId", filters.teamId);
+          log("filters.teamId", filters.teamId);
           socket.to(filters.teamId).emit("tasks", tasks);
         } catch (error) {
           socket.emit("taskError", {
