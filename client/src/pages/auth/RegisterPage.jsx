@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { log } from "../../core/logWrapper";
 import { baseUrl } from "../../config";
+import { Link } from "react-router-dom";
 
 // gray: 495867, HardBlue: 577399, SoftBlue: BDD5EA, White: FFFFFF, SoftRed: F7B1AB
 
@@ -123,6 +124,13 @@ const RegisterPage = () => {
             Register
           </button>
         </div>
+
+        <p>
+          Already have an account?{" "}
+          <Link to="/login" className="text-[#577399] hover:underline">
+            Login
+          </Link>
+        </p>
 
         {message && <p className="text-[#577399] mt-4">{message}</p>}
         {error && <p className="text-red-500 mt-4">{error}</p>}

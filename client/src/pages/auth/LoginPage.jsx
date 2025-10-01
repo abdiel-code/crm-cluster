@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { log } from "../../core/logWrapper.js";
 import { baseUrl } from "../../config.js";
+import { Link } from "react-router-dom";
 
 // gray: 495867, HardBlue: 577399, SoftBlue: BDD5EA, White: FFFFFF, SoftRed: F7B1AB
 
@@ -113,6 +114,13 @@ const LoginPage = () => {
             Login
           </button>
         </div>
+
+        <p>
+          Don’t have an account?{" "}
+          <Link to="/register" className="text-[#577399] hover:underline">
+            Sign up
+          </Link>
+        </p>
 
         {message && <p className="text-[#577399] mt-4">{message}</p>}
         {error && <p className="text-red-500 mt-4">{error}</p>}
