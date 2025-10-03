@@ -1,4 +1,4 @@
-import CoopSideBarItem from "./CoopSideBarItem.jsx";
+import CoopSideBarItem from './CoopSideBarItem.jsx';
 import {
   FaEnvelope,
   FaTasks,
@@ -6,7 +6,7 @@ import {
   FaPaw,
   FaUsersCog,
   FaSignOutAlt,
-} from "react-icons/fa";
+} from 'react-icons/fa';
 
 const iconMap = {
   messages: <FaEnvelope color="#577399" />,
@@ -18,18 +18,18 @@ const iconMap = {
 
 const items = [
   //{ alt: "profile", label: "Profile" },
-  { alt: "messages", label: "Messages" },
-  { alt: "tasks", label: "Tasks" },
+  { alt: 'messages', label: 'Messages' },
+  { alt: 'tasks', label: 'Tasks' },
   //{ alt: "customers", label: "Customers" },
   //{ alt: "users", label: "Users" },
   //{ alt: "projects", label: "Projects" },
   //{ alt: "reports", label: "Reports" },
   //{ alt: "dashboard", label: "Dashboard" },
-  { alt: "teams", label: "Teams" },
+  { alt: 'teams', label: 'Teams' },
 ];
 
 const settingItems = [
-  { alt: "disconnect", label: "Disconnect" },
+  { alt: 'disconnect', label: 'Disconnect' },
   //{ alt: "settings", label: "Settings" },
   //{ alt: "logout", label: "Logout" },
 ];
@@ -37,8 +37,8 @@ const settingItems = [
 const CoopSideBar = ({ isOpen, toggleSidebar }) => {
   return (
     <div
-      className={`fixed top-0 left-0 h-full bg-white transition-transform duration-300 ease-in-out
-        ${isOpen ? "translate-x-0" : "-translate-x-full"}
+      className={`fixed top-0 left-0 h-full bg-white z-50 transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         w-[70%] sm:w-[15%] sm:static sm:translate-x-0 border-r-2 border-[#495867] flex flex-col gap-4 justify-center items-center pt-4 rounded-r-md`}
     >
       <div className="flex items-center gap-3 w-full px-4 pb-4">

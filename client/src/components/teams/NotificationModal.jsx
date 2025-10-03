@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
-import { FaRegTimesCircle } from "react-icons/fa";
-import { log } from "../../core/logWrapper";
+import { motion } from 'framer-motion';
+import { FaRegTimesCircle } from 'react-icons/fa';
+import { log } from '../../core/logWrapper';
 
 const NotificationModal = ({
   requests,
@@ -8,16 +8,16 @@ const NotificationModal = ({
   handleSentRequest,
 }) => {
   const handleClick = (teamId, userId, resolution) => {
-    log("handleClick", teamId, userId, resolution);
+    log('handleClick', teamId, userId, resolution);
     handleSentRequest(teamId, userId, resolution);
   };
 
-  log("requests from notification modal", requests);
+  log('requests from notification modal', requests);
 
   return (
     <div className="border-2 border-[#495867] p-2 w-[80%] h-[80%] bg-white rounded-2xl shadow-[4px_4px_4px_4px_rgba(0,0,0,0.25)] flex flex-col items-center gap-4">
       <button
-        className="absolute right-30 cursor-pointer"
+        className="absolute right-12 cursor-pointer sm:right-30"
         onClick={toggleNotificationModal}
         type="button"
       >
@@ -45,7 +45,7 @@ const NotificationModal = ({
                     transition={{
                       duration: 0.6,
                       delay: index * 0.1,
-                      type: "spring",
+                      type: 'spring',
                       stiffness: 120,
                     }}
                     className="border-2 border-[#495867] px-4 py-2 w-[90%] bg-white rounded-xl shadow-md flex items-center justify-between"
@@ -61,7 +61,7 @@ const NotificationModal = ({
                       <button
                         className="bg-[#495867] text-white py-1 px-3 rounded-md cursor-pointer hover:bg-[#577399] hover:scale-110 transition-transform duration-300 ease-in-out"
                         onClick={() =>
-                          handleClick(req.team_id, req.user_id, "accept")
+                          handleClick(req.team_id, req.user_id, 'accept')
                         }
                       >
                         Accept
@@ -69,7 +69,7 @@ const NotificationModal = ({
                       <button
                         className="bg-[#F7B1AB] text-white py-1 px-3 rounded-md cursor-pointer hover:bg-[#FF847E] hover:scale-110 transition-transform duration-300 ease-in-out"
                         onClick={() =>
-                          handleClick(req.team_id, req.user_id, "reject")
+                          handleClick(req.team_id, req.user_id, 'reject')
                         }
                       >
                         Decline
