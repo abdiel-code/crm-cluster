@@ -1,17 +1,18 @@
-import { useAuth } from "../../context/AuthContext.jsx";
-import { useTeam } from "../../context/TeamContext.jsx";
-import { useState } from "react";
-import MessageBox from "../../components/messages/MessageBox.jsx";
-import useMessageManager from "../../hooks/messages/useMessageManager.js";
-import { handleSendMessage } from "../../hooks/messages/useMessageActions.js";
-import { v4 as uuidv4 } from "uuid";
-import { log } from "../../core/logWrapper.js";
+import { useAuth } from '../../context/AuthContext.jsx';
+import { useTeam } from '../../context/TeamContext.jsx';
+import { useState } from 'react';
+import MessageBox from '../../components/messages/MessageBox.jsx';
+import useMessageManager from '../../hooks/messages/useMessageManager.js';
+import { handleSendMessage } from '../../hooks/messages/useMessageActions.js';
+import { v4 as uuidv4 } from 'uuid';
+import { log } from '../../core/logWrapper.js';
+import NoTeamSelected from '../../components/core/NoTeamSelected.jsx';
 const MessageManager = () => {
   const { user } = useAuth();
   const { activeTeam: team } = useTeam();
   const { messages, setMessages } = useMessageManager();
 
-  const [messageData, setMessageData] = useState({ message: "" });
+  const [messageData, setMessageData] = useState({ message: '' });
 
   const handleChange = (e) => {
     const { value } = e.target;
@@ -35,13 +36,15 @@ const MessageManager = () => {
 
     if (response) {
       setMessages((prev) => [...prev, newMessage]);
-      setMessageData({ message: "" });
+      setMessageData({ message: '' });
     }
 
-    log("After sending message:", messages);
+    log('After sending message:', messages);
   };
 
-  if (!team?.team_id) return <div>No team selected</div>;
+  if (!team) {
+    return <NoTeamSelected />;
+  }
 
   return (
     <div>

@@ -2,8 +2,10 @@ import { Outlet } from 'react-router-dom';
 import CoopSideBar from './CoopSideBar.jsx';
 import CoopNotificationBar from '../core/CoopNotificationBar.jsx';
 import { useState, useEffect, useRef } from 'react';
+import useTeamCleanup from '../../pages/connection/useTeamCleanup.js';
 
 const CoopLayout = () => {
+  useTeamCleanup();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
   const buttonRef = useRef(null);

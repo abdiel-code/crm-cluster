@@ -1,32 +1,28 @@
-import { Routes, Route } from "react-router-dom";
-import RegisterPage from "./pages/auth/RegisterPage.jsx";
-import LoginPage from "./pages/auth/LoginPage.jsx";
-import Layout from "./components/sidebar/Layout.jsx";
-import CoopLayout from "./components/coopSidebar/Layout.jsx";
-import ProtectedRoute from "./components/core/ProtectedRoute.jsx";
-import TaskPage from "./pages/tasks/TaskManager.jsx";
-import ConnectPage from "./pages/connection/ConnectPage.jsx";
-import CoopTaskManager from "./pages/coopTasks/CoopTaskManager.jsx";
-import TeamManager from "./pages/teams/TeamManager.jsx";
-import MessageManager from "./pages/messages/MessageManager.jsx";
-import { BarSignalProvider } from "./context/BarSignalContext.jsx";
-import DisconnectPage from "./pages/connection/DisconnectPage.jsx";
-import HomePage from "./pages/home/HomePage.jsx";
-import AboutPage from "./pages/home/AboutPage.jsx";
-
-// Sidebar is a component that will be used to display the sidebar but it is not yet implemented
-// Sidebar is tested in a page for now
+import { Routes, Route } from 'react-router-dom';
+import RegisterPage from './pages/auth/RegisterPage.jsx';
+import LoginPage from './pages/auth/LoginPage.jsx';
+import Layout from './components/sidebar/Layout.jsx';
+import CoopLayout from './components/coopSidebar/Layout.jsx';
+import ProtectedRoute from './components/core/ProtectedRoute.jsx';
+import TaskPage from './pages/tasks/TaskManager.jsx';
+import ConnectPage from './pages/connection/ConnectPage.jsx';
+import CoopTaskManager from './pages/coopTasks/CoopTaskManager.jsx';
+import TeamManager from './pages/teams/TeamManager.jsx';
+import MessageManager from './pages/messages/MessageManager.jsx';
+import { BarSignalProvider } from './context/BarSignalContext.jsx';
+import DisconnectPage from './pages/connection/DisconnectPage.jsx';
+import HomePage from './pages/home/HomePage.jsx';
+import AboutPage from './pages/connection/useTeamCleanup.js';
 
 function App() {
   const colors = {
-    darkBlue: "#495867",
-    blue: "#577399",
-    softBlue: "#BDD5EA",
-    white: "#F7F7FF",
-    softRed: "#F7B1AB",
+    darkBlue: '#495867',
+    blue: '#577399',
+    softBlue: '#BDD5EA',
+    white: '#F7F7FF',
+    softRed: '#F7B1AB',
   };
 
-  //console.log("colors", colors);
   return (
     <div className="bg-[linear-gradient(to_bottom,_#ffffff_0%,_#ffffff_65%,_#bdd5ea_90%,_#bdd5ea_100%)] min-h-screen w-full">
       <Routes>

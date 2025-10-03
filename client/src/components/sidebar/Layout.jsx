@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Outlet } from 'react-router-dom';
 import SideBar from './SideBar.jsx';
-
+import useTeamCleanup from '../../pages/connection/useTeamCleanup.js';
 const Layout = () => {
+  useTeamCleanup();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
   const buttonRef = useRef(null);
